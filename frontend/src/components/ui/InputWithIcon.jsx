@@ -5,12 +5,13 @@ const InputWithIcon = ({ icon: Icon, error, loading, rightElement, ...props }) =
 
   return (
     <div>
-      <div className="relative">
-        <Icon 
-          className="absolute left-3 top-[52%] -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" 
-          strokeWidth={1.5}
-        />
+      <div className="relative flex items-center">
+        {/* Ícono izquierdo */}
+        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+          <Icon className="w-5 h-5 text-gray-400" strokeWidth={1.5} />
+        </div>
 
+        {/* Campo de entrada */}
         <input
           className={`
             w-full h-12 pl-10 ${rightElement ? 'pr-12' : 'pr-4'}
@@ -28,9 +29,15 @@ const InputWithIcon = ({ icon: Icon, error, loading, rightElement, ...props }) =
           {...props}
         />
 
-        {rightElement}
+        {/* Ícono derecho (por ejemplo el ojo de mostrar/ocultar) */}
+        {rightElement && (
+          <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+            {rightElement}
+          </div>
+        )}
       </div>
 
+      {/* Mensaje de error */}
       {hasError && <p className="mt-1.5 text-sm text-red-600">{error}</p>}
     </div>
   );

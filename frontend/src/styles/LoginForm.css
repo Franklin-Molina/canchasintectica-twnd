@@ -39,8 +39,8 @@
 input[type="text"],
 input[type="password"] {
   width: 100%;
-  padding: 14px 16px;
-  margin-bottom: 20px;
+  /* padding: 14px 16px; afecta el login*/ 
+  /* margin-bottom: 20px; */
   border: 1px solid #ccc;
   border-radius: 8px;
   font-size: 15px;

@@ -183,9 +183,11 @@ function RegisterPage() {
               </div>
             </div>
 
-            {/* Confirmar Contraseña */}
+           {/* Confirmar Contraseña */}
             <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Confirmar Contraseña</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Confirmar Contraseña
+              </label>
               <InputWithIcon
                 icon={Lock}
                 error={confirmPasswordError}
@@ -193,7 +195,9 @@ function RegisterPage() {
                 value={confirmPassword}
                 onChange={(e) => {
                   setConfirmPassword(e.target.value);
-                  setConfirmPasswordError(validateConfirmPassword(e.target.value, password));
+                  setConfirmPasswordError(
+                    validateConfirmPassword(e.target.value, password)
+                  );
                 }}
                 required
                 placeholder="Confirma tu contraseña"
@@ -201,15 +205,20 @@ function RegisterPage() {
                 rightElement={
                   <button
                     type="button"
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    className="text-gray-400 hover:text-gray-600 transition-colors"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     disabled={loading}
                   >
-                    {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    {showConfirmPassword ? (
+                      <EyeOff className="w-5 h-5" />
+                    ) : (
+                      <Eye className="w-5 h-5" />
+                    )}
                   </button>
                 }
               />
             </div>
+
 
             {/* Botón de registro */}
             <button
