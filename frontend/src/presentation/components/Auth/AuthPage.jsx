@@ -143,7 +143,8 @@ function AuthPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+    <div>
+   {/*  <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100"></div> */}
       {/* Renderizar el componente LoginForm y pasarle las props */}
       <LoginForm
         username={username}

@@ -8,7 +8,7 @@ function LoginForm({ username, password, error, setUsername, setPassword, setErr
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="">
+    <div className="flex items-center justify-center h-screen px-4">
       <div className="bg-white border border-gray-200 rounded-2xl w-full max-w-md p-8">
         {/* Título */}
         <h2 className="text-3xl font-bold text-center text-gray-900 mb-6">Iniciar Sesión</h2>
