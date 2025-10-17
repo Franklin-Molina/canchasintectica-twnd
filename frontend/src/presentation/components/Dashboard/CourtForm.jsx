@@ -1,8 +1,14 @@
-import React from 'react';
-import { useCourtForm } from '../../hooks/useCourtForm'; // Importar el hook personalizado
-import '../../../styles/CourtForm.css'; // Importar los estilos
-import { Upload, X, Camera, MapPin, DollarSign, FileText, Image } from 'lucide-react';
-
+import React from "react";
+import { useCourtForm } from "../../hooks/useCourtForm";
+import {
+  Upload,
+  X,
+  Camera,
+  MapPin,
+  DollarSign,
+  FileText,
+  Image as ImageIcon,
+} from "lucide-react";
 
 function CourtForm() {
   const {
@@ -14,25 +20,36 @@ function CourtForm() {
   } = useCourtForm();
 
   return (
-    <div className="court-form-widget">
-      <div className="court-form-widget-header">
-        <MapPin className="header-icon" style={{ display: 'inline-block' }} /> {/* Icono de ubicación */}
-        <div className="header-text-content">
-          <div className="court-form-widget-title">Crear Nueva Cancha</div>
-          <div className="court-form-widget-subtitle">Completa la información para registrar tu cancha deportiva
-
-</div>
+    <div className="max-w-7xl mx-auto p-6">
+      <div className="bg-white dark:bg-gray-900 shadow-lg rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+        {/* Header */}
+        <div className="flex items-center gap-3 bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-4">
+          <MapPin className="text-white w-6 h-6" />
+          <div>
+            <h2 className="text-lg font-semibold text-white">
+              Crear Nueva Cancha
+            </h2>
+            <p className="text-sm text-gray-200">
+              Completa la información para registrar tu cancha deportiva
+            </p>
+          </div>
         </div>
-      </div>
-      <div className="court-form-widget-content">
-        {/* Eliminamos la lógica de renderizado de mensajes aquí, ya que react-toastify los manejará */}
-        <form onSubmit={handleSubmit}>
-          {/* Contenedor para Nombre y Precio */}
-          <div className="court-form-name-price-group">
-            {/* Nombre de la Cancha */}
-            <div className="court-form-input-group">
-              <label htmlFor="name" className="court-form-label">
-                <MapPin className="input-icon" /> Nombre de la Cancha
+
+        {/* Formulario */}
+        <form
+          onSubmit={handleSubmit}
+          className="p-6 space-y-6 text-gray-800 dark:text-gray-100"
+        >
+          {/* Nombre + Precio */}
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Nombre */}
+            <div>
+              <label
+                htmlFor="name"
+                className="flex items-center gap-2 text-sm font-medium mb-2"
+              >
+                <MapPin className="w-4 h-4 text-blue-500" />
+                Nombre de la Cancha
               </label>
               <input
                 type="text"
@@ -41,92 +58,115 @@ function CourtForm() {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="court-form-input"
                 placeholder="Ej: Cancha de Fútbol El Campeón"
+                className="w-full border border-gray-300 dark:border-gray-700 rounded-xl px-4 py-2 focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 outline-none transition"
               />
             </div>
 
-            {/* Precio por Hora */}
-            <div className="court-form-input-group">
-              <label htmlFor="price" className="court-form-label">
-                <DollarSign className="input-icon green-icon" /> Precio por Hora
+            {/* Precio */}
+            <div>
+              <label
+                htmlFor="price"
+                className="flex items-center gap-2 text-sm font-medium mb-2"
+              >
+                <DollarSign className="w-4 h-4 text-green-500" />
+                Precio por Hora
               </label>
-             
-                
-                <input
-                  type="text"
-                  id="price"
-                  name="price"
-                  value={formData.price}
-                  onChange={handleChange}
-                  required
-                  pattern="[0-9]*\.?[0-9]*"
-                  inputMode="decimal"
-                  className="price-input"
-                  placeholder="$ 0.00"
-                />
-              
+              <input
+                type="text"
+                id="price"
+                name="price"
+                value={formData.price}
+                onChange={handleChange}
+                required
+                pattern="[0-9]*\.?[0-9]*"
+                inputMode="decimal"
+                placeholder="$ 0.00"
+                className="w-full border border-gray-300 dark:border-gray-700 rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-500 dark:bg-gray-800 outline-none transition"
+              />
             </div>
-          </div>          
+          </div>
 
           {/* Descripción */}
-          <div className="court-form-input-group">
-            <label htmlFor="description" className="court-form-label">
-              <FileText className="input-icon purple-icon" /> Descripción
+          <div>
+            <label
+              htmlFor="description"
+              className="flex items-center gap-2 text-sm font-medium mb-2"
+            >
+              <FileText className="w-4 h-4 text-purple-500" />
+              Descripción
             </label>
             <textarea
               id="description"
               name="description"
               value={formData.description}
               onChange={handleChange}
-              className="court-form-textarea"
               placeholder="Describe las características de tu cancha, servicios incluidos, ubicación, etc."
+              className="w-full border border-gray-300 dark:border-gray-700 rounded-xl px-4 py-2 focus:ring-2 focus:ring-purple-500 dark:bg-gray-800 outline-none transition min-h-[120px]"
             ></textarea>
           </div>
 
-          {/* Campo para las imágenes */}
-          <div className="court-form-input-group">
-            <div className="court-form-gallery-header">
-              <label className="court-form-label">
-                <Image className="input-icon orange-icon" /> Fotografías de la Cancha
+          {/* Imágenes */}
+          <div>
+            <div className="flex justify-between items-center mb-3">
+              <label className="flex items-center gap-2 text-sm font-medium">
+                <ImageIcon className="w-4 h-4 text-orange-500" />
+                Fotografías de la Cancha
               </label>
-              <div className="photo-count-text">{formData.images.length}/5 fotos</div>
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                {formData.images.length}/5 fotos
+              </span>
             </div>
-            <div className="court-form-gallery">
-              {/* Previsualizaciones de imágenes */}
+
+            {/* Galería */}
+            <div className="flex flex-wrap gap-4">
               {formData.images.map((image, index) => (
-                <div key={index} className="court-form-image-container">
-                  <img src={URL.createObjectURL(image)} alt={`Preview ${index}`} className="court-form-image-preview" />
-                  <div className="court-form-dark-overlay"></div>
-                  <button type="button" className="court-form-close-btn" onClick={() => handleRemoveImage(index)}>
-                    <X size={16} /> {/* Icono de X para cerrar */}
+                <div
+                  key={index}
+                  className="relative w-32 h-32 rounded-xl overflow-hidden group shadow-md"
+                >
+                  <img
+                    src={URL.createObjectURL(image)}
+                    alt={`Preview ${index}`}
+                    className="w-full h-full object-cover"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveImage(index)}
+                    className="absolute top-1 right-1 bg-black/60 hover:bg-black/80 text-white p-1 rounded-full transition"
+                  >
+                    <X size={14} />
                   </button>
                 </div>
               ))}
 
-              {/* Botón Agregar foto */}
+              {/* Botón agregar */}
               {formData.images.length < 5 && (
-                <label htmlFor="images-input" className="court-form-image-container add-photo-container">
-                  <div className="court-form-add-photo">
-                    <Camera className="add-photo-icon" /> {/* Icono de cámara */}
-                    <div className="court-form-add-photo-text">Agregar foto</div>
-                  </div>
+                <label className="w-32 h-32 flex flex-col items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl cursor-pointer hover:border-blue-500 hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                  <Camera className="w-6 h-6 text-blue-500" />
+                  <span className="text-xs mt-2 text-gray-600 dark:text-gray-400">
+                    Agregar foto
+                  </span>
                   <input
                     type="file"
-                    id="images-input"
                     name="images"
                     onChange={handleChange}
                     accept="image/*"
                     multiple
-                    className="court-form-hidden-input"
+                    className="hidden"
                   />
                 </label>
               )}
             </div>
           </div>
 
-          <button type="submit" className="court-form-submit-button" disabled={isSubmitting}>
-            Crear Cancha
+          {/* Botón de envío */}
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-700 transition disabled:opacity-60"
+          >
+            {isSubmitting ? "Creando..." : "Crear Cancha"}
           </button>
         </form>
       </div>
