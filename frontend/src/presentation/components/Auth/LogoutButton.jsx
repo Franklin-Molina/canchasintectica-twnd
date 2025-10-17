@@ -1,23 +1,37 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext.jsx';
-import useButtonDisable from '../../hooks/useButtonDisable.js'; // Importar el hook personalizado
+import useButtonDisable from '../../hooks/useButtonDisable.js';
 
-/**
- * Componente de botón para cerrar sesión.
- * Utiliza el contexto de autenticación para llamar a la función logout.
- * @returns {JSX.Element} El botón de cerrar sesión.
- */
 const LogoutButton = () => {
   const { logout } = useAuth();
-
-  // Usar el hook para manejar el logout
   const [isLoggingOut, handleLogout] = useButtonDisable(async () => {
     await logout();
   });
 
   return (
-    <button onClick={handleLogout} disabled={isLoggingOut}>
-      Cerrar Sesión
+    <button
+      onClick={handleLogout}
+      disabled={isLoggingOut}
+      className="
+        w-full
+        bg-[#da4453]
+        text-white
+        font-medium
+        py-2.5
+        px-5
+        rounded-md
+        hover:bg-[#c43240]
+        transition-colors
+        duration-300
+        disabled:opacity-50
+        disabled:cursor-not-allowed
+        focus:outline-none
+        focus:ring-2
+        focus:ring-offset-2
+        focus:ring-[#da4453]
+      "
+    >
+      {isLoggingOut ? 'Cerrando...' : 'Cerrar Sesión'}
     </button>
   );
 };
