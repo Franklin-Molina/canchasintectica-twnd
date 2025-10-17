@@ -1,145 +1,190 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Link, Outlet, useLocation } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext.jsx';
-import DashboardNavbar from './DashboardNavbar.jsx'; // Importar el nuevo componente Navbar
-import '../../../styles/DashboardLayout.css';
+import React, { useState, useEffect, useRef } from "react";
+import { Link, Outlet, useLocation } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext.jsx";
+import DashboardNavbar from "./DashboardNavbar.jsx";
 
 function DashboardLayout() {
   const { user, logout } = useAuth();
   const [isCanchasExpanded, setIsCanchasExpanded] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Estado para controlar la visibilidad de la sidebar
-  const sidebarRef = useRef(null); // Referencia al elemento del sidebar
-  const location = useLocation(); // Para cerrar el sidebar al cambiar de ruta
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const sidebarRef = useRef(null);
+  const location = useLocation();
 
-  const handleLogout = () => {
-    logout();
-  };
+  const handleLogout = () => logout();
 
-  const toggleCanchasMenu = () => {
-    setIsCanchasExpanded(!isCanchasExpanded);
-  };
+  const toggleCanchasMenu = () => setIsCanchasExpanded(!isCanchasExpanded);
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+  const closeSidebar = () => setIsSidebarOpen(false);
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-
-  const closeSidebar = () => {
-    setIsSidebarOpen(false);
-  };
-
-  // Efecto para cerrar el sidebar al cambiar de ruta en móviles
   useEffect(() => {
-    if (window.innerWidth <= 768) {
-      closeSidebar();
-    }
+    if (window.innerWidth <= 768) closeSidebar();
   }, [location]);
 
-
-  // Efecto para detectar clics fuera del sidebar en móviles
   useEffect(() => {
     const handleClickOutside = (event) => {
-      // Verificar si el clic fue fuera del sidebar y si estamos en móvil y el sidebar está abierto
-      if (sidebarRef.current && !sidebarRef.current.contains(event.target) && window.innerWidth <= 768 && isSidebarOpen) {
+      if (
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target) &&
+        window.innerWidth <= 768 &&
+        isSidebarOpen
+      ) {
         closeSidebar();
       }
     };
-
-    // Agregar event listener al documento
-    document.addEventListener('mousedown', handleClickOutside);
-
-    // Limpiar event listener al desmontar el componente
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isSidebarOpen]); // Dependencia en isSidebarOpen para que el efecto se re-ejecute cuando cambie el estado
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isSidebarOpen]);
 
   return (
-    <div className="dashboard-container">
-      {/* Overlay para cerrar sidebar al hacer clic fuera */}
-      {isSidebarOpen && <div className="sidebar-overlay" onClick={(e) => { e.stopPropagation(); closeSidebar(); }}></div>}
+    <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Overlay en móvil */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 md:hidden"
+          onClick={closeSidebar}
+        ></div>
+      )}
 
-      <aside ref={sidebarRef} className={`dashboard-sidebar ${isSidebarOpen ? 'open' : ''}`}> {/* Añadir clase 'open' si isSidebarOpen es true y referencia */}
-        <div className="dashboard-sidebar-header">
-          <h2>Cancha Admin</h2>
+      {/* SIDEBAR */}
+      <aside
+        ref={sidebarRef}
+           className={`fixed md:static top-0 left-0 h-screen md:h-auto w-64 md:w-64 flex-shrink-0 
+                  bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 
+                  shadow-md transform transition-transform duration-300 z-40 
+       ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-center py-4 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">
+            Cancha Admin
+          </h2>
         </div>
-        <div className="dashboard-sidebar-menu">
-         {/*  <div className="profile-container">
-            <div className="profile-img">
-              <i className="fas fa-user"></i>
-            </div>
-            <div className="profile-name">{user.username}</div>
-            <div className="profile-role">{user.role}</div>
-          </div> */}
-            <div className="dashboard-menu-title">Cuenta</div>
 
-          <Link to="/dashboard/perfil" className="dashboard-menu-item" onClick={closeSidebar}> {/* Cerrar sidebar al hacer click */}
-            <i className="fas fa-user"></i>
-            <span>Perfil</span>
-          </Link>   
-
-  <div className="dashboard-menu-title">Home</div>
-          <Link to="/" className="dashboard-menu-item" onClick={closeSidebar}> {/* Cerrar sidebar al hacer click */}
-            <i className="fas fa-home"></i>
-            <span>Inicio</span>
-          </Link>
-
-          <Link to="/dashboard" className="dashboard-menu-item active" onClick={closeSidebar}> {/* Cerrar sidebar al hacer click */}
-            <i className="fas fa-tachometer-alt"></i>
-            <span>Dashboard</span>
-          </Link>
-
-          <div className="dashboard-menu-title">Gestión</div>
-
-          <Link to="/dashboard/reservas" className="dashboard-menu-item" onClick={closeSidebar}> {/* Cerrar sidebar al hacer click */}
-            <i className="fas fa-calendar-check"></i>
-            <span>Reservas</span>
-          </Link>
-
-          <div role="button" tabIndex="0" className="dashboard-menu-cancha" onClick={toggleCanchasMenu}> {/* Cerrar sidebar al hacer click */}
-            <i className="fas fa-pencil-alt"></i>
-            Canchas
-            <i className={`fas fa-chevron-${isCanchasExpanded ? 'up' : 'down'}`}></i>
+        {/* MENU */}
+        <nav className="flex flex-col p-4 text-gray-700 dark:text-gray-300 space-y-1">
+          <div className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 mt-4 mb-2">
+            Cuenta
           </div>
+
+          <Link
+            to="/dashboard/perfil"
+            className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+            onClick={closeSidebar}
+          >
+            <i className="fas fa-user text-gray-500"></i> Perfil
+          </Link>
+
+          <div className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 mt-4 mb-2">
+            Home
+          </div>
+
+          <Link
+            to="/"
+            className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+            onClick={closeSidebar}
+          >
+            <i className="fas fa-home text-gray-500"></i> Inicio
+          </Link>
+
+          <Link
+            to="/dashboard"
+            className="flex items-center gap-3 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-md hover:shadow-lg"
+            onClick={closeSidebar}
+          >
+            <i className="fas fa-tachometer-alt"></i> Dashboard
+          </Link>
+
+          <div className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 mt-4 mb-2">
+            Gestión
+          </div>
+
+          <Link
+            to="/dashboard/reservas"
+            className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+            onClick={closeSidebar}
+          >
+            <i className="fas fa-calendar-check text-gray-500"></i> Reservas
+          </Link>
+
+          {/* Menú Canchas */}
+          <div
+            role="button"
+            tabIndex="0"
+            onClick={toggleCanchasMenu}
+            className="flex items-center justify-between px-4 py-2 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span className="flex items-center gap-3">
+              <i className="fas fa-pencil-alt text-gray-500"></i> Canchas
+            </span>
+            <i
+              className={`fas fa-chevron-${isCanchasExpanded ? "up" : "down"
+                } text-gray-500`}
+            ></i>
+          </div>
+
           {isCanchasExpanded && (
-            <div className="submenu">
-              <Link to="/dashboard/canchas/manage" className="dashboard-menu-item" onClick={closeSidebar}> {/* Cerrar sidebar al hacer click */}
-                <i className="fas fa-list"></i>
-                <span>Gestionar Canchas</span>
+            <div className="ml-6 mt-1 space-y-1">
+              <Link
+                to="/dashboard/canchas/manage"
+                className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                onClick={closeSidebar}
+              >
+                <i className="fas fa-list text-gray-500"></i> Gestionar Canchas
               </Link>
-              <Link to="/dashboard/canchas/create" className="dashboard-menu-item" onClick={closeSidebar}> {/* Cerrar sidebar al hacer click */}
-                <i className="fas fa-plus"></i>
-                <span>Crear Cancha</span>
+              <Link
+                to="/dashboard/canchas/create"
+                className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                onClick={closeSidebar}
+              >
+                <i className="fas fa-plus text-gray-500"></i> Crear Cancha
               </Link>
             </div>
           )}
 
-          <Link to="/dashboard/usuarios" className="dashboard-menu-item" onClick={closeSidebar}> {/* Cerrar sidebar al hacer click */}
-            <i className="fas fa-users"></i>
-            <span>Usuarios</span>
+          <Link
+            to="/dashboard/usuarios"
+            className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+            onClick={closeSidebar}
+          >
+            <i className="fas fa-users text-gray-500"></i> Usuarios
           </Link>
 
-          <Link to="#" className="dashboard-menu-item" onClick={closeSidebar}> {/* Cerrar sidebar al hacer click */}
-            <i className="fas fa-dollar-sign"></i>
-            <span>Pagos</span>
+          <Link
+            to="#"
+            className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+            onClick={closeSidebar}
+          >
+            <i className="fas fa-dollar-sign text-gray-500"></i> Pagos
           </Link>
 
-          <Link to="#" className="dashboard-menu-item" onClick={closeSidebar}> {/* Cerrar sidebar al hacer click */}
-            <i className="fas fa-chart-line"></i>
-            <span>Estadísticas</span>
+          <Link
+            to="#"
+            className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+            onClick={closeSidebar}
+          >
+            <i className="fas fa-chart-line text-gray-500"></i> Estadísticas
           </Link>
 
-               
-  <div className="dashboard-menu-title">Salir</div>
-          <div className="dashboard-menu-item" onClick={() => { handleLogout(); closeSidebar(); }} style={{ cursor: 'pointer' }}> {/* Logout y cerrar sidebar */}
-            <i className="fas fa-sign-out-alt"></i>
-            <span>Cerrar Sesión</span>
+          <div className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 mt-4 mb-2">
+            Salir
           </div>
-        </div>
+
+          <div
+            onClick={() => {
+              handleLogout();
+              closeSidebar();
+            }}
+            className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-red-100 dark:hover:bg-red-700 text-red-600 dark:text-red-400 cursor-pointer"
+          >
+            <i className="fas fa-sign-out-alt"></i> Cerrar Sesión
+          </div>
+        </nav>
       </aside>
 
-      <main className="dashboard-content">
-        <DashboardNavbar toggleSidebar={toggleSidebar} /> {/* Renderizar el Navbar */}
-        <div className="dashboard-page-content">
+      {/* CONTENIDO PRINCIPAL */}
+      <main className="flex-1 flex flex-col min-h-screen">
+        <DashboardNavbar toggleSidebar={toggleSidebar} />
+        <div className="flex-1 p-6 overflow-y-auto bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100">
           <Outlet />
         </div>
       </main>
