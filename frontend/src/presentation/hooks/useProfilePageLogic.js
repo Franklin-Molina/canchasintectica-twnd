@@ -41,7 +41,7 @@ import useButtonDisable from '../hooks/useButtonDisable.js';
  * @property {Function} setIsPasswordModalOpen - Setter para el estado del modal de contraseña.
  */
 export const useProfilePageLogic = () => {
-  const { user, loading } = useAuth();
+  const { user, loading, updateUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [currentPassword, setCurrentPassword] = useState('');
@@ -62,6 +62,8 @@ export const useProfilePageLogic = () => {
 
   const handleEditClick = () => {
     setIsEditing(true);
+    setError('');
+    setSuccess('');
   };
 
   const handleCancelClick = () => {
@@ -92,7 +94,7 @@ export const useProfilePageLogic = () => {
       const updatedUser = await updateUserProfileUseCase.execute(user.id, userData);
       console.log('Perfil actualizado exitosamente:', updatedUser);
       setSuccess('Perfil actualizado exitosamente.');
-
+      updateUser(updatedUser);
       setTimeout(() => {
         setIsEditing(false);
       }, 2000);

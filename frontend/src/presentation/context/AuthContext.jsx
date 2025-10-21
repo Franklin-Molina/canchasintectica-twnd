@@ -178,9 +178,11 @@ export const AuthProvider = ({ children }) => {
 
 
   // TODO: Implementar lógica para refrescar tokens usando el refreshToken en el repositorio
-
+  const updateUser = (updatedUserData) => {
+    setUser(prevUser => ({ ...prevUser, ...updatedUserData }));
+  };
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, loading, login, logout, loginWithGoogle, fetchUser }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, loading, login, logout, loginWithGoogle, fetchUser, updateUser }}>
       {children}
     </AuthContext.Provider>
   );
