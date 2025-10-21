@@ -1,9 +1,17 @@
 import React from 'react';
 import Spinner from '../components/common/Spinner';
+import Pagination from '../components/common/Pagination';
 import { useFetchBookings } from '../hooks/useFetchBookings';
 
 function DashboardBookingsPage() {
-  const { bookings, loading, error } = useFetchBookings();
+  const {
+    bookings,
+    loading,
+    error,
+    currentPage,
+    totalPages,
+    setCurrentPage,
+  } = useFetchBookings();
 
   if (loading) {
     return (
@@ -103,6 +111,15 @@ function DashboardBookingsPage() {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Paginación */}
+          <div className="px-6 py-4">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
           </div>
         </div>
       )}

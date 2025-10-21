@@ -16,9 +16,10 @@ export class GetBookingsUseCase {
 
   /**
    * Ejecuta el caso de uso para obtener la lista de reservas.
-   * @returns {Promise<Booking[]>} Una promesa que resuelve con un array de entidades Booking.
+   * @param {number} page - El número de página a solicitar.
+   * @returns {Promise<object>} Una promesa que resuelve con el objeto de respuesta paginada.
    */
-  async execute() {
-    return this.bookingRepository.getBookings();
+  async execute(page) {
+    return this.bookingRepository.getBookings(page);
   }
 }

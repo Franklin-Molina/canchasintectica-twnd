@@ -29,12 +29,13 @@ export class ApiBookingRepository extends BookingRepository {
 
     /**
      * Obtiene la lista de todas las reservas a través de la API.
-     * @returns {Promise<object[]>} Una promesa que resuelve con un array de objetos de reserva.
+     * @param {number} page - El número de página a solicitar.
+     * @returns {Promise<object>} Una promesa que resuelve con el objeto de respuesta paginada.
      * @throws {Error} Si ocurre un error en la llamada a la API.
      */
-    async getBookings() {
+    async getBookings(page = 1) {
         try {
-            const response = await api.get('/api/bookings/bookings/');
+            const response = await api.get(`/api/bookings/bookings/?page=${page}`);
             return response.data;
         } catch (error) {
             console.error("Error en ApiBookingRepository al obtener reservas:", error);
