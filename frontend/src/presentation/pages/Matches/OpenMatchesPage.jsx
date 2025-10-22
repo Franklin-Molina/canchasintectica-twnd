@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import api from '../../../infrastructure/api/api';
 import '../../../styles/OpenMatchesPage.css';
 import { toast } from 'react-toastify';
+import Swal from 'sweetalert2'; // Importar SweetAlert2
 import CreateMatchForm from '../../components/Matches/CreateMatchForm';
 import { useAuth } from '../../context/AuthContext'; // Importar useAuth
 
@@ -124,29 +125,71 @@ const OpenMatchesPage = () => {
   };
 
   const handleCancelMatch = async (matchId) => {
-    if (window.confirm("¿Estás seguro de que quieres cancelar este partido?")) {
-      try {
-        await api.post(`/api/matches/open-matches/${matchId}/cancel/`);
-        toast.success("Partido cancelado.");
-        fetchAllData();
-      } catch (error) {
-        console.error("Error cancelling match:", error);
-        toast.error("No se pudo cancelar el partido.");
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¡No podrás revertir esto!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, cancelar partido',
+      cancelButtonText: 'No, mantener partido',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await api.post(`/api/matches/open-matches/${matchId}/cancel/`);
+          toast.success("Partido cancelado.");
+          fetchAllData();
+          Swal.fire(
+            '¡Cancelado!',
+            'El partido ha sido cancelado.',
+            'success'
+          );
+        } catch (error) {
+          console.error("Error cancelling match:", error);
+          toast.error("No se pudo cancelar el partido.");
+          Swal.fire(
+            'Error',
+            'No se pudo cancelar el partido.',
+            'error'
+          );
+        }
       }
-    }
+    });
   };
 
   const handleRemoveParticipant = async (matchId, userIdToRemove) => {
-    if (window.confirm("¿Estás seguro de que quieres expulsar a este jugador?")) {
-      try {
-        await api.post(`/api/matches/open-matches/${matchId}/remove_participant/`, { user_id: userIdToRemove });
-        toast.success("Jugador expulsado.");
-        fetchAllData();
-      } catch (error) {
-        console.error("Error removing participant:", error);
-        toast.error("No se pudo expulsar al jugador.");
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¡Este jugador será expulsado del partido!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, expulsar',
+      cancelButtonText: 'No, cancelar',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await api.post(`/api/matches/open-matches/${matchId}/remove_participant/`, { user_id: userIdToRemove });
+          toast.success("Jugador expulsado.");
+          fetchAllData();
+          Swal.fire(
+            '¡Expulsado!',
+            'El jugador ha sido expulsado del partido.',
+            'success'
+          );
+        } catch (error) {
+          console.error("Error removing participant:", error);
+          toast.error("No se pudo expulsar al jugador.");
+          Swal.fire(
+            'Error',
+            'No se pudo expulsar al jugador.',
+            'error'
+          );
+        }
       }
-    }
+    });
   };
 
   if (loading) {

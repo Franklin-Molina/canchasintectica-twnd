@@ -9,3 +9,5 @@
 - [x] Mejorar la organización del frontend aplicando la arquitectura (30/06/2025)
 - [x] Redirigir `navbar-right` a `/dashboard/perfil` en `DashboardNavbar.jsx` (01/07/2025)
 - [x] Crear Dashboard de Cliente (12/07/2025)
+- [x] Corregir problemas de importación en `frontend/src/presentation/pages` tras reestructuración (22/10/2025)
+- [x] Corregir errores 500 en `App.jsx` por importaciones incorrectas de CSS (22/10/2025)

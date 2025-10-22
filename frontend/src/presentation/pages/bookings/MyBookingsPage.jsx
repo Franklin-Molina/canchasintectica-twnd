@@ -1,27 +1,29 @@
 import React from 'react';
-import { useFetchClientBookings } from '../hooks/useFetchClientBookings';
-import Spinner from '../components/common/Spinner';
-import '../../styles/ClientDashboard.css';
 
-const BookingHistoryPage = () => {
-  const { bookings, loading, error } = useFetchClientBookings();
+import { useFetchBookings } from '../../hooks/useFetchBookings'
+import Spinner from '../../components/common/Spinner';
+import '../../../styles/ClientDashboard.css';
+
+
+const MyBookingsPage = () => {
+  const { bookings, loading, error } = useFetchBookings();
 
   if (loading) {
     return <Spinner />;
   }
 
   if (error) {
-    return <p>Error al cargar el historial de reservas: {error.message}</p>;
+    return <p>Error al cargar las reservas: {error.message}</p>;
   }
 
-  const pastBookings = bookings.filter(booking => new Date(booking.start_time) < new Date());
+  const upcomingBookings = bookings.filter(booking => new Date(booking.start_time) >= new Date());
 
   return (
     <div className="client-dashboard-page">
-      <h2>Historial de Reservas</h2>
-      {pastBookings.length > 0 ? (
+      <h2>Mis Reservas</h2>
+      {upcomingBookings.length > 0 ? (
         <ul className="bookings-list">
-          {pastBookings.map(booking => (
+          {upcomingBookings.map(booking => (
             <li key={booking.id} className="booking-item">
               <div className="booking-item-details">
                 <span className="court-name">{booking.court_details.name}</span>
@@ -32,10 +34,10 @@ const BookingHistoryPage = () => {
           ))}
         </ul>
       ) : (
-        <p className="no-bookings-message">No tienes reservas pasadas.</p>
+        <p className="no-bookings-message">No tienes próximas reservas.</p>
       )}
     </div>
   );
 };
 
-export default BookingHistoryPage;
+export default MyBookingsPage;

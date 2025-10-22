@@ -1,8 +1,8 @@
 import React from "react";
-import { useAuth } from "../context/AuthContext.jsx";
-import Spinner from "../components/common/Spinner.jsx";
-import Pagination from "../components/common/Pagination.jsx"; // Importar el componente de paginación
-import { useDashboardUsersLogic } from "../hooks/useDashboardUsersLogic.js";
+import { useAuth } from "../../../context/AuthContext.jsx";
+import Spinner from "../../../components/common/Spinner.jsx";
+import Pagination from "../../../components/common/Pagination.jsx";
+import { useDashboardUsersLogic } from "../../../hooks/useDashboardUsersLogic.js"; // Ruta actualizada
 import {
   User,
   Trash2,

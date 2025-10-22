@@ -1,8 +1,9 @@
 import React from 'react';
-import LogoutButton from '../components/Auth/LogoutButton.jsx';
-import '../../styles/ProfilePage.css';
-import Spinner from '../components/common/Spinner.jsx';
-import { useProfilePageLogic } from '../hooks/useProfilePageLogic.js'; // Importar el hook personalizado
+import LogoutButton from '../../components/Auth/LogoutButton.jsx';
+import '../../../styles/ProfilePage.css';
+
+import Spinner from '../../components/common/Spinner.jsx';
+import { useProfilePageLogic } from '../../hooks/useProfilePageLogic.js';
 
 function ProfilePage() {
   // Usar el hook personalizado para toda la lógica de la página

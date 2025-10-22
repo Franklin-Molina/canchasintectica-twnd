@@ -2,31 +2,31 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { RepositoryProvider } from './presentation/context/RepositoryContext.jsx';
 import { UseCaseProvider } from './presentation/context/UseCaseContext.jsx';
-import HomePage from './presentation/pages/HomePage.jsx';
-import RegisterPage from './presentation/components/Auth/RegisterPage.jsx';
-import BookingPage from './presentation/pages/BookingPage.jsx';
-import ProfilePage from './presentation/pages/ProfilePage.jsx';
+import HomePage from './presentation/pages/general/HomePage.jsx'; // Ruta actualizada
+import RegisterPage from './presentation/components/Auth/RegisterPage.jsx'; // Se mantiene en components/Auth
+import BookingPage from './presentation/pages/bookings/BookingPage.jsx'; // Ruta actualizada
+import ProfilePage from './presentation/pages/users/ProfilePage.jsx'; // Ruta actualizada
 import ProtectedRoute from './presentation/components/Auth/ProtectedRoute.jsx';
 import AuthPage from './presentation/components/Auth/AuthPage.jsx';
 import AdminRegisterPage from './presentation/components/Auth/AdminRegisterPage.jsx';
 import Layout from './presentation/components/common/Layout.jsx';
 import DashboardLayout from './presentation/components/Dashboard/DashboardLayout.jsx';
-import DashboardOverviewPage from './presentation/pages/DashboardOverviewPage.jsx';
-import DashboardCourtsPage from './presentation/pages/DashboardCourtsPage.jsx';
-import DashboardManageCourtsPage from './presentation/pages/DashboardManageCourtsPage.jsx';
-import CourtDetailPage from './presentation/pages/CourtDetailPage.jsx';
-import DashboardBookingsPage from './presentation/pages/DashboardBookingsPage.jsx';
-import DashboardProfilePage from './presentation/pages/DashboardProfilePage.jsx';
-import DashboardUsersPage from './presentation/pages/DashboardUsersPage.jsx'; // Importar DashboardUsersPage
-import DashboardModifyCourtPage from './presentation/pages/DashboardModifyCourtPage.jsx'; // Importar la nueva página de modificación
-import AdminGlobalDashboardPage from './presentation/pages/AdminGlobalDashboardPage.jsx';
-import ManageAdminsTable from './presentation/components/AdminGlobalDashboard/ManageAdminsTable.jsx'; // Nuevo componente
-import { ToastContainer } from 'react-toastify'; // Importar ToastContainer
-import 'react-toastify/dist/ReactToastify.css'; // Importar los estilos CSS de react-toastify
+import DashboardOverviewPage from './presentation/pages/dashboard/DashboardOverviewPage.jsx'; // Ruta actualizada
+import DashboardCourtsPage from './presentation/pages/dashboard/courts/DashboardCourtsPage.jsx'; // Ruta actualizada
+import DashboardManageCourtsPage from './presentation/pages/dashboard/courts/DashboardManageCourtsPage.jsx'; // Ruta actualizada
+import CourtDetailPage from './presentation/pages/courts/CourtDetailPage.jsx'; // Ruta actualizada
+import DashboardBookingsPage from './presentation/pages/dashboard/bookings/DashboardBookingsPage.jsx'; // Ruta actualizada
+import DashboardProfilePage from './presentation/pages/dashboard/users/DashboardProfilePage.jsx'; // Ruta actualizada
+import DashboardUsersPage from './presentation/pages/dashboard/users/DashboardUsersPage.jsx'; // Ruta actualizada
+import DashboardModifyCourtPage from './presentation/pages/dashboard/courts/DashboardModifyCourtPage.jsx'; // Ruta actualizada
+import AdminGlobalDashboardPage from './presentation/pages/dashboard/admin/AdminGlobalDashboardPage.jsx'; // Ruta actualizada
+import ManageAdminsTable from './presentation/components/AdminGlobalDashboard/ManageAdminsTable.jsx';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import ClientDashboardLayout from './presentation/components/Dashboard/ClientDashboardLayout.jsx';
-import MyBookingsPage from './presentation/pages/MyBookingsPage.jsx';
-import BookingHistoryPage from './presentation/pages/BookingHistoryPage.jsx';
-import OpenMatchesPage from './presentation/pages/Matches/OpenMatchesPage.jsx'; // Importar la nueva página
+import MyBookingsPage from './presentation/pages/bookings/MyBookingsPage.jsx'; // Ruta actualizada
+import BookingHistoryPage from './presentation/pages/bookings/BookingHistoryPage.jsx'; // Ruta actualizada
+import OpenMatchesPage from './presentation/pages/Matches/OpenMatchesPage.jsx';
 
 function App() {
   return (

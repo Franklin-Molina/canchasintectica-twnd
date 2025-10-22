@@ -1,6 +1,6 @@
 import React from 'react';
-import Spinner from '../components/common/Spinner';
-import { useModifyCourtLogic } from '../hooks/useModifyCourtLogic.js';
+import Spinner from '../../../components/common/Spinner.jsx';
+import { useModifyCourtLogic } from '../../../hooks/useModifyCourtLogic.js';
 
 function DashboardModifyCourtPage() {
   const {

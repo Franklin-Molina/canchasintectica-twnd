@@ -1,6 +1,6 @@
 import React from 'react';
-import LogoutButton from '../components/Auth/LogoutButton.jsx';
-import { useProfilePageLogic } from '../hooks/useProfilePageLogic.js';
+import LogoutButton from '../../../components/Auth/LogoutButton.jsx'; // Ruta actualizada
+import { useProfilePageLogic } from '../../../hooks/useProfilePageLogic.js'; // Ruta actualizada
 
 function DashboardProfilePage() {
   const {

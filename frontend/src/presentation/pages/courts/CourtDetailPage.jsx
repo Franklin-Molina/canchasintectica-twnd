@@ -1,16 +1,16 @@
 import React from 'react';
-import '../../styles/HomePage.css';
-import '../../styles/dashboard.css';
-import '../../styles/CourtDetailPage.css';
-import Spinner from '../components/common/Spinner';
-import Modal from '../components/common/Modal';
-import WeeklyAvailabilityCalendar from '../pages/WeeklyAvailabilityCalendar.jsx';
+import '../../../styles/HomePage.css'; // Ruta actualizada
+import '../../../styles/dashboard.css'; // Ruta actualizada
+import '../../../styles/CourtDetailPage.css'; // Ruta actualizada
+import Spinner from '../../components/common/Spinner';
+import Modal from '../../components/common/Modal';
+import WeeklyAvailabilityCalendar from './WeeklyAvailabilityCalendar.jsx'; // Ruta actualizada (mismo directorio)
 import { Check, Icon } from 'lucide-react';
 import { soccerBall } from '@lucide/lab';
 import { format, addDays } from 'date-fns'; // Mantener format y añadir addDays para el JSX
 
 // Importar el nuevo hook personalizado
-import { useCourtDetailLogic } from '../hooks/useCourtDetailLogic.js';
+import { useCourtDetailLogic } from '../../hooks/useCourtDetailLogic.js';
 
 function CourtDetailPage() {
   // Usar el hook personalizado para toda la lógica de la página

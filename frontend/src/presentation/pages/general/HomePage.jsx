@@ -1,12 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Spinner from '../components/common/Spinner.jsx';
-import { useHomePageLogic } from '../hooks/useHomePageLogic.js'; // Importar el nuevo hook
+import Spinner from '../../components/common/Spinner.jsx';
+import { useHomePageLogic } from '../../hooks/useHomePageLogic.js';
 
-import '../../styles/HomePage.css';
-import '../../styles/dashboard.css';
-
-import AuthPage from '../components/Auth/AuthPage.jsx'; // Importar AuthPage
+import '../../../styles/HomePage.css';
+import '../../../styles/dashboard.css';
 
 
 function HomePage({ openAuthModal }) { // Recibir openAuthModal como prop

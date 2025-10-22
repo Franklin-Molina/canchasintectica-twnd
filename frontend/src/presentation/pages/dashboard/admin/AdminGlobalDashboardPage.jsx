@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext.jsx';
-import { useAdminDashboard } from '../hooks/useAdminDashboard.js'; // Importar el nuevo hook
+import { useAuth } from '../../../context/AuthContext.jsx';
+import { useAdminDashboard } from '../../../hooks/useAdminDashboard.js';
 
-import '../../styles/AdminGlobalDashboard.css';
-import Spinner from '../components/common/Spinner';
+import '../../../../styles/AdminGlobalDashboard.css';
+import Spinner from '../../../components/common/Spinner';
 
 function AdminGlobalDashboardPage() {
   const { user, logout } = useAuth();
