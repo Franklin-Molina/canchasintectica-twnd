@@ -4,12 +4,15 @@ from .models import Booking
 from users.models import User # Importar el modelo User
 from courts.models import Court # Importar el modelo Court
 from courts.serializers import CourtSerializer # Importar CourtSerializer
+from users.serializers import UserSerializer # Importar UserSerializer
 from django.utils import timezone # Importar timezone
 
 class BookingSerializer(serializers.ModelSerializer):
+    user_details = UserSerializer(source='user', read_only=True) # Añadir serializador anidado para el usuario
     user = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(),
-        default=serializers.CurrentUserDefault()
+        default=serializers.CurrentUserDefault(),
+        write_only=True # Hacer que el campo 'user' sea solo de escritura para evitar conflictos
     )
     court_details = CourtSerializer(source='court', read_only=True)
     court = serializers.PrimaryKeyRelatedField(
@@ -21,7 +24,7 @@ class BookingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Booking
-        fields = ('id', 'user', 'court', 'court_details', 'start_time', 'end_time', 'status', 'payment')
+        fields = ('id', 'user', 'user_details', 'court', 'court_details', 'start_time', 'end_time', 'status', 'payment')
 
     # No es necesario sobrescribir create si usamos CurrentUserDefault
 
