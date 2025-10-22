@@ -1,6 +1,7 @@
 import React from "react";
 import { useAuth } from "../context/AuthContext.jsx";
 import Spinner from "../components/common/Spinner.jsx";
+import Pagination from "../components/common/Pagination.jsx"; // Importar el componente de paginación
 import { useDashboardUsersLogic } from "../hooks/useDashboardUsersLogic.js";
 import {
   User,
@@ -13,9 +14,12 @@ import {
 
 function DashboardUsersPage() {
   const {
-    clientUsers,
+    users, // Ahora se obtiene 'users' del hook
     loading,
     error,
+    currentPage, // Añadir currentPage
+    totalPages, // Añadir totalPages
+    setCurrentPage, // Añadir setCurrentPage
     actionStatus,
     showDeleteModal,
     userToDelete,
@@ -63,7 +67,7 @@ function DashboardUsersPage() {
       )}
 
       {/* Tabla */}
-      {Array.isArray(clientUsers) && clientUsers.length > 0 ? (
+      {Array.isArray(users) && users.length > 0 ? (
         <div className="overflow-x-auto bg-white dark:bg-gray-900 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700">
           <table className="w-full border-collapse">
             <thead className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 uppercase text-sm">
@@ -76,7 +80,7 @@ function DashboardUsersPage() {
               </tr>
             </thead>
             <tbody>
-              {clientUsers.map((clientUser) => (
+              {users.map((clientUser) => (
                 <tr
                   key={clientUser.id}
                   className="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
@@ -140,6 +144,14 @@ function DashboardUsersPage() {
               ))}
             </tbody>
           </table>
+          {/* Paginación */}
+          <div className="px-6 py-4">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          </div>
         </div>
       ) : (
         <p className="text-gray-600 dark:text-gray-400 mt-4">

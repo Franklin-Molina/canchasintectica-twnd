@@ -1,10 +1,10 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useState, useMemo } from 'react'; // Eliminamos useEffect ya que useFetchUsers lo manejará
 import { useAuth } from '../context/AuthContext.jsx';
 import useButtonDisable from '../hooks/useButtonDisable.js';
 import { toast } from 'react-toastify'; // Importar toast de react-toastify
+import { useFetchUsers } from './useFetchUsers.js'; // Importar el nuevo hook de paginación
 
 // Casos de uso y repositorios
-import { GetUserListUseCase } from '../../application/use-cases/users/get-user-list.js';
 import { ApiUserRepository } from '../../infrastructure/repositories/api-user-repository.js';
 import { DeleteUserUseCase } from '../../application/use-cases/users/delete-user.js';
 
@@ -13,10 +13,12 @@ import { DeleteUserUseCase } from '../../application/use-cases/users/delete-user
  * Encapsula la obtención, suspensión, reactivación y eliminación de usuarios.
  *
  * @returns {object} Un objeto que contiene el estado y las funciones para la gestión de usuarios.
- * @property {Array} clientUsers - Lista de usuarios cliente.
+ * @property {Array} users - Lista de usuarios cliente paginada.
  * @property {boolean} loading - Indica si los datos están cargando.
  * @property {string|null} error - Mensaje de error si ocurre uno.
- * @property {string} actionStatus - Mensaje de estado de la última acción realizada.
+ * @property {number} currentPage - Página actual de la paginación.
+ * @property {number} totalPages - Número total de páginas.
+ * @property {Function} setCurrentPage - Función para cambiar la página actual.
  * @property {boolean} showDeleteModal - Controla la visibilidad del modal de confirmación de eliminación.
  * @property {object|null} userToDelete - Usuario seleccionado para eliminar.
  * @property {boolean} showDetailsModal - Controla la visibilidad del modal de detalles.
@@ -35,9 +37,18 @@ import { DeleteUserUseCase } from '../../application/use-cases/users/delete-user
  */
 export const useDashboardUsersLogic = () => {
   const { user } = useAuth();
-  const [clientUsers, setClientUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+
+  // Usar el hook useFetchUsers para la obtención y paginación de datos
+  const {
+    users,
+    loading,
+    error,
+    currentPage,
+    totalPages,
+    setCurrentPage,
+    updateLocalUser, // Función para actualizar un usuario en la lista local
+    removeLocalUser, // Función para eliminar un usuario de la lista local
+  } = useFetchUsers();
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
@@ -46,43 +57,16 @@ export const useDashboardUsersLogic = () => {
   const [userDetails, setUserDetails] = useState(null);
 
   const userRepository = useMemo(() => new ApiUserRepository(), []);
-  const getUserListUseCase = useMemo(() => new GetUserListUseCase(userRepository), [userRepository]);
+  // Eliminamos GetUserListUseCase de aquí ya que useFetchUsers lo maneja
   const deleteUserUseCase = useMemo(() => new DeleteUserUseCase(userRepository), [userRepository]);
 
-  const fetchClientUsers = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await getUserListUseCase.execute({ role: 'cliente' });
-      const users = Array.isArray(response) ? response : response.results || response.users || [];
-      setClientUsers(users);
-      setLoading(false);
-    } catch (err) {
-      // console.error("Error al obtener usuarios cliente:", err); // Eliminado mensaje de consola
-      setError(err);
-      setClientUsers([]);
-      setLoading(false);
-      toast.error('Error al cargar usuarios.'); // Alerta de error
-    }
-  };
-
-  useEffect(() => {
-    if (user) {
-      fetchClientUsers();
-    } else {
-      setLoading(false);
-    }
-  }, [user, getUserListUseCase]);
-
+  // Las funciones de acción ahora usan updateLocalUser y removeLocalUser
   const [isSuspending, handleSuspendUserClick] = useButtonDisable(async (userId) => {
     try {
       await userRepository.updateClientUserStatus(userId, false);
-      setClientUsers(prevUsers =>
-        prevUsers.map(u => u.id === userId ? { ...u, is_active: false } : u)
-      );
+      updateLocalUser(userId, { is_active: false }); // Actualizar el estado local
       toast.success('Usuario suspendido exitosamente.'); // Alerta de éxito
     } catch (err) {
-      // console.error(`Error al suspender usuario ${userId}:`, err); // Eliminado mensaje de consola
       toast.error(`Error al suspender usuario: ${err.message}`); // Alerta de error
       throw err;
     }
@@ -91,12 +75,9 @@ export const useDashboardUsersLogic = () => {
   const [isReactivating, handleReactivateUserClick] = useButtonDisable(async (userId) => {
     try {
       await userRepository.updateClientUserStatus(userId, true);
-      setClientUsers(prevUsers =>
-        prevUsers.map(u => u.id === userId ? { ...u, is_active: true } : u)
-      );
+      updateLocalUser(userId, { is_active: true }); // Actualizar el estado local
       toast.success('Usuario reactivado exitosamente.'); // Alerta de éxito
     } catch (err) {
-      // console.error(`Error al reactivar usuario ${userId}:`, err); // Eliminado mensaje de consola
       toast.error(`Error al reactivar usuario: ${err.message}`); // Alerta de error
       throw err;
     }
@@ -139,9 +120,12 @@ export const useDashboardUsersLogic = () => {
   };
 
   return {
-    clientUsers,
+    users, // Ahora se devuelve 'users' del hook de paginación
     loading,
     error,
+    currentPage,
+    totalPages,
+    setCurrentPage,
     showDeleteModal,
     userToDelete,
     showDetailsModal,
@@ -149,7 +133,6 @@ export const useDashboardUsersLogic = () => {
     isSuspending,
     isReactivating,
     isDeleting,
-    fetchClientUsers,
     handleSuspendUserClick,
     handleReactivateUserClick,
     confirmDelete,
