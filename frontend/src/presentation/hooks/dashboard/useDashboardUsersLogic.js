@@ -1,12 +1,12 @@
 import { useState, useMemo } from 'react'; // Eliminamos useEffect ya que useFetchUsers lo manejará
-import { useAuth } from '../context/AuthContext.jsx';
-import useButtonDisable from '../hooks/useButtonDisable.js';
+import { useAuth } from '../../context/AuthContext.jsx';
+import useButtonDisable from '../general/useButtonDisable.js';
 import { toast } from 'react-toastify'; // Importar toast de react-toastify
-import { useFetchUsers } from './useFetchUsers.js'; // Importar el nuevo hook de paginación
+import { useFetchUsers } from '../users/useFetchUsers.js'; // Importar el nuevo hook de paginación
 
 // Casos de uso y repositorios
-import { ApiUserRepository } from '../../infrastructure/repositories/api-user-repository.js';
-import { DeleteUserUseCase } from '../../application/use-cases/users/delete-user.js';
+import { ApiUserRepository } from '../../../infrastructure/repositories/api-user-repository.js';
+import { DeleteUserUseCase } from '../../../application/use-cases/users/delete-user.js';
 
 /**
  * Hook personalizado para la lógica de la página de gestión de usuarios cliente.

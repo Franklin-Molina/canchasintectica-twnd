@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext.jsx';
-import { useAdminDashboard } from '../../../hooks/useAdminDashboard.js';
+import { useAdminDashboard } from '../../../hooks/dashboard/useAdminDashboard.js';
 
 import '../../../../styles/AdminGlobalDashboard.css';
 import Spinner from '../../../components/common/Spinner';

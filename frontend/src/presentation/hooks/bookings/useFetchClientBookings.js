@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useUseCases } from '../context/UseCaseContext';
-import { useAuth } from '../context/AuthContext.jsx';
+import { useUseCases } from '../../context/UseCaseContext';
+import { useAuth } from '../../context/AuthContext.jsx';
 
 /**
  * Hook personalizado para obtener la lista de reservas de un cliente específico.

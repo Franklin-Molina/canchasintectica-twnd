@@ -1,5 +1,5 @@
 import React from 'react';
-import useButtonDisable from '../../hooks/useButtonDisable.js';
+import useButtonDisable from '../../hooks/general/useButtonDisable.js';
 
 function CourtActionsModal({ court, onClose, onDeleteRequest, onModifyRequest, onToggleActiveStatus }) {
   // Acciones con hook personalizado

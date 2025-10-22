@@ -2,7 +2,7 @@ import React from "react";
 import { useAuth } from "../../../context/AuthContext.jsx";
 import Spinner from "../../../components/common/Spinner.jsx";
 import Pagination from "../../../components/common/Pagination.jsx";
-import { useDashboardUsersLogic } from "../../../hooks/useDashboardUsersLogic.js"; // Ruta actualizada
+import { useDashboardUsersLogic } from "../../../hooks/dashboard/useDashboardUsersLogic.js"; // Ruta actualizada
 import {
   User,
   Trash2,

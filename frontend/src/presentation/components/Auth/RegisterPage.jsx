@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useRegisterForm from '../../hooks/useRegisterForm.js';
+import useRegisterForm from '../../hooks/auth/useRegisterForm.js';
 import { User, Mail, Lock, Calendar, Eye, EyeOff, CheckCircle, AlertCircle,Check } from 'lucide-react';
 import InputWithIcon from '../../../components/ui/InputWithIcon';
 

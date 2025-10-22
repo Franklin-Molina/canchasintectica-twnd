@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useButtonDisable from '../hooks/useButtonDisable.js';
-import { ApiCourtRepository } from '../../infrastructure/repositories/api-court-repository'; // Se mantiene para operaciones directas del repo
-import { GetCourtsUseCase } from '../../application/use-cases/courts/get-courts.js'; // Importar el caso de uso
+import useButtonDisable from '../general/useButtonDisable.js';
+import { ApiCourtRepository } from '../../../infrastructure/repositories/api-court-repository'; // Se mantiene para operaciones directas del repo
+import { GetCourtsUseCase } from '../../../application/use-cases/courts/get-courts.js'; // Importar el caso de uso
 import { toast } from 'react-toastify'; // Importar toast de react-toastify
 
 /**

@@ -6,7 +6,7 @@ import { CreateAdminUserUseCase } from '../../../application/use-cases/users/cre
 import { ApiUserRepository } from '../../../infrastructure/repositories/api-user-repository.js'; // Importar el repositorio
 // import api from '../../../infrastructure/api/api.js'; // Mantener la importación de api si se usa en otro lugar, si no, eliminar
 import '../../../styles/AdminRegisterPage.css'; // Importar los estilos específicos de este componente desde la nueva ubicación
-import useButtonDisable from '../../hooks/useButtonDisable.js'; // Importar el hook personalizado
+import useButtonDisable from '../../hooks/general/useButtonDisable.js'; // Importar el hook personalizado
 
 /**
  * Página de registro de administradores.

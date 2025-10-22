@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext.jsx';
-import useButtonDisable from './useButtonDisable.js'; // Importar el hook personalizado para el botón
+import { useAuth } from '../../context/AuthContext.jsx';
+import useButtonDisable from '../general/useButtonDisable.js'; // Importar el hook personalizado para el botón
 
 // Importar el caso de uso y la implementación del repositorio
-import { ApiBookingRepository } from '../../infrastructure/repositories/api-booking-repository';
-import { CreateBookingUseCase } from '../../application/use-cases/bookings/create-booking';
-import { ApiCourtRepository } from '../../infrastructure/repositories/api-court-repository'; // Se mantiene para inyectar en caso de uso
-import { GetCourtByIdUseCase } from '../../application/use-cases/courts/get-court-by-id';
+import { ApiBookingRepository } from '../../../infrastructure/repositories/api-booking-repository';
+import { CreateBookingUseCase } from '../../../application/use-cases/bookings/create-booking';
+import { ApiCourtRepository } from '../../../infrastructure/repositories/api-court-repository'; // Se mantiene para inyectar en caso de uso
+import { GetCourtByIdUseCase } from '../../../application/use-cases/courts/get-court-by-id';
 
 /**
  * Hook personalizado para la lógica de la página de reserva de canchas.

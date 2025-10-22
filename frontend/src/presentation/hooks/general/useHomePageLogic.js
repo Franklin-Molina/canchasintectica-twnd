@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
-import { GetCourtsUseCase } from '../../application/use-cases/courts/get-courts.js';
-import { ApiCourtRepository } from '../../infrastructure/repositories/api-court-repository.js';
+import { GetCourtsUseCase } from '../../../application/use-cases/courts/get-courts.js';
+import { ApiCourtRepository } from '../../../infrastructure/repositories/api-court-repository.js';
 
 /**
  * Hook personalizado para la lógica de la página de inicio (HomePage).

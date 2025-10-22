@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useUseCases } from '../context/UseCaseContext';
-import { GetUserListUseCase } from '../../application/use-cases/users/get-user-list';
-import { ApiUserRepository } from '../../infrastructure/repositories/api-user-repository';
+
+import { GetUserListUseCase } from '../../../application/use-cases/users/get-user-list';
+import { ApiUserRepository } from '../../../infrastructure/repositories/api-user-repository';
 
 const ITEMS_PER_PAGE = 10; // Define cuántos elementos mostrar por página
 

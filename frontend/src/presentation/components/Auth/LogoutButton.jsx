@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext.jsx';
-import useButtonDisable from '../../hooks/useButtonDisable.js';
+import useButtonDisable from '../../hooks/general/useButtonDisable.js';
 
 const LogoutButton = () => {
   const { logout } = useAuth();

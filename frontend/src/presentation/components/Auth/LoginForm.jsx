@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, User, Lock } from 'lucide-react';
 import GoogleLoginButton from './GoogleLoginButton.jsx';
-import useButtonDisable from '../../hooks/useButtonDisable.js';
+import useButtonDisable from '../../hooks/general/useButtonDisable.js';
 
 function LoginForm({ username, password, error, setUsername, setPassword, setError, onSubmit, onGoogleSuccess, onGoogleError }) {
   const [isSubmitting, handleFormSubmit] = useButtonDisable(onSubmit);

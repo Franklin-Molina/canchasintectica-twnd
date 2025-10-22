@@ -1,5 +1,5 @@
 import React from 'react';
-import { useFetchClientBookings } from '../../hooks/useFetchClientBookings'; // Ruta actualizada
+import { useFetchClientBookings } from '../../hooks/bookings/useFetchClientBookings'; // Ruta actualizada
 import Spinner from '../../components/common/Spinner'; // Ruta actualizada
 import '../../../styles/ClientDashboard.css'; // Ruta actualizada
 

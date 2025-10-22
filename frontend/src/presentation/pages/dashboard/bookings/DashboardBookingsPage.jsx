@@ -1,7 +1,7 @@
 import React from 'react';
 import Spinner from '../../../components/common/Spinner';
 import Pagination from '../../../components/common/Pagination';
-import { useFetchBookings } from '../../../hooks/useFetchBookings'; // Ruta actualizada
+import { useFetchBookings } from '../../../hooks/bookings/useFetchBookings'; // Ruta actualizada
 import Swal from 'sweetalert2'; // Importa SweetAlert2
 
 function DashboardBookingsPage() {

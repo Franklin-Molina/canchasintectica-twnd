@@ -2,7 +2,7 @@ import React from 'react';
 import { format, addDays } from 'date-fns';
 import { Check, Icon, Plus, Calendar, Clock, User, X } from 'lucide-react'; // Importar todos los iconos necesarios
 import { soccerBall } from '@lucide/lab'; // Importar el icono de soccerBall
-import { useWeeklyAvailabilityCalendar } from '../../hooks/useWeeklyAvailabilityCalendar.js';
+import { useWeeklyAvailabilityCalendar } from '../../hooks/courts/useWeeklyAvailabilityCalendar.js';
 import '../../../styles/WeeklyAvailabilityCalendar.css';
 
 function WeeklyAvailabilityCalendar({

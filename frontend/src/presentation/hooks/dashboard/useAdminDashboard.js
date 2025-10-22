@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { GetUserListUseCase } from '../../application/use-cases/users/get-user-list.js';
-import { UpdateUserStatusUseCase } from '../../application/use-cases/users/update-user-status.js';
-import { DeleteUserUseCase } from '../../application/use-cases/users/delete-user.js';
-import { ApiUserRepository } from '../../infrastructure/repositories/api-user-repository.js';
-import { useAuth } from '../context/AuthContext.jsx';
+import { GetUserListUseCase } from '../../../application/use-cases/users/get-user-list.js';
+import { UpdateUserStatusUseCase } from '../../../application/use-cases/users/update-user-status.js';
+import { DeleteUserUseCase } from '../../../application/use-cases/users/delete-user.js';
+import { ApiUserRepository } from '../../../infrastructure/repositories/api-user-repository.js';
+import { useAuth } from '../../context/AuthContext.jsx';
 
 /**
  * Hook personalizado para la lógica de gestión de administradores en el dashboard global.

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useOutletContext } from 'react-router-dom'; // Para acceder al contexto del Outlet
 import '../../../styles/AdminGlobalDashboard.css'; // Importar los estilos
 import Spinner from '../common/Spinner';
-import useButtonDisable from '../../hooks/useButtonDisable.js'; // Importar el hook personalizado
+import useButtonDisable from '../../hooks/general/useButtonDisable.js'; // Importar el hook personalizado
 
 function ManageAdminsTable() {
   // Acceder a los datos y funciones pasados a través del contexto del Outlet

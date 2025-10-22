@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { format, startOfWeek, addDays, setHours, setMinutes } from 'date-fns';
-import { useRepositories } from '../context/RepositoryContext';
-import { useUseCases } from '../context/UseCaseContext';
+import { useRepositories } from '../../context/RepositoryContext';
+import { useUseCases } from '../../context/UseCaseContext';
 
 /**
  * Hook personalizado para la lógica de la página de detalles de la cancha.

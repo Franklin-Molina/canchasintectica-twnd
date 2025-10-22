@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useFetchBookings } from '../../hooks/useFetchBookings'
+import { useFetchBookings } from '../../hooks/bookings/useFetchBookings'
 import Spinner from '../../components/common/Spinner';
 import '../../../styles/ClientDashboard.css';
 

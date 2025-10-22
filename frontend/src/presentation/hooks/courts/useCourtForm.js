@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { CreateCourtUseCase } from '../../application/use-cases/courts/create-court';
-import { ApiCourtRepository } from '../../infrastructure/repositories/api-court-repository';
-import useButtonDisable from './useButtonDisable.js';
+import { CreateCourtUseCase } from '../../../application/use-cases/courts/create-court';
+import { ApiCourtRepository } from '../../../infrastructure/repositories/api-court-repository';
+import useButtonDisable from '../general/useButtonDisable.js';
 import { toast } from 'react-toastify'; // Importar toast de react-toastify
 
 export const useCourtForm = () => {

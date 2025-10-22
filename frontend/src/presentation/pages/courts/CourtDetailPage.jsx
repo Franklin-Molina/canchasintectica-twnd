@@ -10,7 +10,7 @@ import { soccerBall } from '@lucide/lab';
 import { format, addDays } from 'date-fns'; // Mantener format y añadir addDays para el JSX
 
 // Importar el nuevo hook personalizado
-import { useCourtDetailLogic } from '../../hooks/useCourtDetailLogic.js';
+import { useCourtDetailLogic } from '../../hooks/courts/useCourtDetailLogic.js';
 
 function CourtDetailPage() {
   // Usar el hook personalizado para toda la lógica de la página

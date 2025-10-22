@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import useButtonDisable from '../../hooks/useButtonDisable.js';
+import useButtonDisable from '../../hooks/general/useButtonDisable.js';
 
 function CourtModifyForm({ court, onSave, onCancel }) {
   const [formData, setFormData] = useState({

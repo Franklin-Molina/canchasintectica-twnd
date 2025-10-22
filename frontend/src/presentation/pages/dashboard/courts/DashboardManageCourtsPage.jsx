@@ -1,7 +1,7 @@
 import React from 'react';
 import CourtActionsModal from '../../../components/Dashboard/CourtActionsModal.jsx';
 import Spinner from '../../../components/common/Spinner.jsx';
-import { useManageCourtsLogic } from '../../../hooks/useManageCourtsLogic.js'; // Ruta actualizada
+import { useManageCourtsLogic } from '../../../hooks/courts/useManageCourtsLogic.js'; // Ruta actualizada
 
 function DashboardManageCourtsPage() {
   const {

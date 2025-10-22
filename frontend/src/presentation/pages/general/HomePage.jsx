@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Spinner from '../../components/common/Spinner.jsx';
-import { useHomePageLogic } from '../../hooks/useHomePageLogic.js';
+import { useHomePageLogic } from '../../hooks/general/useHomePageLogic.js';
 
 import '../../../styles/HomePage.css';
 import '../../../styles/dashboard.css';

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useUseCases } from '../context/UseCaseContext';
+import { useUseCases } from '../../context/UseCaseContext';
 
 const ITEMS_PER_PAGE = 10; // Define cuántos elementos mostrar por página
 

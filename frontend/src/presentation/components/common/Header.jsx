@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 import ProfileDropdown from './ProfileDropdown.jsx';
 import { Sun, Moon } from 'lucide-react';
-import useDarkMode from '../../hooks/useDarkMode.js';
+import useDarkMode from '../../hooks/general/useDarkMode.js';
 
 function Header({ openAuthModal }) {
   const { isAuthenticated, user } = useAuth();

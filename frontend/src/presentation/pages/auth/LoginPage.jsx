@@ -1,5 +1,6 @@
 import React from 'react';
-import { useLoginLogic } from '../../../hooks/useLoginLogic.js';
+import { useLoginLogic } from '../../hooks/auth/useLoginLogic.js';
+
 
 function LoginPage() {
   // Usar el hook personalizado para la lógica de la página de login

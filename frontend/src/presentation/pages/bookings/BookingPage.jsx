@@ -1,6 +1,6 @@
 import React from 'react';
 import Spinner from '../../components/common/Spinner.jsx';
-import { useBookingForm } from '../../hooks/useBookingForm.js';
+import { useBookingForm } from '../../hooks/bookings/useBookingForm.js';
 
 function BookingPage() {
   // Usar el hook personalizado para la lógica de la página de reserva

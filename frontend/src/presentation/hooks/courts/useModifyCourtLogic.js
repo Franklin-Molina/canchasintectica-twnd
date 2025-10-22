@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useUseCases } from '../context/UseCaseContext.jsx'; // Importar el hook useUseCases
+import { useUseCases } from '../../context/UseCaseContext.jsx'; // Importar el hook useUseCases
 import { toast } from 'react-toastify'; // Importar toast de react-toastify
 
 export function useModifyCourtLogic() {
