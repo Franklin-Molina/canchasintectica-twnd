@@ -2,6 +2,7 @@ import React from 'react';
 import Spinner from '../components/common/Spinner';
 import Pagination from '../components/common/Pagination';
 import { useFetchBookings } from '../hooks/useFetchBookings';
+import Swal from 'sweetalert2'; // Importa SweetAlert2
 
 function DashboardBookingsPage() {
   const {
@@ -15,9 +16,25 @@ function DashboardBookingsPage() {
   } = useFetchBookings();
 
   const handleCancel = (bookingId) => {
-    if (window.confirm('¿Estás seguro de que deseas cancelar esta reserva?')) {
-      deleteBooking(bookingId);
-    }
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¡No podrás revertir esto!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, cancelar reserva',
+      cancelButtonText: 'No, mantener reserva',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteBooking(bookingId);
+        Swal.fire(
+          '¡Cancelada!',
+          'La reserva ha sido cancelada.',
+          'success'
+        );
+      }
+    });
   };
 
   if (loading) {
