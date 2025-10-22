@@ -42,4 +42,19 @@ export class ApiBookingRepository extends BookingRepository {
             throw error;
         }
     }
+
+    /**
+     * Elimina una reserva a través de la API.
+     * @param {string} bookingId - El ID de la reserva a eliminar.
+     * @returns {Promise<void>}
+     * @throws {Error} Si ocurre un error en la llamada a la API.
+     */
+    async deleteBooking(bookingId) {
+        try {
+            await api.delete(`/api/bookings/bookings/${bookingId}/`);
+        } catch (error) {
+            console.error(`Error en ApiBookingRepository al eliminar reserva ${bookingId}:`, error);
+            throw error;
+        }
+    }
 }

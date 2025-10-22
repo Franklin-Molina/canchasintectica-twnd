@@ -15,27 +15,27 @@ export const useFetchBookings = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
 
-  const { getBookingsUseCase } = useUseCases();
+  const { getBookingsUseCase, deleteBookingUseCase } = useUseCases();
+
+  const fetchAllBookings = async () => {
+    try {
+      setLoading(true);
+      // El backend no pagina, así que obtenemos todo
+      const response = await getBookingsUseCase.execute(1);
+      setAllBookings(response || []);
+      setTotalPages(Math.ceil((response?.length || 0) / ITEMS_PER_PAGE));
+    } catch (err) {
+      setError(err);
+      console.error('Error al obtener reservas en useFetchBookings:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Efecto para obtener todas las reservas una sola vez
   useEffect(() => {
-    const fetchAllBookings = async () => {
-      try {
-        setLoading(true);
-        // El backend no pagina, así que obtenemos todo
-        const response = await getBookingsUseCase.execute(1); 
-        setAllBookings(response || []);
-        setTotalPages(Math.ceil((response?.length || 0) / ITEMS_PER_PAGE));
-      } catch (err) {
-        setError(err);
-        console.error('Error al obtener reservas en useFetchBookings:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchAllBookings();
-  }, [getBookingsUseCase]);
+  }, []);
 
   // Efecto para actualizar las reservas mostradas cuando cambia la página o los datos
   useEffect(() => {
@@ -43,6 +43,18 @@ export const useFetchBookings = () => {
     const endIndex = startIndex + ITEMS_PER_PAGE;
     setDisplayedBookings(allBookings.slice(startIndex, endIndex));
   }, [currentPage, allBookings]);
+
+  const deleteBooking = async (bookingId) => {
+    try {
+      await deleteBookingUseCase.execute(bookingId);
+      // Refrescar la lista de reservas después de eliminar
+      await fetchAllBookings();
+    } catch (err) {
+      console.error(`Error al eliminar la reserva ${bookingId}:`, err);
+      // Opcional: manejar el estado de error para mostrarlo en la UI
+      setError(err);
+    }
+  };
 
   return {
     bookings: displayedBookings, // Devuelve la lista paginada
@@ -52,5 +64,6 @@ export const useFetchBookings = () => {
     totalPages,
     totalBookings: allBookings.length, // Devuelve el conteo total
     setCurrentPage,
+    deleteBooking,
   };
 };

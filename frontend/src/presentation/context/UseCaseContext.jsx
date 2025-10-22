@@ -2,6 +2,7 @@ import React, { createContext, useContext } from 'react';
 import { useRepositories } from './RepositoryContext';
 import { GetBookingsUseCase } from '../../application/use-cases/bookings/get-bookings';
 import { CreateBookingUseCase } from '../../application/use-cases/bookings/create-booking';
+import { DeleteBookingUseCase } from '../../application/use-cases/bookings/delete-booking';
 import { GetUserListUseCase } from '../../application/use-cases/users/get-user-list';
 import { DeleteUserUseCase } from '../../application/use-cases/users/delete-user';
 import { GetCourtByIdUseCase } from '../../application/use-cases/courts/get-court-by-id';
@@ -29,11 +30,13 @@ export const UseCaseProvider = ({ children }) => {
   const checkAvailabilityUseCase = new CheckAvailabilityUseCase(courtRepository);
   const getWeeklyAvailabilityUseCase = new GetWeeklyAvailabilityUseCase(courtRepository);
   const createBookingUseCase = new CreateBookingUseCase(bookingRepository);
+  const deleteBookingUseCase = new DeleteBookingUseCase(bookingRepository);
   const updateCourtUseCase = new UpdateCourtUseCase(courtRepository); // Instanciar UpdateCourtUseCase
   // Añadir otros casos de uso aquí
 
   const useCases = {
     getBookingsUseCase,
+    deleteBookingUseCase,
     getUserListUseCase,
     deleteUserUseCase,
     getCourtByIdUseCase,

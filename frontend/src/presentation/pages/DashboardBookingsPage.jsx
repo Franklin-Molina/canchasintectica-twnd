@@ -11,7 +11,14 @@ function DashboardBookingsPage() {
     currentPage,
     totalPages,
     setCurrentPage,
+    deleteBooking,
   } = useFetchBookings();
+
+  const handleCancel = (bookingId) => {
+    if (window.confirm('¿Estás seguro de que deseas cancelar esta reserva?')) {
+      deleteBooking(bookingId);
+    }
+  };
 
   if (loading) {
     return (
@@ -62,6 +69,7 @@ function DashboardBookingsPage() {
                   <th className="px-6 py-3">Fin</th>
                   <th className="px-6 py-3">Estado</th>
                   <th className="px-6 py-3">Pago</th>
+                  <th className="px-6 py-3">Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -106,6 +114,20 @@ function DashboardBookingsPage() {
                       >
                         {booking.payment}
                       </span>
+                    </td>
+                    <td className="px-6 py-3 flex gap-2">
+                      <button
+                        // onClick={() => handleModify(booking.id)}
+                        className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
+                      >
+                        Modificar
+                      </button>
+                      <button
+                        onClick={() => handleCancel(booking.id)}
+                        className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 font-medium"
+                      >
+                        Cancelar
+                      </button>
                     </td>
                   </tr>
                 ))}
