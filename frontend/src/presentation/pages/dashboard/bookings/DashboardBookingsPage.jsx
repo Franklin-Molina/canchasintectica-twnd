@@ -79,7 +79,7 @@ function DashboardBookingsPage() {
             <table className="min-w-full text-sm text-left">
               <thead className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 uppercase text-xs tracking-wider">
                 <tr>
-               {/*    <th className="px-6 py-3">ID</th> */}
+                  <th className="px-6 py-3">#</th>
                   <th className="px-6 py-3">Cancha</th>
                   <th className="px-6 py-3">Usuario</th>
                   <th className="px-6 py-3">Inicio</th>
@@ -90,12 +90,12 @@ function DashboardBookingsPage() {
                 </tr>
               </thead>
               <tbody>
-                {bookings.map((booking) => (
+                {bookings.map((booking, index) => (
                   <tr
                     key={booking.id}
                     className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                   >
-                   {/*  <td className="px-6 py-3 text-gray-800 dark:text-gray-100">{booking.id}</td> */}
+                    <td className="px-6 py-3 text-gray-800 dark:text-gray-100">{index + 1}</td>
                     <td className="px-6 py-3 text-gray-700 dark:text-gray-300">{booking.court_details.name}</td>
                     <td className="px-6 py-3 text-gray-700 dark:text-gray-300">{booking.user_details.first_name} {booking.user_details.last_name}</td>
                     <td className="px-6 py-3 text-gray-700 dark:text-gray-300">
