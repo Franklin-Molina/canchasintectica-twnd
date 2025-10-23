@@ -23,4 +23,5 @@ __pycache__/
 __pycache__
 
 # Archivos de medios del backend
-backend/media/
+backend/media/courts/images
+
