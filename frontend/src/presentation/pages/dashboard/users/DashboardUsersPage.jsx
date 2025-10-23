@@ -60,6 +60,11 @@ function DashboardUsersPage() {
   const getRowNumber = (index) => {
     return (currentPage - 1) * itemsPerPage + index + 1;
   };
+
+ // Calcular el número de filtros activos para mostrar en la UI.
+  const activeFilterCount = [statusFilter, dateFilter].filter(
+    (filter) => filter !== "all"
+  ).length;
   if (loading) return <Spinner />;
   if (error)
     return (
@@ -174,7 +179,11 @@ function DashboardUsersPage() {
         </button>
         <div className="flex-grow"></div>
         <span className="text-xs text-gray-500 dark:text-gray-500">
-          {statusFilter !== 'all' ? '1 filtro activo' : 'Sin filtros'}
+          {activeFilterCount === 0
+            ? "Sin filtros"
+            : `${activeFilterCount} filtro${
+                activeFilterCount > 1 ? "s" : ""
+              } activo${activeFilterCount > 1 ? "s" : ""}`}
         </span>
       </div>
     </div>
@@ -248,7 +257,8 @@ function DashboardUsersPage() {
                       <button
                         onClick={() => handleReactivateUserClick(clientUser.id)}
                         disabled={isReactivating}
-                        className="inline-flex items-center gap-1 bg-blue-100 text-blue-700 dark:bg-blue-800 dark:text-blue-300 px-3 py-1 rounded-lg text-xs font-semibold hover:bg-blue-200 dark:hover:bg-blue-700 transition"
+                        className="inline-flex items-center gap-1 bg-green-100 text-green-700 dark:bg-green-800
+                         dark:text-green-300 px-3 py-1 rounded-lg text-xs font-semibold hover:bg-green-200 dark:hover:bg-green-700 transition"
                       >
                         <UserCheck className="w-4 h-4" />
                         Reactivar
