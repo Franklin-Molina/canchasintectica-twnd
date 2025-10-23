@@ -21,3 +21,6 @@ consolegoogle.json
 .cache/
 __pycache__/
 __pycache__
+
+# Archivos de medios del backend
+backend/media/
