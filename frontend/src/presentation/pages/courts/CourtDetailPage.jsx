@@ -11,6 +11,7 @@ import { format, addDays } from 'date-fns'; // Mantener format y añadir addDays
 
 // Importar el nuevo hook personalizado
 import { useCourtDetailLogic } from '../../hooks/courts/useCourtDetailLogic.js';
+import { formatPrice } from '../../utils/formatters.js'; // Importar la función de formato de precio
 
 function CourtDetailPage() {
   // Usar el hook personalizado para toda la lógica de la página
@@ -41,6 +42,7 @@ function CourtDetailPage() {
     openModal,
     closeModal,
   } = useCourtDetailLogic();
+
 
   if (loading) {
     return (
@@ -94,13 +96,12 @@ function CourtDetailPage() {
                 <h1 className="header-title">{court.name}</h1>
               </div>
             </div>
-            <div className="container-price">
-              <div className="court-price-badge">
-                <span className="price-label">Precio por hora</span>
-                <span className="price-value">${court.price}</span>
+            <div className="flex justify-center mt-4">
+              <div className="flex flex-col items-center bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-4 rounded-2xl shadow-lg">
+                <span className="text-sm font-medium opacity-90">Precio por hora</span>
+                <span className="text-2xl font-bold mt-1">${formatPrice(court.price)}</span>
               </div>
             </div>
-
           </div>
         </div>
       </div>
@@ -122,7 +123,7 @@ function CourtDetailPage() {
         )}
       </div>
       {/* Stats Cards */}
-     {/*  <div className="stats-container">
+      {/*  <div className="stats-container">
         <div className="stat-card">
           <div className="stat-content">
             <div className="stat-text">
@@ -194,8 +195,8 @@ function CourtDetailPage() {
               </button>
             </div>
             <div className="legend">
-              <div className="legend-item legend-disponible">                             
-                  <Check className="icon-check" />                           
+              <div className="legend-item legend-disponible">
+                <Check className="icon-check" />
                 <span>Disponible</span>
               </div>
               <div className="legend-item legend-ocupado">
@@ -280,7 +281,7 @@ function CourtDetailPage() {
                 </div>
                 <div className="detail-item price-item">
                   <span className="detail-label">Precio:</span>
-                  <span className="detail-value price-highlight">${bookingDetailsToConfirm.price}</span>
+                  <span className="detail-value price-highlight">${formatPrice(bookingDetailsToConfirm.price)}</span>
                 </div>
               </div>
             </div>
