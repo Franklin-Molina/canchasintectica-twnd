@@ -77,7 +77,7 @@ function DashboardProfilePage() {
                   type="text"
                   value={username}
                   readOnly // Campo de usuario no modificable
-                  className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 cursor-not-allowed"
+                  className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed opacity-70"
                 />
               </div>
               <div>
