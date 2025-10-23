@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { Menu } from "lucide-react"; // ícono moderno de hamburguesa
+import DarkModeSwitch from "../common/DarkModeSwitch.jsx";
 
 function DashboardNavbar({ toggleSidebar }) {
   const { user } = useAuth();
@@ -32,22 +33,27 @@ function DashboardNavbar({ toggleSidebar }) {
         </h2>
       </div>
 
-      {/* Perfil de usuario */}
-      <div
-        onClick={handleNavbarRightClick}
-        className="flex items-center gap-3 cursor-pointer group"
-      >
-        <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold shadow-md">
-          {user?.username ? user.username.charAt(0).toUpperCase() : "U"}
-        </div>
+      {/* Acciones y Perfil de usuario */}
+      <div className="flex items-center gap-4">
+        <DarkModeSwitch />
 
-        <div className="hidden sm:flex flex-col leading-tight">
-          <span className="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-blue-500 dark:group-hover:text-blue-400 transition">
-            {user?.username || "Usuario"}
-          </span>
-          <span className="text-xs text-gray-500 dark:text-gray-400 capitalize">
-            {user?.role || "Sin rol"}
-          </span>
+        {/* Perfil de usuario */}
+        <div
+          onClick={handleNavbarRightClick}
+          className="flex items-center gap-3 cursor-pointer group"
+        >
+          <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold shadow-md">
+            {user?.username ? user.username.charAt(0).toUpperCase() : "U"}
+          </div>
+
+          <div className="hidden sm:flex flex-col leading-tight">
+            <span className="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-blue-500 dark:group-hover:text-blue-400 transition">
+              {user?.username || "Usuario"}
+            </span>
+            <span className="text-xs text-gray-500 dark:text-gray-400 capitalize">
+              {user?.role || "Sin rol"}
+            </span>
+          </div>
         </div>
       </div>
     </header>

@@ -172,13 +172,14 @@ function HomePage({ openAuthModal }) {
             <p className="text-lg text-white/90 mb-8 max-w-2xl mx-auto">
               Únete a nuestra plataforma y comienza a reservar un espacio deportivo.
             </p>
-            <button className="bg-white text-indigo-600 font-bold px-8 py-4 rounded-xl hover:bg-gray-50 transition-all shadow-xl hover:shadow-2xl transform hover:-translate-y-1">
-              <Link
-                to="/register"
-              >
-                Registrarse
-              </Link>
-            </button>
+       <button className="bg-white text-indigo-600 font-bold px-8 py-4 rounded-xl transition-all shadow-xl hover:shadow-2xl animate-float animate-pulse-glow">
+  <Link to="/register">
+    Registrarse
+  </Link>
+</button>
+
+
+
           </div>
         </div>
       </section>
