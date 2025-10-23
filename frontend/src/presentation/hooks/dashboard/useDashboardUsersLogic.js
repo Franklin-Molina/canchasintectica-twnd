@@ -48,6 +48,8 @@ export const useDashboardUsersLogic = () => {
     setCurrentPage,
     updateLocalUser, // Función para actualizar un usuario en la lista local
     removeLocalUser, // Función para eliminar un usuario de la lista local
+    setSearchTerm,
+    setStatusFilter,
   } = useFetchUsers();
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -140,5 +142,7 @@ export const useDashboardUsersLogic = () => {
     proceedDeleteClick,
     handleViewDetails,
     handleCloseDetailsModal,
+    setSearchTerm,
+    setStatusFilter,
   };
 };

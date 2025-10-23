@@ -16,11 +16,30 @@ export const useFetchUsers = () => {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all'); // 'all', 'active', 'suspended'
 
   // No usamos useUseCases aquí directamente para GetUserListUseCase porque necesitamos un filtro específico
   // y el UseCaseContext no proporciona filtros por defecto.
   const userRepository = useMemo(() => new ApiUserRepository(), []);
   const getUserListUseCase = useMemo(() => new GetUserListUseCase(userRepository), [userRepository]);
+
+  const filteredUsers = useMemo(() => {
+    return allUsers.filter(user => {
+      const searchMatch =
+        user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchTerm.toLowerCase());
+
+      const statusMatch =
+        statusFilter === 'all' ||
+        (statusFilter === 'active' && user.is_active) ||
+        (statusFilter === 'suspended' && !user.is_active);
+
+      return searchMatch && statusMatch;
+    });
+  }, [allUsers, searchTerm, statusFilter]);
 
   const fetchAllUsers = async () => {
     try {
@@ -43,12 +62,18 @@ export const useFetchUsers = () => {
     fetchAllUsers();
   }, []);
 
-  // Efecto para actualizar los usuarios mostrados cuando cambia la página o los datos
+  // Efecto para actualizar los usuarios mostrados cuando cambia la página o los datos filtrados
   useEffect(() => {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
-    setDisplayedUsers(allUsers.slice(startIndex, endIndex));
-  }, [currentPage, allUsers]);
+    setDisplayedUsers(filteredUsers.slice(startIndex, endIndex));
+    setTotalPages(Math.ceil((filteredUsers?.length || 0) / ITEMS_PER_PAGE));
+  }, [currentPage, filteredUsers]);
+
+  // Efecto para resetear la página a 1 cuando los filtros cambian
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, statusFilter]);
 
   // Función para actualizar un usuario en la lista (por ejemplo, después de suspender/reactivar)
   const updateLocalUser = (userId, updatedFields) => {
@@ -70,10 +95,12 @@ export const useFetchUsers = () => {
     error,
     currentPage,
     totalPages,
-    totalUsers: allUsers.length, // Devuelve el conteo total
+    totalUsers: filteredUsers.length, // Devuelve el conteo total de usuarios filtrados
     setCurrentPage,
     fetchAllUsers, // Exponer para recargar la lista si es necesario
     updateLocalUser,
     removeLocalUser,
+    setSearchTerm,
+    setStatusFilter,
   };
 };
