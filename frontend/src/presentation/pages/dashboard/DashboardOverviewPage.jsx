@@ -1,11 +1,22 @@
 import React from 'react';
-// No es necesario importar CSS aquí, ya que se importa en DashboardLayout.js
+import { useNavigate } from 'react-router-dom'; // Importar useNavigate
+import CourtTable from '../../components/dashboard/CourtTable.jsx'; // Importar el nuevo componente CourtTable
+import Spinner from '../../components/common/Spinner.jsx'; // Importar Spinner
+import { useManageCourtsLogic } from '../../hooks/courts/useManageCourtsLogic.js'; // Importar el hook de lógica
 
 function DashboardOverviewPage() {
-  return (
-    <> {/* Usar Fragmento para no añadir un div extra si no es necesario */}
-    {/*   <h1 className="dashboard-page-title">Dashboard</h1>  */}{/* Usar clase de estilo */}
+  const { courts, loading, error, handleOpenModal } = useManageCourtsLogic();
+  const navigate = useNavigate(); // Inicializar useNavigate
 
+  const handleCreateCourtClick = () => {
+    navigate('/dashboard/canchas/create'); // Redirigir a la ruta de creación de cancha
+  };
+
+  if (loading) return <Spinner />;
+  if (error) return <div className="text-red-500 text-center">{error.message}</div>;
+
+  return (
+    <>
       {/* Stats */}
       <div className="stats-row">
           <div className="stat-card">
@@ -65,60 +76,43 @@ function DashboardOverviewPage() {
           </div>
       </div>
 
-      {/* Charts & Widgets */}
-      <div className="widgets-row">
-          <div className="widget widget-lg">
-              <div className="widget-header">
-                  <div className="widget-title">Análisis de Ventas</div>
-                  <div className="widget-actions">
-                      <i className="fas fa-sync-alt"></i>
-                      <i className="fas fa-ellipsis-v"></i>
-                  </div>
-              </div>
-              <div className="widget-content">
-                  {/* TODO: Implementar gráfico SVG con React */}
-                  <p>Contenido del gráfico de ventas.</p>
-              </div>
+      {/* Sección de Gestión de Canchas */}
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 mt-6">
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">Gestión de Canchas</h2>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">Administra y controla tus espacios deportivos</p>
           </div>
-
-          <div className="widget widget-sm">
-              <div className="widget-header">
-                  <div className="widget-title">Progreso de Ventas</div>
-                  <div className="widget-actions">
-                      <i className="fas fa-ellipsis-v"></i>
-                  </div>
-              </div>
-              <div className="widget-content">
-                  {/* TODO: Implementar barras de progreso con React */}
-                   <p>Contenido de progreso de ventas.</p>
-              </div>
+          <div className="flex space-x-3">
+            <button className="flex items-center px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clipRule="evenodd" />
+              </svg>
+              Filtrar
+            </button>
+            <button
+              onClick={handleCreateCourtClick} // Asignar la función al botón
+              className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+              </svg>
+              Nueva Cancha
+            </button>
           </div>
-      </div>
-
-      <div className="widgets-row"> {/* Otra fila para la actividad reciente */}
-          <div className="widget widget-sm"> {/* Usar widget-sm para que ocupe la mitad */}
-              <div className="widget-header">
-                  <div className="widget-title">Actividad Reciente</div>
-                  <div className="widget-actions">
-                      <i className="fas fa-ellipsis-v"></i>
-                  </div>
-              </div>
-              <div className="widget-content">
-                  {/* TODO: Implementar lista de actividad reciente con React */}
-                  <p>Contenido de actividad reciente.</p>
-              </div>
+        </div>
+        <CourtTable courts={courts} onOpenModal={handleOpenModal} />
+        <div className="flex justify-between items-center mt-6">
+          <p className="text-sm text-gray-600 dark:text-gray-400">Mostrando {courts.length} de {courts.length} canchas</p>
+          <div className="flex space-x-2">
+            <button className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+              Anterior
+            </button>
+            <button className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+              Siguiente
+            </button>
           </div>
-           <div className="widget widget-sm"> {/* Widget placeholder */}
-              <div className="widget-header">
-                  <div className="widget-title">Otro Widget</div>
-                  <div className="widget-actions">
-                      <i className="fas fa-ellipsis-v"></i>
-                  </div>
-              </div>
-              <div className="widget-content">
-                  <p>Contenido de otro widget.</p>
-              </div>
-          </div>
+        </div>
       </div>
     </>
   );
