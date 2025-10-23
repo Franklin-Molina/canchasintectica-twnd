@@ -4,6 +4,7 @@ import { ApiUserRepository } from '../../../infrastructure/repositories/api-user
 import { UpdateUserProfileUseCase } from '../../../application/use-cases/users/update-user-profile.js';
 import { ChangePasswordUseCase } from '../../../application/use-cases/users/change-password.js';
 import useButtonDisable from '../general/useButtonDisable.js';
+import { useEffect } from 'react'; // Importar useEffect
 
 /**
  * Hook personalizado para la lógica de la página de perfil del usuario.
@@ -28,8 +29,8 @@ import useButtonDisable from '../general/useButtonDisable.js';
  * @property {Function} setLastName - Setter para el apellido.
  * @property {string} email - Email del usuario del formulario.
  * @property {Function} setEmail - Setter para el email.
- * @property {string} edad - Edad del usuario del formulario.
- * @property {Function} setEdad - Setter para la edad.
+ * @property {boolean} hasChanges - Indica si hay cambios pendientes en el formulario de perfil.
+ * @property {Function} setHasChanges - Setter para el estado de cambios pendientes.
  * @property {string} error - Mensaje de error general del perfil.
  * @property {string} success - Mensaje de éxito general del perfil.
  * @property {boolean} isSubmittingProfile - Indica si el formulario de perfil se está enviando.
@@ -52,9 +53,24 @@ export const useProfilePageLogic = () => {
   const [firstName, setFirstName] = useState(user ? user.first_name : '');
   const [lastName, setLastName] = useState(user ? user.last_name : '');
   const [email, setEmail] = useState(user ? user.email : '');
-  const [edad, setEdad] = useState(user ? user.edad : '');
+  const [hasChanges, setHasChanges] = useState(false); // Nuevo estado para rastrear cambios
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+
+  // Efecto para detectar cambios en los campos del formulario
+  useEffect(() => {
+    if (user) {
+      const currentFirstName = user.first_name || '';
+      const currentLastName = user.last_name || '';
+      const currentEmail = user.email || '';
+
+      const changed =
+        firstName !== currentFirstName ||
+        lastName !== currentLastName ||
+        email !== currentEmail;
+      setHasChanges(changed);
+    }
+  }, [firstName, lastName, email, user]);
 
   const userRepository = new ApiUserRepository();
   const updateUserProfileUseCase = new UpdateUserProfileUseCase(userRepository);
@@ -62,6 +78,7 @@ export const useProfilePageLogic = () => {
 
   const handleEditClick = () => {
     setIsEditing(true);
+    setHasChanges(false); // Resetear al iniciar edición
     setError('');
     setSuccess('');
   };
@@ -72,7 +89,7 @@ export const useProfilePageLogic = () => {
     setFirstName(user.first_name);
     setLastName(user.last_name);
     setEmail(user.email);
-    setEdad(user.edad);
+    setHasChanges(false); // Resetear al cancelar
     setError('');
     setSuccess('');
   };
@@ -88,13 +105,13 @@ export const useProfilePageLogic = () => {
         first_name: firstName,
         last_name: lastName,
         email,
-        edad,
       };
 
       const updatedUser = await updateUserProfileUseCase.execute(user.id, userData);
       console.log('Perfil actualizado exitosamente:', updatedUser);
       setSuccess('Perfil actualizado exitosamente.');
       updateUser(updatedUser);
+      setHasChanges(false); // Resetear al guardar
       setTimeout(() => {
         setIsEditing(false);
       }, 2000);
@@ -160,8 +177,8 @@ export const useProfilePageLogic = () => {
     setLastName,
     email,
     setEmail,
-    edad,
-    setEdad,
+    hasChanges,
+    setHasChanges,
     error,
     setError,
     success,

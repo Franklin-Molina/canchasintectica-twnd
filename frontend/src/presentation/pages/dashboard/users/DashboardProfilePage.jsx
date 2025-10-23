@@ -23,12 +23,11 @@ function DashboardProfilePage() {
     setLastName,
     email,
     setEmail,
-    edad,
-    setEdad,
     error,
     success,
     isSubmittingProfile,
     isSubmittingPassword,
+    hasChanges, // Añadir hasChanges
     handleEditClick,
     handleCancelClick,
     handleProfileSubmit,
@@ -77,8 +76,8 @@ function DashboardProfilePage() {
                 <input
                   type="text"
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100"
+                  readOnly // Campo de usuario no modificable
+                  className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 cursor-not-allowed"
                 />
               </div>
               <div>
@@ -108,22 +107,13 @@ function DashboardProfilePage() {
                   className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100"
                 />
               </div>
-              <div>
-                <label className="block text-gray-700 dark:text-gray-300 mb-1 text-sm">Edad</label>
-                <input
-                  type="number"
-                  value={edad}
-                  onChange={(e) => setEdad(e.target.value)}
-                  className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100"
-                />
-              </div>
             </div>
 
             {/* Botones */}
             <div className="flex justify-end gap-3 pt-4">
               <button
                 type="submit"
-                disabled={isSubmittingProfile}
+                disabled={isSubmittingProfile || !hasChanges} // Deshabilitar si no hay cambios o se está enviando
                 className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow disabled:opacity-50"
               >
                 Guardar
@@ -152,12 +142,6 @@ function DashboardProfilePage() {
               <span className="font-medium w-24">Correo:</span>
               <span>{user.email}</span>
             </div>
-            {user.edad && (
-              <div className="flex items-center gap-5 text-gray-800 dark:text-gray-200">
-                <span className="font-medium">Edad:</span>
-                <span>{user.edad}</span>
-              </div>
-            )}
 
             <div className="flex flex-col gap-3 pt-4">
               <button
