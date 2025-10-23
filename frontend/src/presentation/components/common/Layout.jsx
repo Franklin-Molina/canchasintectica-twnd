@@ -28,7 +28,7 @@ function Layout({ children }) {
     <div>
       {/* Pasar la función openAuthModal al Header */}
       <Header openAuthModal={openAuthModal} />
-      <div className="container mx-auto p-4">
+      <div className="">
         {children}
       </div>
       {/* Aquí se podría añadir un componente Footer si es necesario */}
