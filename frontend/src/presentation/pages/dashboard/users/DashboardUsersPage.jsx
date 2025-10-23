@@ -2,6 +2,7 @@ import React, { useState } from "react"; // Added useState
 import { useAuth } from "../../../context/AuthContext.jsx";
 import Spinner from "../../../components/common/Spinner.jsx";
 import Pagination from "../../../components/common/Pagination.jsx";
+import CustomSelect from "../../../components/common/CustomSelect.jsx"; // Importar el nuevo componente
 import { useDashboardUsersLogic } from "../../../hooks/dashboard/useDashboardUsersLogic.js"; // Ruta actualizada
 import {
   User,
@@ -56,6 +57,21 @@ function DashboardUsersPage() {
 
   const { user } = useAuth();
 
+  // Definir las opciones para los selectores personalizados.
+  const statusOptions = [
+    { value: "all", label: "Todos los estados" },
+    { value: "active", label: "Activos" },
+    { value: "suspended", label: "Suspendidos" },
+  ];
+
+  const dateOptions = [
+    { value: "all", label: "Todas las fechas" },
+    { value: "today", label: "Hoy" },
+    { value: "week", label: "Última semana" },
+    { value: "month", label: "Último mes" },
+    { value: "year", label: "Último año" },
+  ];
+
  // Calcular el índice inicial para la numeración continua
   const getRowNumber = (index) => {
     return (currentPage - 1) * itemsPerPage + index + 1;
@@ -80,7 +96,7 @@ function DashboardUsersPage() {
       </h1>
 
  {/* 🔍 Controles de Filtro y Búsqueda - Diseño Profesional */}
-<div className="mb-8 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 overflow-hidden transition-all">
+<div className="mb-8 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 transition-all">
   
   {/* Barra principal de búsqueda y acciones */}
   <div className="p-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
@@ -127,55 +143,34 @@ function DashboardUsersPage() {
   <div
     className={`transition-all duration-300 ease-in-out ${
       isFilterOpen ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'
-    } overflow-hidden`}
+    }`}
   >
     <div className="px-4 pb-4 pt-2 border-t border-gray-100 dark:border-gray-700/50">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         
         {/* Filtro de estado */}
-       {/* Filtro de estado */}
-<div className="relative">
-  <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5 ml-1">
-    Estado
-  </label>
-  <div className="relative">
-    <select
-      value={statusFilter}
-      onChange={(e) => setStatusFilter(e.target.value)}
-      className="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600
-                 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100                  
-                 appearance-none pr-10">
-      <option value="all">Todos los estados</option>
-      <option value="active">Activos</option>
-      <option value="suspended">Suspendidos</option>
-    </select>
-    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-  </div>
-  </div>
-
-  
+        <div>
+          <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5 ml-1">
+            Estado
+          </label>
+          <CustomSelect
+            options={statusOptions}
+            value={statusFilter}
+            onChange={(value) => setStatusFilter(value)}
+          />
+        </div>
 
         {/* Filtro adicional: Fecha de registro */}
-      <div className="relative">
-  <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5 ml-1">
-    Fecha de registro
-  </label>
-  <div className="relative">
-    <select
-      value={dateFilter}
-      onChange={(e) => setDateFilter(e.target.value)}
-      className="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600
-                 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100                  
-                 appearance-none pr-10">
-      <option value="all">Todas las fechas</option>
-      <option value="today">Hoy</option>
-      <option value="week">Última semana</option>
-      <option value="month">Último mes</option>
-      <option value="year">Último año</option>
-    </select>
-    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-  </div>
-</div>
+        <div>
+          <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5 ml-1">
+            Fecha de registro
+          </label>
+          <CustomSelect
+            options={dateOptions}
+            value={dateFilter}
+            onChange={(value) => setDateFilter(value)}
+          />
+        </div>
       </div>
 
       {/* Botones de acción en filtros */}
