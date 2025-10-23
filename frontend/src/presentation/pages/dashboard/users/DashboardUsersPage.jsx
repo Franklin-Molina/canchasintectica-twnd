@@ -90,7 +90,7 @@ function DashboardUsersPage() {
       <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
       <input
         type="text"
-        placeholder="Buscar por nombre, usuario o correo..."
+        placeholder="Buscar por nombre o usuario..."
         value={searchTerm} // Use hook's searchTerm
         onChange={(e) => setSearchTerm(e.target.value)} // Use hook's setSearchTerm
         className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50/50 dark:bg-gray-900/50 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 focus:border-transparent transition-all"
