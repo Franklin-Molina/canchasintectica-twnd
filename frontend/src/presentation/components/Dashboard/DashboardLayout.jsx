@@ -12,6 +12,16 @@ function DashboardLayout() {
 
   const handleLogout = () => logout();
 
+  // Función para determinar si un enlace está activo
+  const isActiveLink = (path) => {
+    // Para el enlace principal del dashboard, solo debe coincidir exactamente
+    if (path === '/dashboard') {
+      return location.pathname === '/dashboard';
+    }
+    // Para otros enlaces, una coincidencia exacta o que el path actual empiece con el path del enlace
+    return location.pathname.startsWith(path);
+  };
+
   const toggleCanchasMenu = () => setIsCanchasExpanded(!isCanchasExpanded);
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
   const closeSidebar = () => setIsSidebarOpen(false);
@@ -68,10 +78,14 @@ function DashboardLayout() {
 
           <Link
             to="/dashboard/perfil"
-            className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+            className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-colors ${
+              isActiveLink("/dashboard/perfil")
+                ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-md hover:shadow-lg"
+                : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+            }`}
             onClick={closeSidebar}
           >
-            <i className="fas fa-user text-gray-500"></i> Perfil
+            <i className={`fas fa-user ${isActiveLink("/dashboard/perfil") ? "text-white" : "text-gray-500"}`}></i> Perfil
           </Link>
 
           <div className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 mt-4 mb-2">
@@ -80,19 +94,30 @@ function DashboardLayout() {
 
           <Link
             to="/"
-            className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+           className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-colors ${
+              isActiveLink("/dashboard/home")
+                ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-md hover:shadow-lg"
+                : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+            }`}
             onClick={closeSidebar}
           >
-            <i className="fas fa-home text-gray-500"></i> Inicio
+            <i className={`fas fa-home ${isActiveLink("/") ? "text-white" : "text-gray-500"}`}></i> Inicio
           </Link>
-
+         
+          
+          
           <Link
             to="/dashboard"
-            className="flex items-center gap-3 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-md hover:shadow-lg"
+           className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-colors ${
+              isActiveLink("/dashboard")
+                ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-md hover:shadow-lg"
+                : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+            }`}
             onClick={closeSidebar}
           >
-            <i className="fas fa-tachometer-alt"></i> Dashboard
+            <i className={`fas fa-tachometer-alt ${isActiveLink("/dashboard") ? "text-white" : "text-gray-500"}`}></i> Dashboard
           </Link>
+
 
           <div className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 mt-4 mb-2">
             Gestión
@@ -100,10 +125,14 @@ function DashboardLayout() {
 
           <Link
             to="/dashboard/reservas"
-            className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+            className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-colors ${
+              isActiveLink("/dashboard/reservas")
+                ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-md hover:shadow-lg"
+                : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+            }`}
             onClick={closeSidebar}
           >
-            <i className="fas fa-calendar-check text-gray-500"></i> Reservas
+            <i className={`fas fa-calendar-check ${isActiveLink("/dashboard/reservas") ? "text-white" : "text-gray-500"}`}></i> Reservas
           </Link>
 
           {/* Menú Canchas */}
@@ -111,14 +140,18 @@ function DashboardLayout() {
             role="button"
             tabIndex="0"
             onClick={toggleCanchasMenu}
-            className="flex items-center justify-between px-4 py-2 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+            className={`flex items-center justify-between px-4 py-2 rounded-lg cursor-pointer transition-colors ${
+              isActiveLink("/dashboard/canchas")
+                ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-md hover:shadow-lg"
+                : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+            }`}
           >
             <span className="flex items-center gap-3">
-              <i className="fas fa-pencil-alt text-gray-500"></i> Canchas
+              <i className={`fas fa-pencil-alt ${isActiveLink("/dashboard/canchas") ? "text-white" : "text-gray-500"}`}></i> Canchas
             </span>
             <i
               className={`fas fa-chevron-${isCanchasExpanded ? "up" : "down"
-                } text-gray-500`}
+                } ${isActiveLink("/dashboard/canchas") ? "text-white" : "text-gray-500"}`}
             ></i>
           </div>
 
@@ -126,43 +159,63 @@ function DashboardLayout() {
             <div className="ml-6 mt-1 space-y-1">
               <Link
                 to="/dashboard/canchas/manage"
-                className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
+                  isActiveLink("/dashboard/canchas/manage")
+                    ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-md hover:shadow-lg"
+                    : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+                }`}
                 onClick={closeSidebar}
               >
-                <i className="fas fa-list text-gray-500"></i> Gestionar Canchas
+                <i className={`fas fa-list ${isActiveLink("/dashboard/canchas/manage") ? "text-white" : "text-gray-500"}`}></i> Gestionar Canchas
               </Link>
               <Link
                 to="/dashboard/canchas/create"
-                className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
+                  isActiveLink("/dashboard/canchas/create")
+                    ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-md hover:shadow-lg"
+                    : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+                }`}
                 onClick={closeSidebar}
               >
-                <i className="fas fa-plus text-gray-500"></i> Crear Cancha
+                <i className={`fas fa-plus ${isActiveLink("/dashboard/canchas/create") ? "text-white" : "text-gray-500"}`}></i> Crear Cancha
               </Link>
             </div>
           )}
 
           <Link
             to="/dashboard/usuarios"
-            className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+            className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-colors ${
+              isActiveLink("/dashboard/usuarios")
+                ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-md hover:shadow-lg"
+                : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+            }`}
             onClick={closeSidebar}
           >
-            <i className="fas fa-users text-gray-500"></i> Usuarios
+            <i className={`fas fa-users ${isActiveLink("/dashboard/usuarios") ? "text-white" : "text-gray-500"}`}></i> Usuarios
           </Link>
 
           <Link
-            to="#"
-            className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+            to="/dashboard/pagos"
+            className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-colors ${
+              isActiveLink("/dashboard/pagos")
+                ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-md hover:shadow-lg"
+                : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+            }`}
             onClick={closeSidebar}
           >
-            <i className="fas fa-dollar-sign text-gray-500"></i> Pagos
+            <i className={`fas fa-dollar-sign ${isActiveLink("/dashboard/pagos") ? "text-white" : "text-gray-500"}`}></i> Pagos
           </Link>
 
           <Link
-            to="#"
-            className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+            to="/dashboard/estadisticas"
+            className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-colors ${
+              isActiveLink("/dashboard/estadisticas")
+                ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-md hover:shadow-lg"
+                : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+            }`}
             onClick={closeSidebar}
           >
-            <i className="fas fa-chart-line text-gray-500"></i> Estadísticas
+            <i className={`fas fa-chart-line ${isActiveLink("/dashboard/estadisticas") ? "text-white" : "text-gray-500"}`}></i> Estadísticas
           </Link>
 
           <div className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 mt-4 mb-2">
