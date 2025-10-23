@@ -18,6 +18,7 @@ export const useFetchUsers = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all'); // 'all', 'active', 'suspended'
+  const [dateFilter, setDateFilter] = useState('all'); // 'all', 'today', 'week', 'month', 'year'
 
   // No usamos useUseCases aquí directamente para GetUserListUseCase porque necesitamos un filtro específico
   // y el UseCaseContext no proporciona filtros por defecto.
@@ -25,21 +26,82 @@ export const useFetchUsers = () => {
   const getUserListUseCase = useMemo(() => new GetUserListUseCase(userRepository), [userRepository]);
 
   const filteredUsers = useMemo(() => {
-    return allUsers.filter(user => {
-      const searchMatch =
-        user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchTerm.toLowerCase());
+    // Genera una cadena de fecha YYYY-MM-DD para el inicio del rango de filtro.
+    const getStartDateString = (filter) => {
+      if (filter === 'all') return null;
+      
+      // Usar la fecha local para que coincida con la perspectiva del usuario.
+      const now = new Date();
+      let targetDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
+      switch (filter) {
+        case 'today':
+          // No se necesita hacer nada, targetDate ya es el inicio de hoy.
+          break;
+        case 'week':
+          targetDate.setDate(targetDate.getDate() - 7);
+          break;
+        case 'month':
+          targetDate.setMonth(targetDate.getMonth() - 1);
+          break;
+        case 'year':
+          targetDate.setFullYear(targetDate.getFullYear() - 1);
+          break;
+        default:
+          return null;
+      }
+      // Convertir a formato YYYY-MM-DD.
+      const year = targetDate.getFullYear();
+      const month = String(targetDate.getMonth() + 1).padStart(2, '0');
+      const day = String(targetDate.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
+    const startDateString = getStartDateString(dateFilter);
+
+    return allUsers.filter(user => {
+      // Filtro de búsqueda
+      const searchMatch =
+        searchTerm === '' ||
+        ['username', 'first_name', 'last_name', 'email'].some(field =>
+          user[field]?.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+
+      // Filtro de estado
       const statusMatch =
         statusFilter === 'all' ||
         (statusFilter === 'active' && user.is_active) ||
         (statusFilter === 'suspended' && !user.is_active);
 
-      return searchMatch && statusMatch;
+      // Si no hay filtro de fecha, se devuelve el resultado de los otros filtros.
+      if (startDateString === null) {
+        return searchMatch && statusMatch;
+      }
+
+      // Se asegura de que la fecha del usuario sea válida.
+      if (!user.date_joined) {
+        return false;
+      }
+
+      // Convertir la fecha de registro del usuario (desde UTC) a una fecha local.
+      // new Date() interpreta la cadena ISO y la ajusta a la zona horaria del navegador.
+      const userLocalDate = new Date(user.date_joined);
+      
+      // Formatear la fecha local del usuario a YYYY-MM-DD para una comparación de cadenas consistente.
+      const userLocalDateString = `${userLocalDate.getFullYear()}-${String(userLocalDate.getMonth() + 1).padStart(2, '0')}-${String(userLocalDate.getDate()).padStart(2, '0')}`;
+
+      let dateMatch;
+      if (dateFilter === 'today') {
+        // Para 'hoy', las cadenas de fecha deben ser idénticas.
+        dateMatch = userLocalDateString === startDateString;
+      } else {
+        // Para otros rangos, la fecha del usuario debe ser mayor o igual a la fecha de inicio del filtro.
+        dateMatch = userLocalDateString >= startDateString;
+      }
+
+      return searchMatch && statusMatch && dateMatch;
     });
-  }, [allUsers, searchTerm, statusFilter]);
+  }, [allUsers, searchTerm, statusFilter, dateFilter]);
 
   const fetchAllUsers = async () => {
     try {
@@ -48,6 +110,8 @@ export const useFetchUsers = () => {
       const response = await getUserListUseCase.execute({ role: 'cliente' });
       const users = Array.isArray(response) ? response : response.results || response.users || [];
       setAllUsers(users);
+      // Forzar la actualización del estado para que se reflejen los cambios
+      setDisplayedUsers(users.slice(0, ITEMS_PER_PAGE));
       setTotalPages(Math.ceil((users?.length || 0) / ITEMS_PER_PAGE));
     } catch (err) {
       setError(err);
@@ -73,7 +137,7 @@ export const useFetchUsers = () => {
   // Efecto para resetear la página a 1 cuando los filtros cambian
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, statusFilter]);
+  }, [searchTerm, statusFilter, dateFilter]);
 
   // Función para actualizar un usuario en la lista (por ejemplo, después de suspender/reactivar)
   const updateLocalUser = (userId, updatedFields) => {
@@ -89,6 +153,14 @@ export const useFetchUsers = () => {
     setAllUsers(prevUsers => prevUsers.filter(user => user.id !== userId));
   };
 
+  // Función para limpiar todos los filtros a sus valores iniciales.
+  const clearFilters = () => {
+    setSearchTerm('');
+    setStatusFilter('all');
+    setDateFilter('all');
+    setCurrentPage(1); // Resetear a la primera página
+  };
+
   return {
     users: displayedUsers, // Devuelve la lista paginada
     loading,
@@ -101,6 +173,11 @@ export const useFetchUsers = () => {
     updateLocalUser,
     removeLocalUser,
     setSearchTerm,
+    searchTerm, // Exponer para controlar el input
     setStatusFilter,
+    statusFilter, // Exponer para controlar el select
+    dateFilter,
+    setDateFilter,
+    clearFilters, // Exponer la función de limpieza
   };
 };

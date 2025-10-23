@@ -39,18 +39,26 @@ export const useDashboardUsersLogic = () => {
   const { user } = useAuth();
 
   // Usar el hook useFetchUsers para la obtención y paginación de datos
-  const {
-    users,
-    loading,
-    error,
-    currentPage,
-    totalPages,
-    setCurrentPage,
-    updateLocalUser, // Función para actualizar un usuario en la lista local
-    removeLocalUser, // Función para eliminar un usuario de la lista local
-    setSearchTerm,
-    setStatusFilter,
-  } = useFetchUsers();
+const {
+  users,
+  loading,
+  error,
+  currentPage,
+  totalPages,
+  setCurrentPage,
+  updateLocalUser,
+  removeLocalUser,
+  setSearchTerm,
+  searchTerm,
+  setStatusFilter,
+  statusFilter,
+  dateFilter,
+  setDateFilter,
+  fetchAllUsers,
+  clearFilters, // Añadido para limpiar filtros
+  debugCounts,
+} = useFetchUsers({ enableDebug: true });
+
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
@@ -99,11 +107,10 @@ export const useDashboardUsersLogic = () => {
     if (userToDelete) {
       try {
         await deleteUserUseCase.execute(userToDelete.id);
-        setClientUsers(prevUsers => prevUsers.filter(u => u.id !== userToDelete.id));
-        toast.success('Usuario eliminado exitosamente.'); // Alerta de éxito
+        removeLocalUser(userToDelete.id); // Corregido: usar removeLocalUser
+        toast.success('Usuario eliminado exitosamente.');
       } catch (err) {
-        // console.error(`Error al eliminar usuario ${userToDelete.id}:`, err); // Eliminado mensaje de consola
-        toast.error(`Error al eliminar usuario: ${err.message}`); // Alerta de error
+        toast.error(`Error al eliminar usuario: ${err.message}`);
         throw err;
       } finally {
         cancelDelete();
@@ -143,6 +150,12 @@ export const useDashboardUsersLogic = () => {
     handleViewDetails,
     handleCloseDetailsModal,
     setSearchTerm,
+    searchTerm, // Añadido para controlar el input
     setStatusFilter,
+    statusFilter, // Añadido para controlar el select
+    dateFilter,
+    setDateFilter,
+    fetchAllUsers,
+    clearFilters, // Exponer la función de limpieza
   };
 };

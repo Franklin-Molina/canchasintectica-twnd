@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react"; // Added useState
 import { useAuth } from "../../../context/AuthContext.jsx";
 import Spinner from "../../../components/common/Spinner.jsx";
 import Pagination from "../../../components/common/Pagination.jsx";
@@ -10,16 +10,23 @@ import {
   UserMinus,
   UserCheck,
   XCircle,
+  Search, // Added
+  Filter, // Added
+  ChevronDown, // Added
+  RefreshCw, // Added for refresh button
 } from "lucide-react";
 
 function DashboardUsersPage() {
+  const [isFilterOpen, setIsFilterOpen] = useState(false); // Added state
+  // Removed local state for dateFilter and setDateFilter as they are assumed to be provided by the hook.
+
   const {
-    users, // Ahora se obtiene 'users' del hook
+    users,
     loading,
     error,
-    currentPage, // Añadir currentPage
-    totalPages, // Añadir totalPages
-    setCurrentPage, // Añadir setCurrentPage
+    currentPage,
+    totalPages,
+    setCurrentPage,
     actionStatus,
     showDeleteModal,
     userToDelete,
@@ -37,7 +44,14 @@ function DashboardUsersPage() {
     handleCloseDetailsModal,
     setSearchTerm,
     setStatusFilter,
-    itemsPerPage = 10, // Agregar itemsPerPage si no está disponible en el hook
+    // Assuming the hook provides these values to control the input/select
+    searchTerm, // Added
+    statusFilter, // Added
+    dateFilter, // Added
+    setDateFilter, // Added
+    fetchAllUsers, // Added for refresh button
+    clearFilters, // Added for clearing filters
+    itemsPerPage = 10,
   } = useDashboardUsersLogic();
 
   const { user } = useAuth();
@@ -60,42 +74,111 @@ function DashboardUsersPage() {
         Gestión de Usuarios Cliente
       </h1>
 
- {/* 🔍 Controles de Filtro y Búsqueda */}
-<div className="mb-8 bg-white/80 dark:bg-gray-900/60 backdrop-blur-sm p-4 rounded-2xl shadow-md flex flex-col sm:flex-row items-center gap-4 border border-gray-200 dark:border-gray-700 transition-all">
+ {/* 🔍 Controles de Filtro y Búsqueda - Diseño Profesional */}
+<div className="mb-8 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 overflow-hidden transition-all">
   
-  {/* Campo de búsqueda */}
-  <div className="relative flex-grow w-full">
-    <span className="absolute inset-y-0 left-3 flex items-center text-gray-400 dark:text-gray-500">
-      <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
-      </svg>
-    </span>
-    <input
-      type="text"
-      placeholder="Buscar por nombre, usuario o correo..."
-      onChange={(e) => setSearchTerm(e.target.value)}
-      className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 
-      text-gray-700 dark:text-gray-200  outline-none placeholder-gray-400 dark:placeholder-gray-500 transition-all"
-    />
-  </div>
+  {/* Barra principal de búsqueda y acciones */}
+  <div className="p-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+    
+    {/* Campo de búsqueda principal */}
+    <div className="relative flex-grow">
+      <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
+      <input
+        type="text"
+        placeholder="Buscar por nombre, usuario o correo..."
+        value={searchTerm} // Use hook's searchTerm
+        onChange={(e) => setSearchTerm(e.target.value)} // Use hook's setSearchTerm
+        className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50/50 dark:bg-gray-900/50 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 focus:border-transparent transition-all"
+      />
+    </div>
 
-  {/* Filtro de estado */}
-  <div className="relative w-full sm:w-auto">
-    <span className="absolute inset-y-0 left-3 flex items-center text-gray-400 dark:text-gray-500">
-      <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L14 14.414V20a1 1 0 01-1.447.894l-4-2A1 1 0 018 18v-3.586L3.293 6.707A1 1 0 013 6V4z" />
-      </svg>
-    </span>
-    <select
-      onChange={(e) => setStatusFilter(e.target.value)}
-      className="pl-10 pr-6 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-200 outline-none appearance-none cursor-pointer transition-all"
+    {/* Botón de filtros avanzados */}
+    <button
+      onClick={() => setIsFilterOpen(!isFilterOpen)} // Use local isFilterOpen state
+      className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-medium transition-all ${
+        isFilterOpen
+          ? 'bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900'
+          : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+      }`}
     >
-      <option value="all">Todos</option>
-      <option value="active">Activos</option>
-      <option value="suspended">Suspendidos</option>
-    </select>
+      <Filter className="w-4 h-4" />
+      <span className="hidden sm:inline">Filtros</span>
+      <ChevronDown 
+        className={`w-4 h-4 transition-transform ${isFilterOpen ? 'rotate-180' : ''}`}
+      />
+    </button>
+
+    {/* Botón de Refrescar */}
+    <button
+      onClick={() => fetchAllUsers()}
+      className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-medium transition-all bg-blue-500 text-white hover:bg-blue-600"
+    >
+      <RefreshCw className="w-4 h-4" />
+      <span className="hidden sm:inline">Refrescar</span>
+    </button>
   </div>
 
+  {/* Panel de filtros expandible */}
+  <div
+    className={`transition-all duration-300 ease-in-out ${
+      isFilterOpen ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'
+    } overflow-hidden`}
+  >
+    <div className="px-4 pb-4 pt-2 border-t border-gray-100 dark:border-gray-700/50">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        
+        {/* Filtro de estado */}
+        <div>
+          <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5 ml-1">
+            Estado
+          </label>
+          <select
+            value={statusFilter} // Use hook's statusFilter
+            onChange={(e) => setStatusFilter(e.target.value)} // Use hook's setStatusFilter
+            className="w-full px-3.5 py-2.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50/50 dark:bg-gray-900/50 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 focus:border-transparent cursor-pointer transition-all appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e')] bg-[length:1.2em] bg-[right_0.5rem_center] bg-no-repeat pr-10"
+          >
+            <option value="all">Todos los estados</option>
+            <option value="active">Activos</option>
+            <option value="suspended">Suspendidos</option>
+          </select>
+        </div>
+
+  
+
+        {/* Filtro adicional: Fecha de registro */}
+        <div>
+          <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5 ml-1">
+            Fecha de registro
+          </label>
+          <select
+            value={dateFilter} // Use hook's dateFilter
+            onChange={(e) => setDateFilter(e.target.value)} // Use hook's setDateFilter
+            className="w-full px-3.5 py-2.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50/50 dark:bg-gray-900/50 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 focus:border-transparent cursor-pointer transition-all appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e')] bg-[length:1.2em] bg-[right_0.5rem_center] bg-no-repeat pr-10"
+          >
+            <option value="all">Todas las fechas</option>
+            <option value="today">Hoy</option>
+            <option value="week">Última semana</option>
+            <option value="month">Último mes</option>
+            <option value="year">Último año</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Botones de acción en filtros */}
+      <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100 dark:border-gray-700/50">
+        <button
+          onClick={clearFilters}
+          className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors"
+        >
+          Limpiar filtros
+        </button>
+        <div className="flex-grow"></div>
+        <span className="text-xs text-gray-500 dark:text-gray-500">
+          {statusFilter !== 'all' ? '1 filtro activo' : 'Sin filtros'}
+        </span>
+      </div>
+    </div>
+  </div>
 </div>
 
 
