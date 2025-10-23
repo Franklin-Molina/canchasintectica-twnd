@@ -1,8 +1,8 @@
 import React from 'react';
 import Spinner from '../../../components/common/Spinner';
 import Pagination from '../../../components/common/Pagination';
-import { useFetchBookings } from '../../../hooks/bookings/useFetchBookings'; // Ruta actualizada
-import Swal from 'sweetalert2'; // Importa SweetAlert2
+import { useFetchBookings } from '../../../hooks/bookings/useFetchBookings';
+import Swal from 'sweetalert2';
 
 function DashboardBookingsPage() {
   const {
@@ -13,6 +13,7 @@ function DashboardBookingsPage() {
     totalPages,
     setCurrentPage,
     deleteBooking,
+    itemsPerPage = 10, // Agregar itemsPerPage si no está disponible en el hook
   } = useFetchBookings();
 
   const handleCancel = (bookingId) => {
@@ -35,6 +36,11 @@ function DashboardBookingsPage() {
         );
       }
     });
+  };
+
+  // Calcular el índice inicial para la numeración continua
+  const getRowNumber = (index) => {
+    return (currentPage - 1) * itemsPerPage + index + 1;
   };
 
   if (loading) {
@@ -95,9 +101,16 @@ function DashboardBookingsPage() {
                     key={booking.id}
                     className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                   >
-                    <td className="px-6 py-3 text-gray-800 dark:text-gray-100">{index + 1}</td>
-                    <td className="px-6 py-3 text-gray-700 dark:text-gray-300">{booking.court_details.name}</td>
-                    <td className="px-6 py-3 text-gray-700 dark:text-gray-300">{booking.user_details.first_name} {booking.user_details.last_name}</td>
+                    {/* Numeración continua usando getRowNumber */}
+                    <td className="px-6 py-3 text-gray-800 dark:text-gray-100 font-medium">
+                      {getRowNumber(index)}
+                    </td>
+                    <td className="px-6 py-3 text-gray-700 dark:text-gray-300">
+                      {booking.court_details.name}
+                    </td>
+                    <td className="px-6 py-3 text-gray-700 dark:text-gray-300">
+                      {booking.user_details.first_name} {booking.user_details.last_name}
+                    </td>
                     <td className="px-6 py-3 text-gray-700 dark:text-gray-300">
                       {new Date(booking.start_time).toLocaleString()}
                     </td>

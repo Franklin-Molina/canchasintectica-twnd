@@ -74,20 +74,7 @@ function ProfessionalFilters() {
                   </select>
                 </div>
 
-                {/* Filtro adicional: Rol */}
-                <div>
-                  <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5 ml-1">
-                    Rol
-                  </label>
-                  <select
-                    className="w-full px-3.5 py-2.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50/50 dark:bg-gray-900/50 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 focus:border-transparent cursor-pointer transition-all appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e')] bg-[length:1.2em] bg-[right_0.5rem_center] bg-no-repeat pr-10"
-                  >
-                    <option value="all">Todos los roles</option>
-                    <option value="admin">Administrador</option>
-                    <option value="user">Usuario</option>
-                    <option value="owner">Propietario</option>
-                  </select>
-                </div>
+          
 
                 {/* Filtro adicional: Fecha de registro */}
                 <div>

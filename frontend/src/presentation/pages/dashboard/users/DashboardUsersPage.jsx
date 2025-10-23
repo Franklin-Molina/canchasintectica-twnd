@@ -37,10 +37,15 @@ function DashboardUsersPage() {
     handleCloseDetailsModal,
     setSearchTerm,
     setStatusFilter,
+    itemsPerPage = 10, // Agregar itemsPerPage si no está disponible en el hook
   } = useDashboardUsersLogic();
 
   const { user } = useAuth();
 
+ // Calcular el índice inicial para la numeración continua
+  const getRowNumber = (index) => {
+    return (currentPage - 1) * itemsPerPage + index + 1;
+  };
   if (loading) return <Spinner />;
   if (error)
     return (
@@ -113,6 +118,7 @@ function DashboardUsersPage() {
           <table className="w-full border-collapse">
             <thead className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 uppercase text-sm">
               <tr>
+                <th className="py-3 px-4 text-left">#</th>
                 <th className="py-3 px-4 text-left">Usuario</th>
                 <th className="py-3 px-4 text-left">Nombre</th>
                 <th className="py-3 px-4 text-left">Estado</th>
@@ -121,11 +127,12 @@ function DashboardUsersPage() {
               </tr>
             </thead>
             <tbody>
-              {users.map((clientUser) => (
+              {users.map((clientUser,index) => (
                 <tr
                   key={clientUser.id}
                   className="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
                 >
+                   <td className="py-3 px-4  text-gray-800 dark:text-gray-100 font-medium"> {getRowNumber(index)}</td>
                   <td className="py-3 px-4 flex items-center gap-2">
                     <User className="w-4 h-4 text-blue-500" />
                     {clientUser.username}
