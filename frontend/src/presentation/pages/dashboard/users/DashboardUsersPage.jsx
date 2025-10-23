@@ -133,40 +133,49 @@ function DashboardUsersPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         
         {/* Filtro de estado */}
-        <div>
-          <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5 ml-1">
-            Estado
-          </label>
-          <select
-            value={statusFilter} // Use hook's statusFilter
-            onChange={(e) => setStatusFilter(e.target.value)} // Use hook's setStatusFilter
-            className="w-full px-3.5 py-2.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50/50 dark:bg-gray-900/50 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 focus:border-transparent cursor-pointer transition-all appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e')] bg-[length:1.2em] bg-[right_0.5rem_center] bg-no-repeat pr-10"
-          >
-            <option value="all">Todos los estados</option>
-            <option value="active">Activos</option>
-            <option value="suspended">Suspendidos</option>
-          </select>
-        </div>
+       {/* Filtro de estado */}
+<div className="relative">
+  <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5 ml-1">
+    Estado
+  </label>
+  <div className="relative">
+    <select
+      value={statusFilter}
+      onChange={(e) => setStatusFilter(e.target.value)}
+      className="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600
+                 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100                  
+                 appearance-none pr-10">
+      <option value="all">Todos los estados</option>
+      <option value="active">Activos</option>
+      <option value="suspended">Suspendidos</option>
+    </select>
+    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+  </div>
+  </div>
 
   
 
         {/* Filtro adicional: Fecha de registro */}
-        <div>
-          <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5 ml-1">
-            Fecha de registro
-          </label>
-          <select
-            value={dateFilter} // Use hook's dateFilter
-            onChange={(e) => setDateFilter(e.target.value)} // Use hook's setDateFilter
-            className="w-full px-3.5 py-2.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50/50 dark:bg-gray-900/50 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 focus:border-transparent cursor-pointer transition-all appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e')] bg-[length:1.2em] bg-[right_0.5rem_center] bg-no-repeat pr-10"
-          >
-            <option value="all">Todas las fechas</option>
-            <option value="today">Hoy</option>
-            <option value="week">Última semana</option>
-            <option value="month">Último mes</option>
-            <option value="year">Último año</option>
-          </select>
-        </div>
+      <div className="relative">
+  <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5 ml-1">
+    Fecha de registro
+  </label>
+  <div className="relative">
+    <select
+      value={dateFilter}
+      onChange={(e) => setDateFilter(e.target.value)}
+      className="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600
+                 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100                  
+                 appearance-none pr-10">
+      <option value="all">Todas las fechas</option>
+      <option value="today">Hoy</option>
+      <option value="week">Última semana</option>
+      <option value="month">Último mes</option>
+      <option value="year">Último año</option>
+    </select>
+    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+  </div>
+</div>
       </div>
 
       {/* Botones de acción en filtros */}
