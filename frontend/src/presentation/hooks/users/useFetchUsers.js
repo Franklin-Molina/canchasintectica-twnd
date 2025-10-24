@@ -3,8 +3,6 @@ import { useState, useEffect, useMemo } from 'react';
 import { GetUserListUseCase } from '../../../application/use-cases/users/get-user-list';
 import { ApiUserRepository } from '../../../infrastructure/repositories/api-user-repository';
 
-const ITEMS_PER_PAGE = 10; // Define cuántos elementos mostrar por página
-
 /**
  * Hook personalizado para obtener la lista de usuarios con paginación del lado del cliente.
  * @returns {object} Un objeto con los datos de paginación y funciones.
@@ -19,6 +17,7 @@ export const useFetchUsers = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all'); // 'all', 'active', 'suspended'
   const [dateFilter, setDateFilter] = useState('all'); // 'all', 'today', 'week', 'month', 'year'
+  const [itemsPerPage, setItemsPerPage] = useState(10); // Define cuántos elementos mostrar por página
 
   // No usamos useUseCases aquí directamente para GetUserListUseCase porque necesitamos un filtro específico
   // y el UseCaseContext no proporciona filtros por defecto.
@@ -111,8 +110,8 @@ export const useFetchUsers = () => {
       const users = Array.isArray(response) ? response : response.results || response.users || [];
       setAllUsers(users);
       // Forzar la actualización del estado para que se reflejen los cambios
-      setDisplayedUsers(users.slice(0, ITEMS_PER_PAGE));
-      setTotalPages(Math.ceil((users?.length || 0) / ITEMS_PER_PAGE));
+      setDisplayedUsers(users.slice(0, itemsPerPage));
+      setTotalPages(Math.ceil((users?.length || 0) / itemsPerPage));
     } catch (err) {
       setError(err);
       console.error('Error al obtener usuarios en useFetchUsers:', err);
@@ -128,11 +127,11 @@ export const useFetchUsers = () => {
 
   // Efecto para actualizar los usuarios mostrados cuando cambia la página o los datos filtrados
   useEffect(() => {
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const endIndex = startIndex + ITEMS_PER_PAGE;
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
     setDisplayedUsers(filteredUsers.slice(startIndex, endIndex));
-    setTotalPages(Math.ceil((filteredUsers?.length || 0) / ITEMS_PER_PAGE));
-  }, [currentPage, filteredUsers]);
+    setTotalPages(Math.ceil((filteredUsers?.length || 0) / itemsPerPage));
+  }, [currentPage, filteredUsers, itemsPerPage]);
 
   // Efecto para resetear la página a 1 cuando los filtros cambian
   useEffect(() => {
@@ -179,5 +178,7 @@ export const useFetchUsers = () => {
     dateFilter,
     setDateFilter,
     clearFilters, // Exponer la función de limpieza
+    itemsPerPage,
+    setItemsPerPage,
   };
 };

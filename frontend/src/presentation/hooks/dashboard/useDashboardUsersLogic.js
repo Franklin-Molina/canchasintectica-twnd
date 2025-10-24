@@ -54,10 +54,12 @@ const {
   statusFilter,
   dateFilter,
   setDateFilter,
-  fetchAllUsers,
-  clearFilters, // Añadido para limpiar filtros
-  debugCounts,
-} = useFetchUsers({ enableDebug: true });
+    fetchAllUsers,
+    clearFilters, // Añadido para limpiar filtros
+    itemsPerPage,
+    setItemsPerPage,
+    totalUsers,
+  } = useFetchUsers({ enableDebug: true });
 
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -157,5 +159,8 @@ const {
     setDateFilter,
     fetchAllUsers,
     clearFilters, // Exponer la función de limpieza
+    itemsPerPage,
+    setItemsPerPage,
+    totalUsers,
   };
 };

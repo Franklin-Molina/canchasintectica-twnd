@@ -1,7 +1,7 @@
 import React, { useState } from "react"; // Added useState
 import { useAuth } from "../../../context/AuthContext.jsx";
 import Spinner from "../../../components/common/Spinner.jsx";
-import Pagination from "../../../components/common/Pagination.jsx";
+import ProfessionalPagination from "../../../components/common/ProfessionalPagination.jsx";
 import CustomSelect from "../../../components/common/CustomSelect.jsx"; // Importar el nuevo componente
 import { useDashboardUsersLogic } from "../../../hooks/dashboard/useDashboardUsersLogic.js"; // Ruta actualizada
 import {
@@ -52,7 +52,9 @@ function DashboardUsersPage() {
     setDateFilter, // Added
     fetchAllUsers, // Added for refresh button
     clearFilters, // Added for clearing filters
-    itemsPerPage = 10,
+    itemsPerPage,
+    setItemsPerPage,
+    totalUsers,
   } = useDashboardUsersLogic();
 
   const { user } = useAuth();
@@ -290,14 +292,16 @@ function DashboardUsersPage() {
             </tbody>
           </table>
           {/* Paginación */}
-          <div className="px-6 py-4">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-            />
-          </div>
+          <ProfessionalPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            itemsPerPage={itemsPerPage}
+            setItemsPerPage={setItemsPerPage}
+            totalItems={totalUsers}
+          />
         </div>
+        
       ) : (
         <p className="text-gray-600 dark:text-gray-400 mt-4">
           No se encontraron usuarios cliente.
@@ -383,7 +387,7 @@ function DashboardUsersPage() {
                 Cerrar
               </button>
             </div>
-          </div>
+          </div>          
         </div>
       )}
     </div>
