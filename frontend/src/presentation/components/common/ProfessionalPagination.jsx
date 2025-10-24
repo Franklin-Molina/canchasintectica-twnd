@@ -1,5 +1,6 @@
 import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import CustomSelect from './CustomSelect.jsx'; // Importar CustomSelect
 
 const ProfessionalPagination = ({
   currentPage,
@@ -47,7 +48,6 @@ const ProfessionalPagination = ({
   const startItem = (currentPage - 1) * itemsPerPage + 1;
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
-
   return (
     <div className="px-6 py-4 bg-slate-50 border-t border-slate-200 dark:bg-gray-800 dark:border-gray-700">
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -60,20 +60,21 @@ const ProfessionalPagination = ({
 
           <div className="flex items-center gap-2">
             <label className="text-sm text-slate-600 dark:text-gray-300">Mostrar:</label>
-            <select
+            <CustomSelect
+              options={[
+                { value: 5, label: '5' },
+                { value: 10, label: '10' },
+                { value: 20, label: '20' },
+                { value: 50, label: '50' },
+                { value: 100, label: '100' },
+              ]}
               value={itemsPerPage}
-              onChange={(e) => {
-                setItemsPerPage(Number(e.target.value));
+              onChange={(value) => {
+                setItemsPerPage(Number(value));
                 onPageChange(1);
               }}
-              className="px-3 py-1.5 text-sm border border-slate-300 rounded-lg bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-            >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={20}>20</option>
-              <option value={50}>50</option>
-              <option value={100}>100</option>
-            </select>
+              direction="up"
+            />
           </div>
         </div>
 

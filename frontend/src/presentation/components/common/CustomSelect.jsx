@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
 
-function CustomSelect({ options, value, onChange, placeholder = "Seleccionar..." }) {
+function CustomSelect({ options, value, onChange, placeholder = "Seleccionar...", direction = "down" }) {
   const [isOpen, setIsOpen] = useState(false);
   const selectRef = useRef(null);
 
@@ -39,7 +39,7 @@ function CustomSelect({ options, value, onChange, placeholder = "Seleccionar..."
       </button>
 
       {isOpen && (
-        <div className="absolute z-10 top-full mt-2 w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden animate-fade-in-down">
+        <div className={`absolute z-10 ${direction === "up" ? "bottom-full mb-2" : "top-full mt-2"} w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden ${direction === "up" ? "animate-fade-in-up" : "animate-fade-in-down"}`}>
           <ul>
             {options.map((option) => (
               <li
