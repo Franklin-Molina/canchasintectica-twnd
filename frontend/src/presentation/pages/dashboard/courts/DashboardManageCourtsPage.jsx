@@ -25,7 +25,7 @@ function DashboardManageCourtsPage() {
     handleModifyRequest,
     handleOpenModal,
     handleCloseModal,
-  } = useManageCourtsLogic();
+  } = useManageCourtsLogic(10);
 
   if (loading) return <Spinner />;
   if (error) return <div className="text-red-500 text-center">{error.message}</div>;
