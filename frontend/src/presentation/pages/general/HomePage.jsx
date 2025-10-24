@@ -27,7 +27,7 @@ function HomePage({ openAuthModal }) {
       {/* HERO */}
       <section className="relative overflow-hidden bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-700 dark:via-purple-700 dark:to-pink-700">
         <div className="absolute inset-0 bg-black/20"></div>
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,...')] opacity-30"></div>
+       
 
         <div className="relative max-w-7xl mx-auto px-6 py-24 sm:py-32 flex flex-col items-center text-center">
           <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-2 rounded-full mb-6 text-white text-sm font-medium">
