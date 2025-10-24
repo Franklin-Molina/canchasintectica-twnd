@@ -52,16 +52,15 @@ function DashboardManageCourtsPage() {
       )}
 
       {/* Tabla de Canchas */}
-      <CourtTable courts={courts} onOpenModal={handleOpenModal} />
-
-      {/* Paginación */}
-      <ProfessionalPagination
+      <CourtTable
+        courts={courts}
+        onOpenModal={handleOpenModal}
         currentPage={currentPage}
         totalPages={totalPages}
-        onPageChange={setCurrentPage}
+        setCurrentPage={setCurrentPage}
         itemsPerPage={itemsPerPage}
         setItemsPerPage={setItemsPerPage}
-        totalItems={totalCourts}
+        totalCourts={totalCourts}
       />
 
       {/* Modal de Detalles / Acciones */}

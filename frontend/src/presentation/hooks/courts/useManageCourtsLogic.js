@@ -130,13 +130,8 @@ export const useManageCourtsLogic = () => {
   };
 
   const totalPages = Math.ceil(courts.length / itemsPerPage);
-  const paginatedCourts = courts.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
   return {
-    courts: paginatedCourts,
+    courts: courts,
     loading,
     error,
     selectedCourt,
