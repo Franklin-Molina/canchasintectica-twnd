@@ -2,7 +2,7 @@ import React from 'react';
 import CourtActionsModal from '../../../components/Dashboard/CourtActionsModal.jsx';
 import Spinner from '../../../components/common/Spinner.jsx';
 import CourtTable from '../../../components/Dashboard/CourtTable.jsx';
-import Pagination from '../../../components/common/Pagination.jsx';
+import ProfessionalPagination from '../../../components/common/ProfessionalPagination.jsx';
 import { useManageCourtsLogic } from '../../../hooks/courts/useManageCourtsLogic.js';
 
 function DashboardManageCourtsPage() {
@@ -17,6 +17,9 @@ function DashboardManageCourtsPage() {
     currentPage,
     totalPages,
     setCurrentPage,
+    itemsPerPage,
+    setItemsPerPage,
+    totalCourts,
     handleSuspendCourtClick,
     handleReactivateCourtClick,
     handleDeleteRequest,
@@ -25,7 +28,7 @@ function DashboardManageCourtsPage() {
     handleModifyRequest,
     handleOpenModal,
     handleCloseModal,
-  } = useManageCourtsLogic(9);
+  } = useManageCourtsLogic();
 
   if (loading) return <Spinner />;
   if (error) return <div className="text-red-500 text-center">{error.message}</div>;
@@ -52,15 +55,14 @@ function DashboardManageCourtsPage() {
       <CourtTable courts={courts} onOpenModal={handleOpenModal} />
 
       {/* Paginación */}
-      {totalPages > 1 && (
-        <div className="px-6 py-4">
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />
-        </div>
-      )}
+      <ProfessionalPagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+        itemsPerPage={itemsPerPage}
+        setItemsPerPage={setItemsPerPage}
+        totalItems={totalCourts}
+      />
 
       {/* Modal de Detalles / Acciones */}
       {selectedCourt && (

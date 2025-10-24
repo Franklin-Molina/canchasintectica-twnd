@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useUseCases } from '../../context/UseCaseContext';
 
-const ITEMS_PER_PAGE = 10; // Define cuántos elementos mostrar por página
-
 /**
  * Hook personalizado para obtener la lista de reservas con paginación del lado del cliente.
  * @returns {object} Un objeto con los datos de paginación y funciones.
@@ -14,6 +12,7 @@ export const useFetchBookings = () => {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(10); // Define cuántos elementos mostrar por página
 
   const { getBookingsUseCase, deleteBookingUseCase } = useUseCases();
 
@@ -23,7 +22,7 @@ export const useFetchBookings = () => {
       // El backend no pagina, así que obtenemos todo
       const response = await getBookingsUseCase.execute(1);
       setAllBookings(response || []);
-      setTotalPages(Math.ceil((response?.length || 0) / ITEMS_PER_PAGE));
+      setTotalPages(Math.ceil((response?.length || 0) / itemsPerPage));
     } catch (err) {
       setError(err);
       console.error('Error al obtener reservas en useFetchBookings:', err);
@@ -39,10 +38,11 @@ export const useFetchBookings = () => {
 
   // Efecto para actualizar las reservas mostradas cuando cambia la página o los datos
   useEffect(() => {
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const endIndex = startIndex + ITEMS_PER_PAGE;
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
     setDisplayedBookings(allBookings.slice(startIndex, endIndex));
-  }, [currentPage, allBookings]);
+    setTotalPages(Math.ceil((allBookings?.length || 0) / itemsPerPage));
+  }, [currentPage, allBookings, itemsPerPage]);
 
   const deleteBooking = async (bookingId) => {
     try {
@@ -65,5 +65,7 @@ export const useFetchBookings = () => {
     totalBookings: allBookings.length, // Devuelve el conteo total
     setCurrentPage,
     deleteBooking,
+    itemsPerPage,
+    setItemsPerPage,
   };
 };

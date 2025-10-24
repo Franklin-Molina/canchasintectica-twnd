@@ -1,6 +1,6 @@
 import React from 'react';
 import Spinner from '../../../components/common/Spinner';
-import Pagination from '../../../components/common/Pagination';
+import ProfessionalPagination from '../../../components/common/ProfessionalPagination';
 import { useFetchBookings } from '../../../hooks/bookings/useFetchBookings';
 import Swal from 'sweetalert2';
 
@@ -13,7 +13,9 @@ function DashboardBookingsPage() {
     totalPages,
     setCurrentPage,
     deleteBooking,
-    itemsPerPage = 10, // Agregar itemsPerPage si no está disponible en el hook
+    itemsPerPage,
+    setItemsPerPage,
+    totalBookings,
   } = useFetchBookings();
 
   const handleCancel = (bookingId) => {
@@ -166,13 +168,14 @@ function DashboardBookingsPage() {
           </div>
 
           {/* Paginación */}
-          <div className="px-6 py-4">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-            />
-          </div>
+          <ProfessionalPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            itemsPerPage={itemsPerPage}
+            setItemsPerPage={setItemsPerPage}
+            totalItems={totalBookings}
+          />
         </div>
       )}
     </div>
