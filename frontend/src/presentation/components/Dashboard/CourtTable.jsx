@@ -18,11 +18,10 @@ function CourtTable({ courts, onOpenModal }) {
           {courts.map((court) => (
             <tr
               key={court.id}
-              className="border-t border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
-            >
+              className="border-t border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
               <td className="p-3">{court.id}</td>
               <td className="p-3">{court.name}</td>
-              <td className="p-3">${formatPrice(court.price)}</td> {/* Usar formatPrice */}
+              <td className="p-3">${formatPrice(court.price)}</td>
               <td className="p-3">
                 <span
                   className={`px-2 py-1 rounded-full text-xs font-semibold ${
