@@ -1,8 +1,9 @@
 import React from 'react';
 import CourtActionsModal from '../../../components/Dashboard/CourtActionsModal.jsx';
 import Spinner from '../../../components/common/Spinner.jsx';
-import CourtTable from '../../../components/Dashboard/CourtTable.jsx'; // Importar el nuevo componente CourtTable
-import { useManageCourtsLogic } from '../../../hooks/courts/useManageCourtsLogic.js'; // Ruta actualizada
+import CourtTable from '../../../components/Dashboard/CourtTable.jsx';
+import Pagination from '../../../components/common/Pagination.jsx';
+import { useManageCourtsLogic } from '../../../hooks/courts/useManageCourtsLogic.js';
 
 function DashboardManageCourtsPage() {
   const {
@@ -13,6 +14,9 @@ function DashboardManageCourtsPage() {
     selectedCourt,
     courtToDelete,
     isDeleting,
+    currentPage,
+    totalPages,
+    setCurrentPage,
     handleSuspendCourtClick,
     handleReactivateCourtClick,
     handleDeleteRequest,
@@ -46,6 +50,15 @@ function DashboardManageCourtsPage() {
 
       {/* Tabla de Canchas */}
       <CourtTable courts={courts} onOpenModal={handleOpenModal} />
+
+      {/* Paginación */}
+      <div className="px-6 py-4">
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
+      </div>
 
       {/* Modal de Detalles / Acciones */}
       {selectedCourt && (

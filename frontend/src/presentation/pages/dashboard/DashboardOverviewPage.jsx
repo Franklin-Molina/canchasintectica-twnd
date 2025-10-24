@@ -1,15 +1,24 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom'; // Importar useNavigate
+import { useNavigate } from 'react-router-dom';
 import CourtTable from '../../components/Dashboard/CourtTable.jsx';
-import Spinner from '../../components/common/Spinner.jsx'; // Importar Spinner
-import { useManageCourtsLogic } from '../../hooks/courts/useManageCourtsLogic.js'; // Importar el hook de lógica
+import Spinner from '../../components/common/Spinner.jsx';
+import Pagination from '../../components/common/Pagination.jsx';
+import { useManageCourtsLogic } from '../../hooks/courts/useManageCourtsLogic.js';
 
 function DashboardOverviewPage() {
-  const { courts, loading, error, handleOpenModal } = useManageCourtsLogic();
-  const navigate = useNavigate(); // Inicializar useNavigate
+  const {
+    courts,
+    loading,
+    error,
+    handleOpenModal,
+    currentPage,
+    totalPages,
+    setCurrentPage,
+  } = useManageCourtsLogic();
+  const navigate = useNavigate();
 
   const handleCreateCourtClick = () => {
-    navigate('/dashboard/canchas/create'); // Redirigir a la ruta de creación de cancha
+    navigate('/dashboard/canchas/create');
   };
 
   if (loading) return <Spinner />;
@@ -102,16 +111,12 @@ function DashboardOverviewPage() {
           </div>
         </div>
         <CourtTable courts={courts} onOpenModal={handleOpenModal} />
-        <div className="flex justify-between items-center mt-6">
-          <p className="text-sm text-gray-600 dark:text-gray-400">Mostrando {courts.length} de {courts.length} canchas</p>
-          <div className="flex space-x-2">
-            <button className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
-              Anterior
-            </button>
-            <button className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
-              Siguiente
-            </button>
-          </div>
+        <div className="px-6 py-4">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
         </div>
       </div>
     </>

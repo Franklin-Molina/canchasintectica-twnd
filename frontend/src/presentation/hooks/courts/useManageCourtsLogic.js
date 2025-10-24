@@ -28,13 +28,14 @@ import { toast } from 'react-toastify'; // Importar toast de react-toastify
  * @property {Function} handleOpenModal - Función para abrir el modal de acciones.
  * @property {Function} handleCloseModal - Función para cerrar el modal de acciones.
  */
-export const useManageCourtsLogic = () => {
+export const useManageCourtsLogic = (itemsPerPage = 5) => {
   const navigate = useNavigate();
   const [courts, setCourts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedCourt, setSelectedCourt] = useState(null);
   const [courtToDelete, setCourtToDelete] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const hasFetchedCourts = useRef(false);
 
   // Instanciar repositorio y casos de uso
@@ -127,8 +128,14 @@ export const useManageCourtsLogic = () => {
     setSelectedCourt(null);
   };
 
+  const totalPages = Math.ceil(courts.length / itemsPerPage);
+  const paginatedCourts = courts.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
   return {
-    courts,
+    courts: paginatedCourts,
     loading,
     error,
     selectedCourt,
@@ -136,6 +143,9 @@ export const useManageCourtsLogic = () => {
     isSuspending,
     isReactivating,
     isDeleting,
+    currentPage,
+    totalPages,
+    setCurrentPage,
     handleSuspendCourtClick,
     handleReactivateCourtClick,
     handleDeleteRequest,

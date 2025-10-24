@@ -12,4 +12,4 @@
 - [x] Corregir problemas de importación en `frontend/src/presentation/pages` tras reestructuración (22/10/2025)
 - [x] Corregir errores 500 en `App.jsx` por importaciones incorrectas de CSS (22/10/2025)
 - [x] Implementar filtro por fecha en `DashboardUsersPage.jsx` (23/10/2025)
-- [ ] Formatear la visualización del precio de las canchas de 43333.00 a 43.000 (23/10/2025)
+- [x] Formatear la visualización del precio de las canchas de 43333.00 a 43.000 (23/10/2025)
