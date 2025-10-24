@@ -25,7 +25,7 @@ function DashboardManageCourtsPage() {
     handleModifyRequest,
     handleOpenModal,
     handleCloseModal,
-  } = useManageCourtsLogic(10);
+  } = useManageCourtsLogic(9);
 
   if (loading) return <Spinner />;
   if (error) return <div className="text-red-500 text-center">{error.message}</div>;
@@ -52,13 +52,15 @@ function DashboardManageCourtsPage() {
       <CourtTable courts={courts} onOpenModal={handleOpenModal} />
 
       {/* Paginación */}
-      <div className="px-6 py-4">
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
-      </div>
+      {totalPages > 1 && (
+        <div className="px-6 py-4">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </div>
+      )}
 
       {/* Modal de Detalles / Acciones */}
       {selectedCourt && (
