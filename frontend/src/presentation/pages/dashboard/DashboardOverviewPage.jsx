@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom'; // Importar useNavigate
-import CourtTable from '../../components/dashboard/CourtTable.jsx'; // Importar el nuevo componente CourtTable
+import CourtTable from '../../components/Dashboard/CourtTable.jsx' 
 import Spinner from '../../components/common/Spinner.jsx'; // Importar Spinner
 import { useManageCourtsLogic } from '../../hooks/courts/useManageCourtsLogic.js'; // Importar el hook de lógica
 
