@@ -2,7 +2,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import CourtTable from '../../components/Dashboard/CourtTable.jsx';
 import Spinner from '../../components/common/Spinner.jsx';
-import Pagination from '../../components/common/Pagination.jsx';
 import { useManageCourtsLogic } from '../../hooks/courts/useManageCourtsLogic.js';
 
 function DashboardOverviewPage() {
@@ -12,10 +11,12 @@ function DashboardOverviewPage() {
     error,
     handleOpenModal,
     currentPage,
-    totalPages,
     setCurrentPage,
   } = useManageCourtsLogic();
   const navigate = useNavigate();
+
+  const itemsPerPage = 5;
+  const totalPages = Math.ceil(courts.length / itemsPerPage);
 
   const handleCreateCourtClick = () => {
     navigate('/dashboard/canchas/create');
@@ -110,14 +111,16 @@ function DashboardOverviewPage() {
             </button>
           </div>
         </div>
-        <CourtTable courts={courts} onOpenModal={handleOpenModal} />
-        <div className="px-6 py-4">
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />
-        </div>
+        <CourtTable
+          courts={courts}
+          onOpenModal={handleOpenModal}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          setCurrentPage={setCurrentPage}
+          itemsPerPage={itemsPerPage}
+          setItemsPerPage={() => {}} // No se necesita cambiar items en overview
+          totalCourts={courts.length}
+        />
       </div>
     </>
   );

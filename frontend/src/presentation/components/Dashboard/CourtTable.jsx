@@ -27,7 +27,7 @@ function CourtTable({
         <table className="w-full text-left border-collapse">
           <thead className="bg-gray-100 dark:bg-gray-700">
             <tr className="text-gray-700 dark:text-gray-200">
-              <th className="p-3">ID</th>
+              <th className="p-3">#</th>
               <th className="p-3">Nombre</th>
               <th className="p-3">Precio</th>
               <th className="p-3">Estado</th>
