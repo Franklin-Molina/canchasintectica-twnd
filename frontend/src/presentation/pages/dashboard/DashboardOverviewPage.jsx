@@ -1,128 +1,289 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { TrendingUp, TrendingDown, Users, DollarSign, ShoppingBag, BarChart3, Calendar, MapPin, Filter, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 import CourtTable from '../../components/Dashboard/CourtTable.jsx';
 import Spinner from '../../components/common/Spinner.jsx';
+import ProfessionalPagination from '../../components/common/ProfessionalPagination.jsx';
 import { useManageCourtsLogic } from '../../hooks/courts/useManageCourtsLogic.js';
+import { useFetchBookings } from '../../hooks/bookings/useFetchBookings.js';
+import Swal from 'sweetalert2';
 
 function DashboardOverviewPage() {
   const {
     courts,
-    loading,
-    error,
+    loading: loadingCourts,
+    error: errorCourts,
     handleOpenModal,
-    currentPage,
-    setCurrentPage,
+    currentPage: courtsCurrentPage,
+    setCurrentPage: setCourtsCurrentPage,
+    totalPages: courtsTotalPages,
+    itemsPerPage: courtsItemsPerPage,
+    setItemsPerPage: setCourtsItemsPerPage,
+    totalCourts,
   } = useManageCourtsLogic();
-  const navigate = useNavigate();
 
-  const itemsPerPage = 5;
-  const totalPages = Math.ceil(courts.length / itemsPerPage);
+  const {
+    bookings,
+    loading: loadingBookings,
+    error: errorBookings,
+    currentPage: bookingsCurrentPage,
+    totalPages: bookingsTotalPages,
+    setCurrentPage: setBookingsCurrentPage,
+    deleteBooking,
+    itemsPerPage,
+    setItemsPerPage,
+    totalBookings,
+  } = useFetchBookings();
+
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('canchas'); // 'canchas' o 'reservas'
 
   const handleCreateCourtClick = () => {
     navigate('/dashboard/canchas/create');
+  };
+
+  const handleCancelBooking = (bookingId) => {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¡No podrás revertir esto!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, cancelar reserva',
+      cancelButtonText: 'No, mantener reserva',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteBooking(bookingId);
+        Swal.fire('¡Cancelada!', 'La reserva ha sido cancelada.', 'success');
+      }
+    });
+  };
+
+  const isReservasTab = activeTab === 'reservas';
+  const loading = isReservasTab ? loadingBookings : loadingCourts;
+  const error = isReservasTab ? errorBookings : errorCourts;
+  const totalPages = isReservasTab ? bookingsTotalPages : courtsTotalPages;
+  const currentPage = isReservasTab ? bookingsCurrentPage : courtsCurrentPage;
+  const setCurrentPage = isReservasTab ? setBookingsCurrentPage : setCourtsCurrentPage;
+  const currentData = isReservasTab ? bookings : courts;
+
+  const getEstadoColor = (estado) => {
+    const colors = {
+      'Activa': 'bg-emerald-100 text-emerald-700 border-emerald-200',
+      'Inactiva': 'bg-slate-100 text-slate-700 border-slate-200',
+      'Confirmada': 'bg-blue-100 text-blue-700 border-blue-200',
+      'Pendiente': 'bg-amber-100 text-amber-700 border-amber-200',
+      'Cancelada': 'bg-red-100 text-red-700 border-red-200',
+    };
+    return colors[estado] || 'bg-gray-100 text-gray-700';
   };
 
   if (loading) return <Spinner />;
   if (error) return <div className="text-red-500 text-center">{error.message}</div>;
 
   return (
-    <>
-      {/* Stats */}
-      <div className="stats-row">
-          <div className="stat-card">
-              <div className="stat-header">
-                  <div className="stat-title">INGRESOS TOTALES</div>
-                  <div className="stat-icon icon-revenue">
-                      <i className="fas fa-dollar-sign"></i>
-                  </div>
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-6">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800">
+            <div className="flex items-start justify-between mb-4">
+              <div className="text-slate-500 dark:text-slate-400 text-sm font-medium">INGRESOS TOTALES</div>
+              <div className="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center">
+                <DollarSign className="w-6 h-6 text-blue-500" />
               </div>
-              <div className="stat-value">$24,580</div>
-              <div className="stat-change">
-                  <span className="stat-up"><i className="fas fa-arrow-up"></i> 8.5%</span>
-                  desde el mes pasado
+            </div>
+            <div className="space-y-2">
+              <div className="text-3xl font-bold text-slate-900 dark:text-white">$24,580</div>
+              <div className="flex items-center gap-1 text-emerald-500 text-sm">
+                <TrendingUp className="w-4 h-4" />
+                <span>8.5%</span>
               </div>
+            </div>
           </div>
 
-          <div className="stat-card">
-              <div className="stat-header">
-                  <div className="stat-title">NUEVOS USUARIOS</div>
-                  <div className="stat-icon icon-users">
-                      <i className="fas fa-users"></i>
-                  </div>
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800">
+            <div className="flex items-start justify-between mb-4">
+              <div className="text-slate-500 dark:text-slate-400 text-sm font-medium">NUEVOS USUARIOS</div>
+              <div className="w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                <Users className="w-6 h-6 text-emerald-500" />
               </div>
-              <div className="stat-value">1,245</div>
-              <div className="stat-change">
-                  <span className="stat-up"><i className="fas fa-arrow-up"></i> 12.3%</span>
-                  desde el mes pasado
+            </div>
+            <div className="space-y-2">
+              <div className="text-3xl font-bold text-slate-900 dark:text-white">1,245</div>
+              <div className="flex items-center gap-1 text-emerald-500 text-sm">
+                <TrendingUp className="w-4 h-4" />
+                <span>12.3%</span>
               </div>
+            </div>
           </div>
 
-          <div className="stat-card">
-              <div className="stat-header">
-                  <div className="stat-title">ÓRDENES</div>
-                  <div className="stat-icon icon-orders">
-                      <i className="fas fa-shopping-bag"></i>
-                  </div>
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800">
+            <div className="flex items-start justify-between mb-4">
+              <div className="text-slate-500 dark:text-slate-400 text-sm font-medium">ÓRDENES</div>
+              <div className="w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center">
+                <ShoppingBag className="w-6 h-6 text-amber-500" />
               </div>
-              <div className="stat-value">586</div>
-              <div className="stat-change">
-                  <span className="stat-down"><i className="fas fa-arrow-down"></i> 3.2%</span>
-                  desde el mes pasado
+            </div>
+            <div className="space-y-2">
+              <div className="text-3xl font-bold text-slate-900 dark:text-white">586</div>
+              <div className="flex items-center gap-1 text-red-500 text-sm">
+                <TrendingDown className="w-4 h-4" />
+                <span>3.2%</span>
               </div>
+            </div>
           </div>
 
-          <div className="stat-card">
-              <div className="stat-header">
-                  <div className="stat-title">CRECIMIENTO</div>
-                  <div className="stat-icon icon-growth">
-                      <i className="fas fa-chart-line"></i>
-                  </div>
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800">
+            <div className="flex items-start justify-between mb-4">
+              <div className="text-slate-500 dark:text-slate-400 text-sm font-medium">CRECIMIENTO</div>
+              <div className="w-12 h-12 rounded-full bg-cyan-500/10 flex items-center justify-center">
+                <BarChart3 className="w-6 h-6 text-cyan-500" />
               </div>
-              <div className="stat-value">15.8%</div>
-              <div className="stat-change">
-                  <span className="stat-up"><i className="fas fa-arrow-up"></i> 5.7%</span>
-                  desde el mes pasado
+            </div>
+            <div className="space-y-2">
+              <div className="text-3xl font-bold text-slate-900 dark:text-white">15.8%</div>
+              <div className="flex items-center gap-1 text-emerald-500 text-sm">
+                <TrendingUp className="w-4 h-4" />
+                <span>5.7%</span>
               </div>
-          </div>
-      </div>
-
-      {/* Sección de Gestión de Canchas */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 mt-6">
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">Gestión de Canchas</h2>
-            <p className="text-gray-500 dark:text-gray-400 text-sm">Administra y controla tus espacios deportivos</p>
-          </div>
-          <div className="flex space-x-3">
-            <button className="flex items-center px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clipRule="evenodd" />
-              </svg>
-              Filtrar
-            </button>
-            <button
-              onClick={handleCreateCourtClick} // Asignar la función al botón
-              className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
-              </svg>
-              Nueva Cancha
-            </button>
+            </div>
           </div>
         </div>
-        <CourtTable
-          courts={courts}
-          onOpenModal={handleOpenModal}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          setCurrentPage={setCurrentPage}
-          itemsPerPage={itemsPerPage}
-          setItemsPerPage={() => {}} // No se necesita cambiar items en overview
-          totalCourts={courts.length}
-        />
+
+        {/* Main Content Card */}
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+          {/* Header with Tabs */}
+          <div className="p-6 border-b border-slate-200 dark:border-slate-800">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">
+                  {activeTab === 'canchas' ? 'Gestión de Canchas' : 'Gestión de Reservas'}
+                </h2>
+                <p className="text-slate-500 dark:text-slate-400 text-sm">
+                  {activeTab === 'canchas' 
+                    ? 'Administra y controla tus espacios deportivos' 
+                    : 'Administra y controla las reservas de tus canchas'}
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3 w-full sm:w-auto">
+                <button className="flex items-center gap-2 px-4 py-2.5 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg transition-colors text-sm font-medium border border-slate-300 dark:border-slate-700">
+                  <Filter className="w-4 h-4" />
+                  Filtrar
+                </button>
+                <button 
+                  onClick={activeTab === 'canchas' ? handleCreateCourtClick : () => {}}
+                  className="flex items-center gap-2 px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors text-sm font-semibold shadow-lg shadow-purple-600/20">
+                  <Plus className="w-4 h-4" />
+                  {activeTab === 'canchas' ? 'Nueva Cancha' : 'Nueva Reserva'}
+                </button>
+              </div>
+            </div>
+
+            {/* Tabs Navigation */}
+            <div className="flex items-center gap-2 mt-6 bg-slate-200/50 dark:bg-slate-800/50 p-1 rounded-lg w-fit">
+              <button
+                onClick={() => {
+                  setActiveTab('canchas');
+                  setCurrentPage(1);
+                }}
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-200 ${
+                  activeTab === 'canchas'
+                    ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/30'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+                }`}
+              >
+                <MapPin className="w-4 h-4" />
+                Canchas
+              </button>
+              <button
+                onClick={() => {
+                  setActiveTab('reservas');
+                  setCurrentPage(1);
+                }}
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-200 ${
+                  activeTab === 'reservas'
+                    ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/30'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+                }`}
+              >
+                <Calendar className="w-4 h-4" />
+                Reservas
+              </button>
+            </div>
+          </div>
+
+          {/* Table */}
+          <div className="overflow-x-auto">
+            {activeTab === 'canchas' ? (
+              <CourtTable
+                courts={courts}
+                onOpenModal={handleOpenModal}
+                currentPage={courtsCurrentPage}
+                totalPages={courtsTotalPages}
+                setCurrentPage={setCourtsCurrentPage}
+                itemsPerPage={5}
+                setItemsPerPage={setCourtsItemsPerPage}
+                totalCourts={totalCourts}
+              />
+            ) : (
+              <table className="w-full">
+                <thead className="bg-slate-100/50 dark:bg-slate-800/50">
+                  <tr>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">#</th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Cancha</th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Usuario</th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Inicio</th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Fin</th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Estado</th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Pago</th>
+                    <th className="px-6 py-4 text-right text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
+                  {bookings.map((booking, index) => (
+                    <tr key={booking.id} className="hover:bg-slate-100/30 dark:hover:bg-slate-800/30 transition-colors">
+                      <td className="px-6 py-4 text-sm font-medium text-slate-600 dark:text-slate-300">{(bookingsCurrentPage - 1) * itemsPerPage + index + 1}</td>
+                      <td className="px-6 py-4 text-sm text-slate-900 dark:text-white font-medium">{booking.court_details.name}</td>
+                      <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-300">{booking.user_details.first_name} {booking.user_details.last_name}</td>
+                      <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-300">{new Date(booking.start_time).toLocaleString()}</td>
+                      <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-300">{new Date(booking.end_time).toLocaleString()}</td>
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border ${getEstadoColor(booking.status)}`}>
+                          {booking.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-slate-900 dark:text-white font-semibold text-right">{booking.payment}</td>
+                      <td className="px-6 py-4 text-right flex gap-2">
+                        <button className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium">
+                          Modificar
+                        </button>
+                        <button onClick={() => handleCancelBooking(booking.id)} className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 font-medium">
+                          Cancelar
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+
+          {isReservasTab && (
+            <ProfessionalPagination
+              currentPage={bookingsCurrentPage}
+              totalPages={bookingsTotalPages}
+              onPageChange={setBookingsCurrentPage}
+              itemsPerPage={itemsPerPage}
+              setItemsPerPage={setItemsPerPage}
+              totalItems={totalBookings}
+            />
+          )}
+        </div>
       </div>
-    </>
+    </div>
   );
 }
 
