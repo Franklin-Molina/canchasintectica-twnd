@@ -62,7 +62,7 @@ export const useFetchUsers = () => {
       // Filtro de búsqueda
       const searchMatch =
         searchTerm === '' ||
-        ['username', 'first_name', 'last_name', 'email'].some(field =>
+        ['username', 'first_name'].some(field =>
           user[field]?.toLowerCase().includes(searchTerm.toLowerCase())
         );
 
