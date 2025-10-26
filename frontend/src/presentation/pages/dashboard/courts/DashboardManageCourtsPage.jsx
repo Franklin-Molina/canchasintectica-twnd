@@ -2,7 +2,6 @@ import React from 'react';
 import CourtActionsModal from '../../../components/Dashboard/CourtActionsModal.jsx';
 import Spinner from '../../../components/common/Spinner.jsx';
 import CourtTable from '../../../components/Dashboard/CourtTable.jsx';
-import ProfessionalPagination from '../../../components/common/ProfessionalPagination.jsx';
 import { useManageCourtsLogic } from '../../../hooks/courts/useManageCourtsLogic.js';
 
 function DashboardManageCourtsPage() {

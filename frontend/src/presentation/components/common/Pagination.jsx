@@ -1,51 +1,125 @@
 import React from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import CustomSelect from './CustomSelect.jsx'; // Importar CustomSelect
 
-/**
- * Componente de paginación reutilizable.
- * @param {object} props - Propiedades del componente.
- * @param {number} props.currentPage - La página actual.
- * @param {number} props.totalPages - El número total de páginas.
- * @param {Function} props.onPageChange - Función a llamar cuando se cambia de página.
- * @returns {JSX.Element|null} El componente de paginación o null si no hay páginas.
- */
-function Pagination({ currentPage, totalPages, onPageChange }) {
-  if (totalPages <= 1) {
-    return null;
-  }
-
-  const handlePrevious = () => {
-    if (currentPage > 1) {
-      onPageChange(currentPage - 1);
+const Pagination = ({
+  currentPage,
+  totalPages,
+  onPageChange,
+  itemsPerPage,
+  setItemsPerPage,
+  totalItems,
+}) => {
+  const goToPage = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      onPageChange(page);
     }
   };
 
-  const handleNext = () => {
-    if (currentPage < totalPages) {
-      onPageChange(currentPage + 1);
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxVisible = 5;
+
+    if (totalPages <= maxVisible) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) pages.push(i);
+        pages.push('...');
+        pages.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1);
+        pages.push('...');
+        for (let i = totalPages - 3; i <= totalPages; i++) pages.push(i);
+      } else {
+        pages.push(1);
+        pages.push('...');
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) pages.push(i);
+        pages.push('...');
+        pages.push(totalPages);
+      }
     }
+
+    return pages;
   };
+
+  const startItem = (currentPage - 1) * itemsPerPage + 1;
+  const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
   return (
-    <div className="flex justify-between items-center mt-6">
-      <button
-        onClick={handlePrevious}
-        disabled={currentPage === 1}
-        className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 disabled:opacity-50"
-      >
-        Anterior
-      </button>
-      <span className="text-gray-700 dark:text-gray-300">
-        Página {currentPage} de {totalPages}
-      </span>
-      <button
-        onClick={handleNext}
-        disabled={currentPage === totalPages}
-        className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 disabled:opacity-50"
-      >
-        Siguiente
-      </button>
+    <div className="px-6 py-4 bg-slate-50 border-t border-slate-200 dark:bg-gray-800 dark:border-gray-700">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <p className="text-sm text-slate-600 dark:text-gray-300">
+            Mostrando <span className="font-semibold text-slate-900 dark:text-white">{startItem}</span> a{' '}
+            <span className="font-semibold text-slate-900 dark:text-white">{endItem}</span> de{' '}
+            <span className="font-semibold text-slate-900 dark:text-white">{totalItems}</span> registros
+          </p>
+
+          <div className="flex items-center gap-2">
+            <label className="text-sm text-slate-600 dark:text-gray-300">Mostrar:</label>
+            <CustomSelect
+              options={[
+                { value: 5, label: '5' },
+                { value: 10, label: '10' },
+                { value: 20, label: '20' },
+                { value: 50, label: '50' },
+                { value: 100, label: '100' },
+              ]}
+              value={itemsPerPage}
+              onChange={(value) => {
+                setItemsPerPage(Number(value));
+                onPageChange(1);
+              }}
+              direction="up"
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => goToPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-150 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+
+          <div className="flex items-center gap-1">
+            {getPageNumbers().map((page, idx) =>
+              page === '...' ? (
+                <span key={`ellipsis-${idx}`} className="px-2 text-slate-500 dark:text-gray-400">
+                  ...
+                </span>
+              ) : (
+                <button
+                  key={page}
+                  onClick={() => goToPage(page)}
+                  className={`w-10 h-10 rounded-lg text-sm font-medium transition-all duration-150 ${
+                    currentPage === page
+                      ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30'
+                      : 'text-slate-700 hover:bg-slate-100 dark:text-white dark:hover:bg-gray-600'
+                  }`}
+                >
+                  {page}
+                </button>
+              )
+            )}
+          </div>
+
+          <button
+            onClick={() => goToPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-150 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
     </div>
   );
-}
+};
 
 export default Pagination;

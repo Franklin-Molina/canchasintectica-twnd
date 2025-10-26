@@ -1,6 +1,6 @@
 import React from 'react';
 import Swal from 'sweetalert2';
-import ProfessionalPagination from '../common/ProfessionalPagination.jsx';
+import Pagination from '../common/Pagination.jsx';
 
 const BookingTable = ({
   bookings,
@@ -82,7 +82,7 @@ const BookingTable = ({
           ))}
         </tbody>
       </table>
-      <ProfessionalPagination
+      <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={setCurrentPage}

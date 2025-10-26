@@ -1,7 +1,7 @@
 import React, { useState } from "react"; // Added useState
 import { useAuth } from "../../../context/AuthContext.jsx";
 import Spinner from "../../../components/common/Spinner.jsx";
-import ProfessionalPagination from "../../../components/common/ProfessionalPagination.jsx";
+import Pagination from "../../../components/common/Pagination.jsx";
 import CustomSelect from "../../../components/common/CustomSelect.jsx"; // Importar el nuevo componente
 import { useDashboardUsersLogic } from "../../../hooks/dashboard/useDashboardUsersLogic.js"; // Ruta actualizada
 import {
@@ -292,7 +292,7 @@ function DashboardUsersPage() {
             </tbody>
           </table>
           {/* Paginación */}
-          <ProfessionalPagination
+          <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={setCurrentPage}

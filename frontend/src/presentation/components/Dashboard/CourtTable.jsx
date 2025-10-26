@@ -1,6 +1,6 @@
 import React from 'react';
 import { formatPrice } from '../../utils/formatters.js'; // Importar la función de formato de precio
-import ProfessionalPagination from '../common/ProfessionalPagination.jsx';
+import Pagination from '../common/Pagination.jsx';
 
 function CourtTable({
   courts,
@@ -67,7 +67,7 @@ function CourtTable({
           </tbody>
         </table>
       </div>
-      <ProfessionalPagination
+      <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={setCurrentPage}
