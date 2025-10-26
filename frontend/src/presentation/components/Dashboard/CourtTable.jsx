@@ -8,7 +8,8 @@ function CourtTable({
   currentPage,
   totalPages,
   setCurrentPage,
-  itemsPerPage,
+  itemsPerPage
+  ,
   setItemsPerPage,
   totalCourts,
 }) {

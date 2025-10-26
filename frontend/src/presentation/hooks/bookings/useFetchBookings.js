@@ -12,7 +12,7 @@ export const useFetchBookings = () => {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [itemsPerPage, setItemsPerPage] = useState(5); // Define cuántos elementos mostrar por página
+  const [itemsPerPage, setItemsPerPage] = useState(10); // Define cuántos elementos mostrar por página
 
   const { getBookingsUseCase, deleteBookingUseCase } = useUseCases();
 

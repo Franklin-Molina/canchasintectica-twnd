@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TrendingUp, TrendingDown, Users, DollarSign, ShoppingBag, BarChart3, Calendar, MapPin, Filter, Plus } from 'lucide-react';
 import CourtTable from '../../components/Dashboard/CourtTable.jsx';
@@ -6,6 +6,7 @@ import BookingTable from '../../components/Dashboard/BookingTable.jsx';
 import Spinner from '../../components/common/Spinner.jsx';
 import { useManageCourtsLogic } from '../../hooks/courts/useManageCourtsLogic.js';
 import { useFetchBookings } from '../../hooks/bookings/useFetchBookings.js';
+
 
 function DashboardOverviewPage() {
   const {
@@ -33,6 +34,12 @@ function DashboardOverviewPage() {
     setItemsPerPage,
     totalBookings,
   } = useFetchBookings();
+  
+  useEffect(() => {
+    setCourtsItemsPerPage(5);
+    setItemsPerPage(5);
+  }, [setCourtsItemsPerPage, setItemsPerPage]);
+
 
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('canchas'); // 'canchas' o 'reservas'
@@ -131,8 +138,8 @@ function DashboardOverviewPage() {
                   {activeTab === 'canchas' ? 'Gestión de Canchas' : 'Gestión de Reservas'}
                 </h2>
                 <p className="text-slate-500 dark:text-slate-400 text-sm">
-                  {activeTab === 'canchas' 
-                    ? 'Administra y controla tus espacios deportivos' 
+                  {activeTab === 'canchas'
+                    ? 'Administra y controla tus espacios deportivos'
                     : 'Administra y controla las reservas de tus canchas'}
                 </p>
               </div>
@@ -142,8 +149,8 @@ function DashboardOverviewPage() {
                   <Filter className="w-4 h-4" />
                   Filtrar
                 </button>
-                <button 
-                  onClick={activeTab === 'canchas' ? handleCreateCourtClick : () => {}}
+                <button
+                  onClick={activeTab === 'canchas' ? handleCreateCourtClick : () => { }}
                   className="flex items-center gap-2 px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors text-sm font-semibold shadow-lg shadow-purple-600/20">
                   <Plus className="w-4 h-4" />
                   {activeTab === 'canchas' ? 'Nueva Cancha' : 'Nueva Reserva'}
@@ -158,11 +165,10 @@ function DashboardOverviewPage() {
                   setActiveTab('canchas');
                   setCurrentPage(1);
                 }}
-                className={`flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-200 ${
-                  activeTab === 'canchas'
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-200 ${activeTab === 'canchas'
                     ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/30'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
-                }`}
+                  }`}
               >
                 <MapPin className="w-4 h-4" />
                 Canchas
@@ -172,11 +178,10 @@ function DashboardOverviewPage() {
                   setActiveTab('reservas');
                   setCurrentPage(1);
                 }}
-                className={`flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-200 ${
-                  activeTab === 'reservas'
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-200 ${activeTab === 'reservas'
                     ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/30'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
-                }`}
+                  }`}
               >
                 <Calendar className="w-4 h-4" />
                 Reservas
@@ -193,7 +198,7 @@ function DashboardOverviewPage() {
                 currentPage={courtsCurrentPage}
                 totalPages={courtsTotalPages}
                 setCurrentPage={setCourtsCurrentPage}
-                itemsPerPage={5}
+                itemsPerPage={courtsItemsPerPage}
                 setItemsPerPage={setCourtsItemsPerPage}
                 totalCourts={totalCourts}
               />
