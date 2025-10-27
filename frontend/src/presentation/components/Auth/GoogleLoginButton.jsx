@@ -12,6 +12,7 @@ export default function GoogleLoginButton({ onSuccess, onError }) {
 
   return (
     <button
+      type="button"
       onClick={() => login()}
       className="
         flex items-center justify-center w-full gap-3 
