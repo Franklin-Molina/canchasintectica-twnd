@@ -7,6 +7,7 @@ import Spinner from '../../components/common/Spinner.jsx';
 import FilterPanel from '../../components/Dashboard/FilterPanel.jsx';
 import { useManageCourtsLogic } from '../../hooks/courts/useManageCourtsLogic.js';
 import { useFetchBookings } from '../../hooks/bookings/useFetchBookings.js';
+import { useFetchAllCourts } from '../../hooks/courts/useFetchAllCourts.js';
 
 
 function DashboardOverviewPage() {
@@ -43,8 +44,12 @@ function DashboardOverviewPage() {
     setSearchFilter: setBookingSearchFilter,
     paymentStatusFilter: bookingPaymentStatusFilter,
     setPaymentStatusFilter: setBookingPaymentStatusFilter,
+    selectedCourtFilter: bookingCourtFilter,
+    setSelectedCourtFilter: setBookingCourtFilter,
     clearFilters: clearBookingFilters,
   } = useFetchBookings();
+
+  const { courts: allCourts } = useFetchAllCourts();
   
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
@@ -62,8 +67,14 @@ function DashboardOverviewPage() {
     { id: 'status', label: 'Estado', type: 'select', options: [{ value: 'all', label: 'Todos' }, { value: 'active', label: 'Activa' }, { value: 'inactive', label: 'Inactiva' }], value: courtStatusFilter },
   ];
 
+  const courtOptions = [
+    { value: 'all', label: 'Todas las canchas' },
+    ...allCourts.map(court => ({ value: court.id, label: court.name })),
+  ];
+
   const bookingFilters = [
     { id: 'search', label: 'Buscar', type: 'text', placeholder: 'Buscar por cancha o usuario...', value: bookingSearchFilter },
+    { id: 'court', label: 'Cancha', type: 'select', options: courtOptions, value: bookingCourtFilter },
     { id: 'paymentStatus', label: 'Estado de Pago', type: 'select', options: [{ value: 'all', label: 'Todos' }, { value: 'pagado', label: 'Pagado' }, { value: 'pendiente', label: 'Pendiente' }], value: bookingPaymentStatusFilter },
   ];
 
@@ -71,15 +82,18 @@ function DashboardOverviewPage() {
     if (activeTab === 'canchas') {
       if (filterId === 'name') setCourtNameFilter(value);
       if (filterId === 'status') setCourtStatusFilter(value);
+      setCourtsCurrentPage(1);
     } else {
       if (filterId === 'search') setBookingSearchFilter(value);
+      if (filterId === 'court') setBookingCourtFilter(value);
       if (filterId === 'paymentStatus') setBookingPaymentStatusFilter(value);
+      setBookingsCurrentPage(1);
     }
   };
   
   const activeFilterCount = activeTab === 'canchas' 
     ? (courtNameFilter ? 1 : 0) + (courtStatusFilter !== 'all' ? 1 : 0)
-    : (bookingSearchFilter ? 1 : 0) + (bookingPaymentStatusFilter !== 'all' ? 1 : 0);
+    : (bookingSearchFilter ? 1 : 0) + (bookingPaymentStatusFilter !== 'all' ? 1 : 0) + (bookingCourtFilter !== 'all' ? 1 : 0);
 
   const handleCreateCourtClick = () => {
     navigate('/dashboard/canchas/create');

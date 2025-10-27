@@ -15,6 +15,7 @@ export const useFetchBookings = () => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [searchFilter, setSearchFilter] = useState('');
   const [paymentStatusFilter, setPaymentStatusFilter] = useState('all'); // 'all', 'pagado', 'pendiente'
+  const [selectedCourtFilter, setSelectedCourtFilter] = useState('all'); // 'all' o el ID de una cancha
 
   const { getBookingsUseCase, deleteBookingUseCase } = useUseCases();
 
@@ -30,9 +31,11 @@ export const useFetchBookings = () => {
       
       const paymentStatusMatch = paymentStatusFilter === 'all' || paymentStatus.toLowerCase() === paymentStatusFilter;
 
-      return searchMatch && paymentStatusMatch;
+      const courtMatch = selectedCourtFilter === 'all' || booking.court_details?.id === selectedCourtFilter;
+
+      return searchMatch && paymentStatusMatch && courtMatch;
     });
-  }, [allBookings, searchFilter, paymentStatusFilter]);
+  }, [allBookings, searchFilter, paymentStatusFilter, selectedCourtFilter]);
 
   const fetchAllBookings = async () => {
     try {
@@ -65,6 +68,7 @@ export const useFetchBookings = () => {
   const clearFilters = () => {
     setSearchFilter('');
     setPaymentStatusFilter('all');
+    setSelectedCourtFilter('all');
     setCurrentPage(1);
   };
 
@@ -95,6 +99,8 @@ export const useFetchBookings = () => {
     setSearchFilter,
     paymentStatusFilter,
     setPaymentStatusFilter,
+    selectedCourtFilter,
+    setSelectedCourtFilter,
     clearFilters,
   };
 };
