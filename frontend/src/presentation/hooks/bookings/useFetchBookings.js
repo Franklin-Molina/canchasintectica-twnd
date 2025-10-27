@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useUseCases } from '../../context/UseCaseContext';
 
 /**
@@ -12,9 +12,27 @@ export const useFetchBookings = () => {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [itemsPerPage, setItemsPerPage] = useState(10); // Define cuántos elementos mostrar por página
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [searchFilter, setSearchFilter] = useState('');
+  const [paymentStatusFilter, setPaymentStatusFilter] = useState('all'); // 'all', 'pagado', 'pendiente'
 
   const { getBookingsUseCase, deleteBookingUseCase } = useUseCases();
+
+  const filteredBookings = useMemo(() => {
+    return allBookings.filter(booking => {
+      const courtName = booking.court_details?.name || '';
+      const userName = `${booking.user_details?.first_name || ''} ${booking.user_details?.last_name || ''}`.trim();
+      const paymentStatus = booking.payment || '';
+
+      const searchMatch = searchFilter === '' ||
+        courtName.toLowerCase().includes(searchFilter.toLowerCase()) ||
+        userName.toLowerCase().includes(searchFilter.toLowerCase());
+      
+      const paymentStatusMatch = paymentStatusFilter === 'all' || paymentStatus.toLowerCase() === paymentStatusFilter;
+
+      return searchMatch && paymentStatusMatch;
+    });
+  }, [allBookings, searchFilter, paymentStatusFilter]);
 
   const fetchAllBookings = async () => {
     try {
@@ -40,9 +58,15 @@ export const useFetchBookings = () => {
   useEffect(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    setDisplayedBookings(allBookings.slice(startIndex, endIndex));
-    setTotalPages(Math.ceil((allBookings?.length || 0) / itemsPerPage));
-  }, [currentPage, allBookings, itemsPerPage]);
+    setDisplayedBookings(filteredBookings.slice(startIndex, endIndex));
+    setTotalPages(Math.ceil((filteredBookings?.length || 0) / itemsPerPage));
+  }, [currentPage, filteredBookings, itemsPerPage]);
+
+  const clearFilters = () => {
+    setSearchFilter('');
+    setPaymentStatusFilter('all');
+    setCurrentPage(1);
+  };
 
   const deleteBooking = async (bookingId) => {
     try {
@@ -57,16 +81,20 @@ export const useFetchBookings = () => {
   };
 
   return {
-    bookings: displayedBookings, // Devuelve la lista paginada
+    bookings: displayedBookings,
     loading,
     error,
     currentPage,
     totalPages,
-    totalBookings: allBookings.length, // Devuelve el conteo total
+    totalBookings: filteredBookings.length,
     setCurrentPage,
     deleteBooking,
     itemsPerPage,
     setItemsPerPage,
-    totalBookings: allBookings.length,
+    searchFilter,
+    setSearchFilter,
+    paymentStatusFilter,
+    setPaymentStatusFilter,
+    clearFilters,
   };
 };

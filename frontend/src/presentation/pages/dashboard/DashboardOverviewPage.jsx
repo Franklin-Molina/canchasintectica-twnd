@@ -4,6 +4,7 @@ import { TrendingUp, TrendingDown, Users, DollarSign, ShoppingBag, BarChart3, Ca
 import CourtTable from '../../components/Dashboard/CourtTable.jsx';
 import BookingTable from '../../components/Dashboard/BookingTable.jsx';
 import Spinner from '../../components/common/Spinner.jsx';
+import FilterPanel from '../../components/Dashboard/FilterPanel.jsx';
 import { useManageCourtsLogic } from '../../hooks/courts/useManageCourtsLogic.js';
 import { useFetchBookings } from '../../hooks/bookings/useFetchBookings.js';
 
@@ -20,6 +21,11 @@ function DashboardOverviewPage() {
     itemsPerPage: courtsItemsPerPage,
     setItemsPerPage: setCourtsItemsPerPage,
     totalCourts,
+    nameFilter: courtNameFilter,
+    setNameFilter: setCourtNameFilter,
+    statusFilter: courtStatusFilter,
+    setStatusFilter: setCourtStatusFilter,
+    clearFilters: clearCourtFilters,
   } = useManageCourtsLogic();
 
   const {
@@ -33,8 +39,15 @@ function DashboardOverviewPage() {
     itemsPerPage,
     setItemsPerPage,
     totalBookings,
+    searchFilter: bookingSearchFilter,
+    setSearchFilter: setBookingSearchFilter,
+    paymentStatusFilter: bookingPaymentStatusFilter,
+    setPaymentStatusFilter: setBookingPaymentStatusFilter,
+    clearFilters: clearBookingFilters,
   } = useFetchBookings();
   
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
   useEffect(() => {
     setCourtsItemsPerPage(5);
     setItemsPerPage(5);
@@ -43,6 +56,30 @@ function DashboardOverviewPage() {
 
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('canchas'); // 'canchas' o 'reservas'
+
+  const courtFilters = [
+    { id: 'name', label: 'Nombre', type: 'text', placeholder: 'Buscar por nombre...', value: courtNameFilter },
+    { id: 'status', label: 'Estado', type: 'select', options: [{ value: 'all', label: 'Todos' }, { value: 'active', label: 'Activa' }, { value: 'inactive', label: 'Inactiva' }], value: courtStatusFilter },
+  ];
+
+  const bookingFilters = [
+    { id: 'search', label: 'Buscar', type: 'text', placeholder: 'Buscar por cancha o usuario...', value: bookingSearchFilter },
+    { id: 'paymentStatus', label: 'Estado de Pago', type: 'select', options: [{ value: 'all', label: 'Todos' }, { value: 'pagado', label: 'Pagado' }, { value: 'pendiente', label: 'Pendiente' }], value: bookingPaymentStatusFilter },
+  ];
+
+  const handleFilterChange = (filterId, value) => {
+    if (activeTab === 'canchas') {
+      if (filterId === 'name') setCourtNameFilter(value);
+      if (filterId === 'status') setCourtStatusFilter(value);
+    } else {
+      if (filterId === 'search') setBookingSearchFilter(value);
+      if (filterId === 'paymentStatus') setBookingPaymentStatusFilter(value);
+    }
+  };
+  
+  const activeFilterCount = activeTab === 'canchas' 
+    ? (courtNameFilter ? 1 : 0) + (courtStatusFilter !== 'all' ? 1 : 0)
+    : (bookingSearchFilter ? 1 : 0) + (bookingPaymentStatusFilter !== 'all' ? 1 : 0);
 
   const handleCreateCourtClick = () => {
     navigate('/dashboard/canchas/create');
@@ -145,7 +182,7 @@ function DashboardOverviewPage() {
               </div>
 
               <div className="flex items-center gap-3 w-full sm:w-auto">
-                <button className="flex items-center gap-2 px-4 py-2.5 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg transition-colors text-sm font-medium border border-slate-300 dark:border-slate-700">
+                <button onClick={() => setIsFilterOpen(!isFilterOpen)} className="flex items-center gap-2 px-4 py-2.5 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg transition-colors text-sm font-medium border border-slate-300 dark:border-slate-700">
                   <Filter className="w-4 h-4" />
                   Filtrar
                 </button>
@@ -188,6 +225,15 @@ function DashboardOverviewPage() {
               </button>
             </div>
           </div>
+
+          <FilterPanel
+            isOpen={isFilterOpen}
+            onClose={() => setIsFilterOpen(false)}
+            filters={activeTab === 'canchas' ? courtFilters : bookingFilters}
+            onFilterChange={handleFilterChange}
+            onClearFilters={activeTab === 'canchas' ? clearCourtFilters : clearBookingFilters}
+            activeFilterCount={activeFilterCount}
+          />
 
           {/* Table */}
           <div className="overflow-x-auto">

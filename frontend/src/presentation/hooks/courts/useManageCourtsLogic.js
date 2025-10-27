@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useButtonDisable from '../general/useButtonDisable.js';
 import { ApiCourtRepository } from '../../../infrastructure/repositories/api-court-repository'; // Se mantiene para operaciones directas del repo
@@ -36,8 +36,18 @@ export const useManageCourtsLogic = () => {
   const [selectedCourt, setSelectedCourt] = useState(null);
   const [courtToDelete, setCourtToDelete] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10); // Default to 10 items per page
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [nameFilter, setNameFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all'); // 'all', 'active', 'inactive'
   const hasFetchedCourts = useRef(false);
+
+  const filteredCourts = useMemo(() => {
+    return courts.filter(court => {
+      const nameMatch = nameFilter === '' || court.name.toLowerCase().includes(nameFilter.toLowerCase());
+      const statusMatch = statusFilter === 'all' || (statusFilter === 'active' && court.is_active) || (statusFilter === 'inactive' && !court.is_active);
+      return nameMatch && statusMatch;
+    });
+  }, [courts, nameFilter, statusFilter]);
 
   // Instanciar repositorio y casos de uso
   const courtRepository = new ApiCourtRepository(); // Se mantiene para operaciones directas del repo
@@ -129,9 +139,15 @@ export const useManageCourtsLogic = () => {
     setSelectedCourt(null);
   };
 
-  const totalPages = Math.ceil(courts.length / itemsPerPage);
+  const clearFilters = () => {
+    setNameFilter('');
+    setStatusFilter('all');
+    setCurrentPage(1);
+  };
+
+  const totalPages = Math.ceil(filteredCourts.length / itemsPerPage);
   return {
-    courts: courts,
+    courts: filteredCourts,
     loading,
     error,
     selectedCourt,
@@ -144,7 +160,12 @@ export const useManageCourtsLogic = () => {
     setCurrentPage,
     itemsPerPage,
     setItemsPerPage,
-    totalCourts: courts.length,
+    totalCourts: filteredCourts.length,
+    nameFilter,
+    setNameFilter,
+    statusFilter,
+    setStatusFilter,
+    clearFilters,
     handleSuspendCourtClick,
     handleReactivateCourtClick,
     handleDeleteRequest,
