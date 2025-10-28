@@ -110,7 +110,7 @@ function DashboardOverviewPage() {
   if (error) return <div className="text-red-500 text-center">{error.message}</div>;
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-6">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 p-6">
       <div className="max-w-8xl mx-auto space-y-6">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
