@@ -250,7 +250,7 @@ function DashboardOverviewPage() {
           />
 
           {/* Table */}
-          <div className="overflow-x-auto">
+          <div className="overflow-x-visible">
             {activeTab === 'canchas' ? (
               <CourtTable
                 courts={courts}

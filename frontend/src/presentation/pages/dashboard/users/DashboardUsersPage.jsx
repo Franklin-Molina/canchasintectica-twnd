@@ -212,7 +212,7 @@ function DashboardUsersPage() {
 
       {/* Tabla */}
       {Array.isArray(users) && users.length > 0 ? (
-        <div className="overflow-x-auto bg-white dark:bg-gray-900 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700">
+        <div className="overflow-x-visible bg-white dark:bg-gray-900 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700">
           <table className="w-full border-collapse">
             <thead className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 uppercase text-sm">
               <tr>
