@@ -1,50 +1,68 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { GetCourtsUseCase } from '../../../application/use-cases/courts/get-courts.js';
 import { ApiCourtRepository } from '../../../infrastructure/repositories/api-court-repository.js';
 
 /**
  * Hook personalizado para la lógica de la página de inicio (HomePage).
- * Encapsula la obtención de la lista de canchas y el manejo de su estado.
+ * Encapsula la obtención de la lista de canchas y el manejo de su estado,
+ * incluyendo la lógica de paginación.
  *
  * @returns {object} Un objeto que contiene el estado y los datos de las canchas.
- * @property {Array} courts - Lista de canchas disponibles.
- * @property {boolean} loading - Indica si los datos están cargando.
- * @property {string|null} error - Mensaje de error si ocurre uno.
  */
 export const useHomePageLogic = () => {
-  const [courts, setCourts] = useState([]);
+  const [allCourts, setAllCourts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const courtRepository = new ApiCourtRepository();
-  const getCourtsUseCase = new GetCourtsUseCase(courtRepository);
-
-  const effectRan = useRef(false);
+  // Estado de la paginación
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(6); // Canchas por página
 
   useEffect(() => {
-    if (effectRan.current === false) {
-      const fetchCourts = async () => {
-        try {
-          setLoading(true);
-          // Obtener solo las canchas que están activas
-          const courtsList = await getCourtsUseCase.execute({ is_active: true });
-          setCourts(courtsList);
-          setLoading(false);
-        } catch (err) {
-          setError(err);
-          setLoading(false);
-          console.error('Error al obtener canchas:', err);
-        }
-      };
+    const courtRepository = new ApiCourtRepository();
+    const getCourtsUseCase = new GetCourtsUseCase(courtRepository);
 
-      fetchCourts();
-      effectRan.current = true;
-    }
-  }, [getCourtsUseCase]); // Dependencia del caso de uso
+    const fetchCourts = async () => {
+      try {
+        setLoading(true);
+        const courtsList = await getCourtsUseCase.execute({ is_active: true });
+        setAllCourts(courtsList);
+      } catch (err) {
+        setError(err);
+        console.error('Error al obtener canchas:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCourts();
+  }, []); // Se ejecuta solo una vez al montar el componente
+
+  // Canchas paginadas calculadas con useMemo para optimización
+  const paginatedCourts = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return allCourts.slice(startIndex, endIndex);
+  }, [allCourts, currentPage, itemsPerPage]);
+
+  const totalItems = allCourts.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+  // Función para cambiar de página
+  const onPageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   return {
-    courts,
+    courts: paginatedCourts, // Exporta las canchas de la página actual
     loading,
     error,
+    // Propiedades de paginación
+    currentPage,
+    totalPages,
+    onPageChange,
+    itemsPerPage,
+    setItemsPerPage,
+    totalItems,
   };
 };

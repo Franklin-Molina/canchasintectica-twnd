@@ -1,10 +1,20 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Spinner from '../../components/common/Spinner.jsx';
+import Pagination from '../../components/common/Pagination.jsx';
 import { useHomePageLogic } from '../../hooks/general/useHomePageLogic.js';
 
 function HomePage({ openAuthModal }) {
-  const { courts, loading, error } = useHomePageLogic();
+  const {
+    courts,
+    loading,
+    error,
+    currentPage,
+    totalPages,
+    onPageChange,
+    itemsPerPage,
+    setItemsPerPage,
+    totalItems,
+  } = useHomePageLogic();
 
   if (loading) {
     return (
@@ -160,6 +170,19 @@ function HomePage({ openAuthModal }) {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+        {/* Paginación */}
+        {totalPages > 1 && (
+          <div className="mt-12">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={onPageChange}
+              itemsPerPage={itemsPerPage}
+              setItemsPerPage={setItemsPerPage}
+              totalItems={totalItems}
+            />
           </div>
         )}
       </section>
