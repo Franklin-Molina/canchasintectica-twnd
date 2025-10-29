@@ -14,6 +14,7 @@ function HomePage({ openAuthModal }) {
     itemsPerPage,
     setItemsPerPage,
     totalItems,
+    showPagination,
   } = useHomePageLogic();
 
   if (loading) {
@@ -46,9 +47,9 @@ function HomePage({ openAuthModal }) {
           </div>
 
           <h1 className="text-5xl sm:text-7xl font-black text-white mb-6 tracking-tight leading-tight">
-            Encuentra tu Cancha
+            Reserva tu cancha ya!
             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-orange-400">
-              Ideal
+              ya
             </span>
           </h1>
 
@@ -173,7 +174,7 @@ function HomePage({ openAuthModal }) {
           </div>
         )}
         {/* Paginación */}
-        {totalPages > 1 && (
+        {showPagination && (
           <div className="mt-12">
             <Pagination
               currentPage={currentPage}

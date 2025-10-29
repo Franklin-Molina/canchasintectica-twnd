@@ -38,15 +38,16 @@ export const useHomePageLogic = () => {
     fetchCourts();
   }, []); // Se ejecuta solo una vez al montar el componente
 
+  const totalItems = allCourts.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const showPagination = totalItems > 6; // El 6 es el valor inicial de itemsPerPage
+
   // Canchas paginadas calculadas con useMemo para optimización
   const paginatedCourts = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     return allCourts.slice(startIndex, endIndex);
   }, [allCourts, currentPage, itemsPerPage]);
-
-  const totalItems = allCourts.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   // Función para cambiar de página
   const onPageChange = (page) => {
@@ -64,5 +65,6 @@ export const useHomePageLogic = () => {
     itemsPerPage,
     setItemsPerPage,
     totalItems,
+    showPagination,
   };
 };
