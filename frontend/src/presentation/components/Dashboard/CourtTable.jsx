@@ -23,8 +23,8 @@ function CourtTable({
   );
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
-      <div className="overflow-x-visible">
+    <div className="shadow-md">
+      <div className="overflow-x-auto bg-white dark:bg-gray-800 rounded-t-xl border-x border-t border-gray-200 dark:border-gray-700">
         <table className="w-full text-left border-collapse">
           <thead className="bg-gray-100 dark:bg-gray-700">
             <tr className="text-gray-700 dark:text-gray-200">
@@ -67,14 +67,16 @@ function CourtTable({
           </tbody>
         </table>
       </div>
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={setCurrentPage}
-        itemsPerPage={itemsPerPage}
-        setItemsPerPage={setItemsPerPage}
-        totalItems={totalCourts}
-      />
+      <div className="bg-white dark:bg-gray-800 rounded-b-xl border-x border-b border-gray-200 dark:border-gray-700">
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+          itemsPerPage={itemsPerPage}
+          setItemsPerPage={setItemsPerPage}
+          totalItems={totalCourts}
+        />
+      </div>
     </div>
   );
 }

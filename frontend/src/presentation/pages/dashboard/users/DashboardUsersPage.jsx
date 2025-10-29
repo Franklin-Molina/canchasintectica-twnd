@@ -212,94 +212,101 @@ function DashboardUsersPage() {
 
       {/* Tabla */}
       {Array.isArray(users) && users.length > 0 ? (
-        <div className="overflow-x-visible bg-white dark:bg-gray-900 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700">
-          <table className="w-full border-collapse">
-            <thead className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 uppercase text-sm">
-              <tr>
-                <th className="py-3 px-4 text-left">#</th>
-                <th className="py-3 px-4 text-left">Usuario</th>
-                <th className="py-3 px-4 text-left">Nombre</th>
-                <th className="py-3 px-4 text-left">Estado</th>
-                <th className="py-3 px-4 text-left">Acciones</th>
-                <th className="py-3 px-4 text-left">Detalles</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((clientUser,index) => (
-                <tr
-                  key={clientUser.id}
-                  className="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
-                >
-                   <td className="py-3 px-4  text-gray-800 dark:text-gray-100 font-medium"> {getRowNumber(index)}</td>
-                  <td className="py-3 px-4 flex items-center gap-2">
-                    <User className="w-4 h-4 text-blue-500" />
-                    {clientUser.username}
-                  </td>
-                  <td className="py-3 px-4">
-                    {clientUser.first_name} {clientUser.last_name}
-                  </td>
-                  <td className="py-3 px-4">
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                        clientUser.is_active
-                          ? "bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-300"
-                          : "bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-300"
-                      }`}
-                    >
-                      {clientUser.is_active ? "Activo" : "Suspendido"}
-                    </span>
-                  </td>
-                  <td className="py-3 px-4 space-x-2">
-                    {clientUser.is_active ? (
-                      <button
-                        onClick={() => handleSuspendUserClick(clientUser.id)}
-                        disabled={isSuspending}
-                        className="inline-flex items-center gap-1 bg-yellow-100 text-yellow-700 dark:bg-yellow-800 dark:text-yellow-300 px-3 py-1 rounded-lg text-xs font-semibold hover:bg-yellow-200 dark:hover:bg-yellow-700 transition"
-                      >
-                        <UserMinus className="w-4 h-4" />
-                        Suspender
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => handleReactivateUserClick(clientUser.id)}
-                        disabled={isReactivating}
-                        className="inline-flex items-center gap-1 bg-green-100 text-green-700 dark:bg-green-800
-                         dark:text-green-300 px-3 py-1 rounded-lg text-xs font-semibold hover:bg-green-200 dark:hover:bg-green-700 transition"
-                      >
-                        <UserCheck className="w-4 h-4" />
-                        Reactivar
-                      </button>
-                    )}
-                    <button
-                      onClick={() => confirmDelete(clientUser)}
-                      className="inline-flex items-center gap-1 bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-300 px-3 py-1 rounded-lg text-xs font-semibold hover:bg-red-200 dark:hover:bg-red-700 transition"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      Eliminar
-                    </button>
-                  </td>
-                  <td className="py-3 px-4">
-                    <button
-                      onClick={() => handleViewDetails(clientUser)}
-                      className="inline-flex items-center gap-1 bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-300 px-3 py-1 rounded-lg text-xs font-semibold hover:bg-purple-200 dark:hover:bg-purple-700 transition"
-                    >
-                      <Eye className="w-4 h-4" />
-                      Ver más
-                    </button>
-                  </td>
+        <div className="shadow-md">
+          <div className="overflow-x-auto bg-white dark:bg-gray-900 rounded-t-2xl border-x border-t border-gray-200 dark:border-gray-700">
+            <table className="w-full border-collapse">
+              <thead className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 uppercase text-sm">
+                <tr>
+                  <th className="py-3 px-4 text-left">#</th>
+                  <th className="py-3 px-4 text-left">Usuario</th>
+                  <th className="py-3 px-4 text-left">Nombre</th>
+                  <th className="py-3 px-4 text-left">Estado</th>
+                  <th className="py-3 px-4 text-left">Acciones</th>
+                  <th className="py-3 px-4 text-left">Detalles</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {users.map((clientUser, index) => (
+                  <tr
+                    key={clientUser.id}
+                    className="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+                  >
+                    <td className="py-3 px-4 text-gray-800 dark:text-gray-100 font-medium">
+                      {getRowNumber(index)}
+                    </td>
+                    <td className="py-3 px-4 flex items-center gap-2">
+                      <User className="w-4 h-4 text-blue-500" />
+                      {clientUser.username}
+                    </td>
+                    <td className="py-3 px-4">
+                      {clientUser.first_name} {clientUser.last_name}
+                    </td>
+                    <td className="py-3 px-4">
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                          clientUser.is_active
+                            ? "bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-300"
+                            : "bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-300"
+                        }`}
+                      >
+                        {clientUser.is_active ? "Activo" : "Suspendido"}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 space-x-2">
+                      {clientUser.is_active ? (
+                        <button
+                          onClick={() => handleSuspendUserClick(clientUser.id)}
+                          disabled={isSuspending}
+                          className="inline-flex items-center gap-1 bg-yellow-100 text-yellow-700 dark:bg-yellow-800 dark:text-yellow-300 px-3 py-1 rounded-lg text-xs font-semibold hover:bg-yellow-200 dark:hover:bg-yellow-700 transition"
+                        >
+                          <UserMinus className="w-4 h-4" />
+                          Suspender
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() =>
+                            handleReactivateUserClick(clientUser.id)
+                          }
+                          disabled={isReactivating}
+                          className="inline-flex items-center gap-1 bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-300 px-3 py-1 rounded-lg text-xs font-semibold hover:bg-green-200 dark:hover:bg-green-700 transition"
+                        >
+                          <UserCheck className="w-4 h-4" />
+                          Reactivar
+                        </button>
+                      )}
+                      <button
+                        onClick={() => confirmDelete(clientUser)}
+                        className="inline-flex items-center gap-1 bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-300 px-3 py-1 rounded-lg text-xs font-semibold hover:bg-red-200 dark:hover:bg-red-700 transition"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Eliminar
+                      </button>
+                    </td>
+                    <td className="py-3 px-4">
+                      <button
+                        onClick={() => handleViewDetails(clientUser)}
+                        className="inline-flex items-center gap-1 bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-300 px-3 py-1 rounded-lg text-xs font-semibold hover:bg-purple-200 dark:hover:bg-purple-700 transition"
+                      >
+                        <Eye className="w-4 h-4" />
+                        Ver más
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
           {/* Paginación */}
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-            itemsPerPage={itemsPerPage}
-            setItemsPerPage={setItemsPerPage}
-            totalItems={totalUsers}
-          />
+          <div className="bg-white dark:bg-gray-900 rounded-b-2xl border-x border-b border-gray-200 dark:border-gray-700">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              itemsPerPage={itemsPerPage}
+              setItemsPerPage={setItemsPerPage}
+              totalItems={totalUsers}
+            />
+          </div>
         </div>
         
       ) : (

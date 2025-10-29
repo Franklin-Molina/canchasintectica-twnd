@@ -49,7 +49,7 @@ const Pagination = ({
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
   return (
-    <div className="px-6 py-4 bg-slate-50 border-t border-slate-200 dark:bg-gray-800 dark:border-gray-700">
+    <div className="px-6 py-4">
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <p className="text-sm text-slate-600 dark:text-gray-300">

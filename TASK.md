@@ -13,4 +13,6 @@
 - [x] Corregir errores 500 en `App.jsx` por importaciones incorrectas de CSS (22/10/2025)
 - [x] Implementar filtro por fecha en `DashboardUsersPage.jsx` (23/10/2025)
 - [x] Formatear la visualización del precio de las canchas de 43333.00 a 43.000 (23/10/2025)
-- [ ] Corregir la desaparición de la paginación al mostrar todos los elementos en `HomePage.jsx` (29/10/2025)
+- [x] Corregir la desaparición de la paginación al mostrar todos los elementos en `HomePage.jsx` (29/10/2025)
+- [x] Corregir los bordes de la tabla en `DashboardUsersPage.jsx` para que sean redondeados (29/10/2025)
+- [ ] Aplicar corrección de bordes redondeados en `CourtTable.jsx` (29/10/2025)
