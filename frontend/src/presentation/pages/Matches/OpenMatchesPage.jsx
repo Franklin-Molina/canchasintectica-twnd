@@ -1,15 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import api from '../../../infrastructure/api/api';
-import '../../../styles/OpenMatchesPage.css';
-import { toast } from 'react-toastify';
-import Swal from 'sweetalert2'; // Importar SweetAlert2
-import CreateMatchForm from '../../components/Matches/CreateMatchForm';
-import { useAuth } from '../../context/AuthContext'; // Importar useAuth
+import React, { useState, useEffect } from "react";
+import api from "../../../infrastructure/api/api";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
+import CreateMatchForm from "../../components/Matches/CreateMatchForm";
+import { useAuth } from "../../context/AuthContext";
 
 const groupMatchesByCategory = (matches) => {
   const grouped = { Mixto: [], Hombres: [], Mujeres: [] };
-  matches.forEach(match => {
-    // Asegurarse de que la categoría existe en el objeto `grouped`
+  matches.forEach((match) => {
     if (grouped.hasOwnProperty(match.category)) {
       grouped[match.category].push(match);
     }
@@ -23,25 +21,70 @@ const MatchCard = ({ match, onJoin, onCancel, onRemove, onEdit, currentUser }) =
   const isFull = match.participants.length >= match.players_needed + 1;
 
   return (
-    <div className={`match-card ${isFull ? 'full' : ''} ${match.status === 'CANCELLED' ? 'cancelled' : ''}`}>
-      <h4>{match.court}</h4>
-      <p><strong>Inicio:</strong> {new Date(match.start_time).toLocaleString()}</p>
-      <p><strong>Fin:</strong> {new Date(match.end_time).toLocaleString()}</p>
-      <p><strong>Jugadores:</strong> {match.participants.length} / {match.players_needed + 1}</p>
-      <p><strong>Creador:</strong> {match.creator.username}</p>
-      <p><strong>Estado:</strong> {isFull ? 'Cerrado' : 'Abierto'}</p>
-      
-      <div className="participants-section">
-        <button className="toggle-participants" onClick={() => setShowParticipants(!showParticipants)}>
-          {showParticipants ? 'Ocultar' : 'Ver'} Participantes ({match.participants.length})
+    <div
+      className={`p-5 rounded-xl border shadow-sm transition-all duration-300 ${
+        match.status === "CANCELLED"
+          ? "bg-red-100 dark:bg-red-900/30 border-red-300 dark:border-red-700"
+          : isFull
+          ? "bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-700"
+          : "bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 hover:shadow-md"
+      }`}
+    >
+      <h4 className="text-lg font-semibold text-indigo-600 dark:text-indigo-400 mb-2">
+        {match.court}
+      </h4>
+
+      <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+        <p>
+          <span className="font-medium">Inicio:</span>{" "}
+          {new Date(match.start_time).toLocaleString()}
+        </p>
+        <p>
+          <span className="font-medium">Fin:</span>{" "}
+          {new Date(match.end_time).toLocaleString()}
+        </p>
+        <p>
+          <span className="font-medium">Jugadores:</span>{" "}
+          {match.participants.length} / {match.players_needed + 1}
+        </p>
+        <p>
+          <span className="font-medium">Creador:</span> {match.creator.username}
+        </p>
+        <p>
+          <span className="font-medium">Estado:</span>{" "}
+          {match.status === "CANCELLED"
+            ? "Cancelado"
+            : isFull
+            ? "Cerrado"
+            : "Abierto"}
+        </p>
+      </div>
+
+      {/* Participantes */}
+      <div className="mt-4">
+        <button
+          onClick={() => setShowParticipants(!showParticipants)}
+          className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+        >
+          {showParticipants ? "Ocultar" : "Ver"} Participantes (
+          {match.participants.length})
         </button>
+
         {showParticipants && (
-          <ul className="participants-list">
-            {match.participants.map(p => (
-              <li key={p.user.id}>
+          <ul className="mt-2 bg-gray-50 dark:bg-gray-800 p-2 rounded-lg space-y-1">
+            {match.participants.map((p) => (
+              <li
+                key={p.user.id}
+                className="flex justify-between items-center text-sm"
+              >
                 {p.user.username}
                 {isCreator && p.user.id !== currentUser.id && (
-                  <button className="remove-btn" onClick={() => onRemove(match.id, p.user.id)}>X</button>
+                  <button
+                    className="text-red-500 hover:text-red-700 font-bold"
+                    onClick={() => onRemove(match.id, p.user.id)}
+                  >
+                    ✕
+                  </button>
                 )}
               </li>
             ))}
@@ -49,24 +92,51 @@ const MatchCard = ({ match, onJoin, onCancel, onRemove, onEdit, currentUser }) =
         )}
       </div>
 
-      {!isCreator && (
-        <button className="join-btn" onClick={() => onJoin(match.id)} disabled={isFull || match.status === 'CANCELLED'}>
-          {isFull ? 'Completo' : match.status === 'CANCELLED' ? 'Cancelado' : 'Unirse'}
-        </button>
-      )}
+      {/* Acciones */}
+      <div className="mt-4 flex flex-wrap gap-2">
+        {!isCreator && (
+          <button
+            onClick={() => onJoin(match.id)}
+            disabled={isFull || match.status === "CANCELLED"}
+            className={`px-4 py-2 rounded-lg text-white text-sm font-medium transition ${
+              isFull || match.status === "CANCELLED"
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700"
+            }`}
+          >
+            {isFull
+              ? "Completo"
+              : match.status === "CANCELLED"
+              ? "Cancelado"
+              : "Unirse"}
+          </button>
+        )}
 
-      {isCreator && !isFull && match.status !== 'CANCELLED' && (
-        <>
-          <button className="edit-btn" onClick={() => onEdit(match)}>Editar</button>
-          <button className="cancel-btn" onClick={() => onCancel(match.id)}>Cancelar</button>
-        </>
-      )}
+        {isCreator && match.status !== "CANCELLED" && (
+          <>
+            <button
+              onClick={() => onEdit(match)}
+              className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg text-sm font-medium"
+            >
+              Editar
+            </button>
+            {!isFull && (
+              <button
+                onClick={() => onCancel(match.id)}
+                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium"
+              >
+                Cancelar
+              </button>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 };
 
 const OpenMatchesPage = () => {
-  const { user } = useAuth(); // Obtener usuario logueado
+  const { user } = useAuth();
   const [matches, setMatches] = useState({ Mixto: [], Hombres: [], Mujeres: [] });
   const [upcomingMatches, setUpcomingMatches] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -85,20 +155,18 @@ const OpenMatchesPage = () => {
 
   const fetchOpenMatches = async () => {
     try {
-      const response = await api.get('/api/matches/open-matches/');
+      const response = await api.get("/api/matches/open-matches/");
       setMatches(groupMatchesByCategory(response.data));
     } catch (error) {
-      console.error("Error fetching open matches:", error);
       toast.error("No se pudieron cargar los partidos abiertos.");
     }
   };
 
   const fetchUpcomingMatches = async () => {
     try {
-      const response = await api.get('/api/matches/open-matches/my-upcoming-matches/');
+      const response = await api.get("/api/matches/open-matches/my-upcoming-matches/");
       setUpcomingMatches(response.data);
     } catch (error) {
-      console.error("Error fetching upcoming matches:", error);
       toast.error("No se pudieron cargar tus próximos partidos.");
     }
   };
@@ -117,42 +185,30 @@ const OpenMatchesPage = () => {
     try {
       await api.post(`/api/matches/open-matches/${matchId}/join/`);
       toast.success("¡Te has unido al partido!");
-      fetchAllData(); // Recargar ambos listados
+      fetchAllData();
     } catch (error) {
-      console.error("Error joining match:", error);
       toast.error(error.response?.data?.detail || "No se pudo unir al partido.");
     }
   };
 
   const handleCancelMatch = async (matchId) => {
     Swal.fire({
-      title: '¿Estás seguro?',
-      text: '¡No podrás revertir esto!',
-      icon: 'warning',
+      title: "¿Estás seguro?",
+      text: "¡No podrás revertir esto!",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Sí, cancelar partido',
-      cancelButtonText: 'No, mantener partido',
+      confirmButtonColor: "#2563eb",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, cancelar partido",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
           await api.post(`/api/matches/open-matches/${matchId}/cancel/`);
           toast.success("Partido cancelado.");
           fetchAllData();
-          Swal.fire(
-            '¡Cancelado!',
-            'El partido ha sido cancelado.',
-            'success'
-          );
-        } catch (error) {
-          console.error("Error cancelling match:", error);
-          toast.error("No se pudo cancelar el partido.");
-          Swal.fire(
-            'Error',
-            'No se pudo cancelar el partido.',
-            'error'
-          );
+          Swal.fire("¡Cancelado!", "El partido ha sido cancelado.", "success");
+        } catch {
+          Swal.fire("Error", "No se pudo cancelar el partido.", "error");
         }
       }
     });
@@ -160,60 +216,59 @@ const OpenMatchesPage = () => {
 
   const handleRemoveParticipant = async (matchId, userIdToRemove) => {
     Swal.fire({
-      title: '¿Estás seguro?',
-      text: '¡Este jugador será expulsado del partido!',
-      icon: 'warning',
+      title: "¿Expulsar jugador?",
+      text: "¡Este jugador será expulsado del partido!",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Sí, expulsar',
-      cancelButtonText: 'No, cancelar',
+      confirmButtonColor: "#2563eb",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, expulsar",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await api.post(`/api/matches/open-matches/${matchId}/remove_participant/`, { user_id: userIdToRemove });
+          await api.post(`/api/matches/open-matches/${matchId}/remove_participant/`, {
+            user_id: userIdToRemove,
+          });
           toast.success("Jugador expulsado.");
           fetchAllData();
-          Swal.fire(
-            '¡Expulsado!',
-            'El jugador ha sido expulsado del partido.',
-            'success'
-          );
-        } catch (error) {
-          console.error("Error removing participant:", error);
-          toast.error("No se pudo expulsar al jugador.");
-          Swal.fire(
-            'Error',
-            'No se pudo expulsar al jugador.',
-            'error'
-          );
+          Swal.fire("¡Expulsado!", "El jugador ha sido expulsado.", "success");
+        } catch {
+          Swal.fire("Error", "No se pudo expulsar al jugador.", "error");
         }
       }
     });
   };
 
   if (loading) {
-    return <div className="spinner-container">Cargando partidos...</div>; // Usar un spinner sería mejor
+    return (
+      <div className="flex justify-center items-center h-96 text-lg text-gray-600 dark:text-gray-300">
+        Cargando partidos...
+      </div>
+    );
   }
 
   return (
-    <div className="open-matches-container">
+    <div className="px-6 py-10 bg-gray-50 dark:bg-gray-900 min-h-screen text-gray-900 dark:text-gray-100 transition-colors duration-300">
+      {/* Modal */}
       {isModalOpen && (
-        <CreateMatchForm 
-          onClose={handleCloseModal} 
+        <CreateMatchForm
+          onClose={handleCloseModal}
           onMatchCreated={fetchAllData}
           match={editingMatch}
         />
       )}
-      
+
+      {/* Próximos partidos */}
       {upcomingMatches.length > 0 && (
-        <div className="upcoming-matches-section">
-          <h2>Mis Próximos Partidos</h2>
-          <div className="match-list">
-            {upcomingMatches.map(match => (
-              <MatchCard 
-                key={match.id} 
-                match={match} 
+        <section className="mb-10">
+          <h2 className="text-2xl font-bold text-center mb-4 text-indigo-600 dark:text-indigo-400">
+            Mis Próximos Partidos
+          </h2>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {upcomingMatches.map((match) => (
+              <MatchCard
+                key={match.id}
+                match={match}
                 onJoin={handleJoinMatch}
                 onCancel={handleCancelMatch}
                 onRemove={handleRemoveParticipant}
@@ -222,23 +277,35 @@ const OpenMatchesPage = () => {
               />
             ))}
           </div>
-        </div>
+        </section>
       )}
 
-      <header className="matches-header">
-        <h1>Encuentra tu Partido</h1>
-        <button className="create-match-btn" onClick={() => setIsModalOpen(true)}>Crear Partido</button>
+      {/* Encabezado */}
+      <header className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+          Encuentra tu Partido
+        </h1>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium shadow-sm"
+        >
+          Crear Partido
+        </button>
       </header>
-      <div className="matches-grid">
+
+      {/* Grid de partidos */}
+      <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
         {Object.entries(matches).map(([category, matchList]) => (
-          <div key={category} className="category-column">
-            <h2>{category}</h2>
-            <div className="match-list">
+          <div key={category}>
+            <h2 className="text-xl font-semibold mb-3 border-b border-gray-300 dark:border-gray-700 pb-1">
+              {category}
+            </h2>
+            <div className="space-y-4">
               {matchList.length > 0 ? (
-                matchList.map(match => (
-                  <MatchCard 
-                    key={match.id} 
-                    match={match} 
+                matchList.map((match) => (
+                  <MatchCard
+                    key={match.id}
+                    match={match}
                     onJoin={handleJoinMatch}
                     onCancel={handleCancelMatch}
                     onRemove={handleRemoveParticipant}
@@ -247,7 +314,9 @@ const OpenMatchesPage = () => {
                   />
                 ))
               ) : (
-                <p>No hay partidos abiertos en esta categoría.</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  No hay partidos abiertos en esta categoría.
+                </p>
               )}
             </div>
           </div>
