@@ -16,3 +16,4 @@
 - [x] Corregir la desaparición de la paginación al mostrar todos los elementos en `HomePage.jsx` (29/10/2025)
 - [x] Corregir los bordes de la tabla en `DashboardUsersPage.jsx` para que sean redondeados (29/10/2025)
 - [ ] Aplicar corrección de bordes redondeados en `CourtTable.jsx` (29/10/2025)
+- [x] Implementar modo oscuro en `RegisterPage.jsx` (05/11/2025)
