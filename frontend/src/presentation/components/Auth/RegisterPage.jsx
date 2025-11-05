@@ -80,6 +80,9 @@ function RegisterPage() {
                   }}
                   required
                   placeholder="Ingresa tu usuario"
+                   className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400
+                           focus:outline-none focus:border-indigo-400 focus:shadow-[0_0_4px_rgba(102,126,234,0.5)]
+                           transition-[border-color,box-shadow] duration-300"
                 />
               </div>
 
@@ -97,6 +100,9 @@ function RegisterPage() {
                   required
                   placeholder="tu@email.com"
                   type="email"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400
+                           focus:outline-none focus:border-indigo-400 focus:shadow-[0_0_4px_rgba(102,126,234,0.5)]
+                           transition-[border-color,box-shadow] duration-300"
                 />
               </div>
             </div>
@@ -116,6 +122,9 @@ function RegisterPage() {
                   }}
                   required
                   placeholder="Tu nombre"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400
+                           focus:outline-none focus:border-indigo-400 focus:shadow-[0_0_4px_rgba(102,126,234,0.5)]
+                           transition-[border-color,box-shadow] duration-300" 
                 />
               </div>
 
@@ -132,6 +141,9 @@ function RegisterPage() {
                   }}
                   required
                   placeholder="Tu apellido"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400
+                           focus:outline-none focus:border-indigo-400 focus:shadow-[0_0_4px_rgba(102,126,234,0.5)]
+                           transition-[border-color,box-shadow] duration-300"
                 />
               </div>
             </div>
@@ -151,6 +163,9 @@ function RegisterPage() {
                   }}
                   required
                   type="date"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400
+                           focus:outline-none focus:border-indigo-400 focus:shadow-[0_0_4px_rgba(102,126,234,0.5)]
+                           transition-[border-color,box-shadow] duration-300"
                 />
               </div>
 
@@ -180,6 +195,9 @@ function RegisterPage() {
                       {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </button>
                   }
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400
+                           focus:outline-none focus:border-indigo-400 focus:shadow-[0_0_4px_rgba(102,126,234,0.5)]
+                           transition-[border-color,box-shadow] duration-300"
                 />
               </div>
             </div>
@@ -217,6 +235,9 @@ function RegisterPage() {
                     )}
                   </button>
                 }
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400
+                           focus:outline-none focus:border-indigo-400 focus:shadow-[0_0_4px_rgba(102,126,234,0.5)]
+                           transition-[border-color,box-shadow] duration-300"
               />
             </div>
 

@@ -17,3 +17,4 @@
 - [x] Corregir los bordes de la tabla en `DashboardUsersPage.jsx` para que sean redondeados (29/10/2025)
 - [ ] Aplicar corrección de bordes redondeados en `CourtTable.jsx` (29/10/2025)
 - [x] Implementar modo oscuro en `RegisterPage.jsx` (05/11/2025)
+- [x] Implementar modo oscuro en `LoginForm.jsx` (05/11/2025)
