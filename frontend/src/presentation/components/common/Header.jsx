@@ -90,9 +90,10 @@ function Header({ openAuthModal, onToggleSidebar }) {
             </button>
 
             {dropdownOpen && (
-              <div className="absolute right-0 top-10 bg-white dark:bg-gray-800 shadow-xl rounded-xl w-48 p-2 z-50 border border-gray-200 dark:border-gray-700">
-                <ProfileDropdown />
-              </div>
+             <div className="absolute right-0 top-12 w-64 z-50">
+              <ProfileDropdown />
+            </div>
+
             )}
           </div>
         )}
