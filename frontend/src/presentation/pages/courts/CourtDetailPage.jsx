@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { toast } from 'react-toastify';
 import { format, addDays } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Calendar, Clock, Users, Check, DollarSign, Eye, CalendarDays } from 'lucide-react';
@@ -46,6 +47,12 @@ function CourtDetailPage({ openAuthModal }) {
     closeModal,
     selectedSlot, // Desestructurar selectedSlot
   } = useCourtDetailLogic();
+
+  useEffect(() => {
+    if (bookingSuccess) {
+      toast.success('¡Reserva creada con éxito!');
+    }
+  }, [bookingSuccess]);
 
   if (loading) {
     return (
@@ -124,11 +131,6 @@ function CourtDetailPage({ openAuthModal }) {
             </div>
         )}
 
-        {bookingSuccess && (
-            <div className="mt-4 bg-emerald-500/20 border border-emerald-500 text-emerald-500 dark:text-emerald-400 px-4 py-3 rounded-lg">
-            ¡Reserva creada con éxito!
-            </div>
-        )}
       </div>
 
       {/* Modal de imagen expandida */}
