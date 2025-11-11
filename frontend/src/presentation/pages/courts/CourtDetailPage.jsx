@@ -17,7 +17,7 @@ import CourtAvailabilityCalendar from '../../components/courts/CourtAvailability
 import { useCourtDetailLogic } from '../../hooks/courts/useCourtDetailLogic.js';
 import { formatPrice } from '../../utils/formatters.js';
 
-function CourtDetailPage() {
+function CourtDetailPage({ openAuthModal }) {
   const {
     court,
     loading,
@@ -189,7 +189,7 @@ function CourtDetailPage() {
                     <p className="text-slate-600 dark:text-slate-300">Para reservar una cancha, debes estar registrado e iniciar sesión.</p>
                 </div>
                 <div className="p-6 border-t border-slate-200 dark:border-slate-700 flex justify-between">
-                    <button onClick={handleCloseLoginModal} className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 dark:from-emerald-600 dark:to-teal-600 dark:hover:from-emerald-700 dark:hover:to-teal-700 text-white px-6 py-3 rounded-lg transition-colors shadow-lg">
+                    <button onClick={openAuthModal} className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 dark:from-emerald-600 dark:to-teal-600 dark:hover:from-emerald-700 dark:hover:to-teal-700 text-white px-6 py-3 rounded-lg transition-colors shadow-lg">
                         Iniciar Sesión
                     </button>
                       <button  className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg transition-colors shadow-lg">
