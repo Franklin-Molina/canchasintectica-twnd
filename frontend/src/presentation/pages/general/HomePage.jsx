@@ -40,7 +40,7 @@ function HomePage({ openAuthModal }) {
         <div className="absolute inset-0 bg-black/20"></div>
        
 
-        <div className="relative max-w-7xl mx-auto px-6 py-24 sm:py-32 flex flex-col items-center text-center">
+        <div className="relative max-w-8xl mx-auto px-6 py-24 sm:py-32 flex flex-col items-center text-center">
           <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-2 rounded-full mb-6 text-white text-sm font-medium">
             <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
             Reserva disponible 24/7
@@ -74,7 +74,7 @@ function HomePage({ openAuthModal }) {
       </section>
 
       {/* STATS */}
-      <section className="max-w-7xl mx-auto px-6 -mt-14 relative z-10">
+      <section className="max-w-8xl mx-auto px-6 -mt-14 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
             { label: 'Canchas', value: 'Disponibles', color: 'from-blue-500 to-blue-600', icon: courts.length },
@@ -103,7 +103,7 @@ function HomePage({ openAuthModal }) {
       </section>
 
       {/* COURTS */}
-      <section className="max-w-7xl mx-auto px-6 py-20">
+      <section className="max-w-8xl mx-auto px-6 py-20">
         <div className="flex flex-wrap items-center justify-between mb-10 gap-4">
           <div>
             <h2 className="text-3xl font-bold mb-2">Canchas Destacadas</h2>
@@ -189,7 +189,7 @@ function HomePage({ openAuthModal }) {
       </section>
 
       {/* CTA */}
-      <section className="max-w-7xl mx-auto px-6 pb-20">
+      <section className="max-w-8xl mx-auto px-6 pb-20">
         <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-700 dark:via-purple-700 dark:to-pink-700 rounded-3xl p-12 text-center relative overflow-hidden shadow-2xl">
           <div className="relative z-10">
             <h2 className="text-4xl font-black text-white mb-4">¿No tienes cuenta?</h2>
