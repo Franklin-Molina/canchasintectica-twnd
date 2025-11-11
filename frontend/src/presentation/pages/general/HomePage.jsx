@@ -197,10 +197,10 @@ function HomePage({ openAuthModal }) {
               Únete a nuestra plataforma y comienza a reservar un espacio deportivo.
             </p>
        <button className="bg-white text-indigo-600 font-bold px-8 py-4 rounded-xl transition-all shadow-xl hover:shadow-2xl animate-float animate-pulse-glow">
-  <Link to="/register">
-    Registrarse
-  </Link>
-</button>
+        <Link to="/register">
+          Registrarse
+        </Link>
+       </button>
 
 
 

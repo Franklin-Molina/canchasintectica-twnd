@@ -59,6 +59,7 @@ export const useCourtDetailLogic = () => {
   const [loadingWeeklyAvailability, setLoadingWeeklyAvailability] = useState(false);
   const [weeklyAvailabilityError, setWeeklyAvailabilityError] = useState(null);
   const [currentWeekStartDate, setCurrentWeekStartDate] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }));
+  const [selectedSlot, setSelectedSlot] = useState(null); // Nuevo estado para la celda seleccionada
 
   const fetchCourtDetails = useCallback(async () => {
     if (!courtId) return;
@@ -131,6 +132,7 @@ export const useCourtDetailLogic = () => {
         courtName: court?.name,
         price: court?.price,
       });
+      setSelectedSlot({ date, hour }); // Actualizar selectedSlot
       setShowConfirmModal(true);
 
     } catch (err) {
@@ -138,6 +140,7 @@ export const useCourtDetailLogic = () => {
       console.error('Error preparing booking:', err.response ? err.response.data : err.message);
     } finally {
       setIsBooking(false);
+      // No limpiar selectedSlot aquí, se limpiará en confirmBooking o cancelConfirmation
     }
   };
 
@@ -173,6 +176,7 @@ export const useCourtDetailLogic = () => {
     } finally {
       setIsBooking(false);
       setBookingDetailsToConfirm(null);
+      setSelectedSlot(null); // Limpiar selectedSlot después de la confirmación
     }
   };
 
@@ -180,6 +184,7 @@ export const useCourtDetailLogic = () => {
     setShowConfirmModal(false);
     setBookingDetailsToConfirm(null);
     setIsBooking(false);
+    setSelectedSlot(null); // Limpiar selectedSlot al cancelar
   };
 
   const handleCloseLoginModal = () => {
@@ -238,5 +243,6 @@ export const useCourtDetailLogic = () => {
     handleNextWeek,
     openModal,
     closeModal,
+    selectedSlot, // Retornar selectedSlot
   };
 };

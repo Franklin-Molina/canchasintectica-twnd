@@ -2,7 +2,7 @@ import React from 'react';
 import { format, addDays } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Calendar, Clock, Users, Check, DollarSign, Eye, CalendarDays } from 'lucide-react';
-import { Link } from 'react-router-dom';
+
 import '../../../styles/HomePage.css';
 import '../../../styles/dashboard.css';
 import '../../../styles/CourtDetailPage.css';
@@ -179,29 +179,12 @@ function CourtDetailPage() {
       )}
 
       {/* Modal para solicitar inicio de sesión */}
-      {showLoginModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-md w-full border border-slate-200 dark:border-slate-700">
-                <div className="p-6 border-b border-slate-200 dark:border-slate-700">
-                    <h2 className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">Acceso Requerido</h2>
-                </div>
-                <div className="p-6 space-y-4">
-                    <p className="text-slate-600 dark:text-slate-300">Para reservar una cancha, debes estar registrado e iniciar sesión.</p>
-                </div>
-                <div className="p-6 border-t border-slate-200 dark:border-slate-700 flex justify-between">
-                    <button onClick={handleCloseLoginModal} className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 dark:from-emerald-600 dark:to-teal-600 dark:hover:from-emerald-700 dark:hover:to-teal-700 text-white px-6 py-3 rounded-lg transition-colors shadow-lg">
-                        Iniciar Sesión
-                    </button>
-                      <button  className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg transition-colors shadow-lg">
-                       <Link to="/register">
-                           Registrarse
-                       </Link>
-                    </button>
-                    
-                </div>
-            </div>
-        </div>
-      )}
+      <Modal show={showLoginModal} onClose={handleCloseLoginModal} title="Acceso Requerido">
+        <p>Para reservar una cancha, debes estar registrado e iniciar sesión.</p>
+        <button onClick={handleCloseLoginModal} className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
+          Ir a Iniciar Sesión
+        </button>
+      </Modal>
     </div>
   );
 }
