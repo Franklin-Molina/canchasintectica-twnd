@@ -24,8 +24,8 @@ const ClientDashboardLayout = () => {
   ];
 
   return (
-    <>
-     <Header onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+    <div className="flex flex-col h-screen bg-gray-50 dark:bg-gray-900">
+      <Header onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
 
 
       {/* Botón móvil */}
@@ -37,7 +37,7 @@ const ClientDashboardLayout = () => {
       </button>
 
       {/* Contenedor principal */}
-      <div className="min-h-screen flex bg-gray-50 dark:bg-gray-900">
+      <div className="flex flex-1 overflow-hidden">
         {/* Overlay oscuro en móvil */}
         {isSidebarOpen && (
           <div
@@ -96,11 +96,11 @@ const ClientDashboardLayout = () => {
         </aside>
 
         {/* Contenido principal */}
-        <main className="flex-1 p-6 md:p-10 transition-all">
+        <main className="flex-1 p-6 md:p-10 transition-all overflow-y-auto">
           <Outlet />
         </main>
       </div>
-    </>
+    </div>
   );
 };
 
