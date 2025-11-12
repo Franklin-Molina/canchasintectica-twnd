@@ -70,6 +70,7 @@ function CustomSelect({
   return (
     <div className="relative w-full" ref={selectRef}>
       <button
+        type="button" // Añadir type="button" para evitar el envío del formulario padre
         onClick={() => setIsOpen(!isOpen)}
         aria-haspopup="listbox"
         aria-expanded={isOpen}

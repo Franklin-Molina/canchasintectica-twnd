@@ -2,10 +2,15 @@ from typing import Dict, Any, Optional, List
 from asgiref.sync import sync_to_async
 from django.db import transaction
 from django.utils import timezone
+from typing import Dict, Any, Optional, List
+from asgiref.sync import sync_to_async
+from django.db import transaction
+from django.utils import timezone
 from matches.domain.repositories.match_repository import IMatchRepository
 from matches.models import OpenMatch, MatchCategory, MatchParticipant
 from users.models import User
 from courts.models import Court
+from bookings.models import Booking # Importar el modelo Booking
 
 class DjangoMatchRepository(IMatchRepository):
 
@@ -20,6 +25,22 @@ class DjangoMatchRepository(IMatchRepository):
         with transaction.atomic():
             match = OpenMatch.objects.create(**match_data)
             MatchParticipant.objects.create(match=match, user=match.creator)
+
+            # Crear una reserva asociada al partido
+            try:
+                Booking.objects.create(
+                    user=match.creator,
+                    court=match.court,
+                    start_time=match.start_time,
+                    end_time=match.end_time,
+                    status='confirmed' # O 'pending', dependiendo de la lógica de negocio
+                )
+            except Exception as e:
+                # Log the error, but don't prevent match creation if booking fails
+                print(f"Error creating booking for match {match.id}: {e}")
+                # Dependiendo de la lógica de negocio, podrías querer revertir la creación del partido aquí
+                # o marcar el partido con un estado especial. Por ahora, solo lo registramos.
+            
             return match
 
     @sync_to_async
