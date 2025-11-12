@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
+import { toast } from 'react-toastify'; // Importar toast para notificaciones
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -142,6 +143,7 @@ const useRegisterForm = () => {
       //console.log('Registro exitoso:', response.data);
       setSuccess('¡Registro exitoso! Bienvenido a nuestra plataforma.');
       setError('');
+      toast.success('¡Registro exitoso! Bienvenido a nuestra plataforma.'); // Mostrar toast de éxito
       
       // Limpiar formulario
       setUsername('');
@@ -152,11 +154,11 @@ const useRegisterForm = () => {
       setPassword('');
       setConfirmPassword('');
 
-      // Hacer que el mensaje de éxito desaparezca después de 1.5 segundos
+      // Hacer que el mensaje de éxito desaparezca y redirigir al usuario al home después de 2 segundos
       setTimeout(() => {
         setSuccess('');
-      }, 1500);
-
+        navigate('/');
+      }, 2000);
     } catch (error) {
       console.error('Error en el registro:', error);
       if (error.response && error.response.data) {
@@ -179,9 +181,12 @@ const useRegisterForm = () => {
             errorMessages.push(`${friendlyFieldName}: ${backendErrors[field].join(', ')}`);
           }
         }
-        setError(`${errorMessage}\n${errorMessages.join('\n')}`);
+        const fullErrorMessage = `${errorMessage}\n${errorMessages.join('\n')}`;
+        setError(fullErrorMessage);
+        toast.error(fullErrorMessage); // Mostrar toast de error
       } else {
         setError('Error en el registro. Por favor, inténtalo de nuevo.');
+        toast.error('Error en el registro. Por favor, inténtalo de nuevo.'); // Mostrar toast de error genérico
       }
       setSuccess('');
     } finally {
