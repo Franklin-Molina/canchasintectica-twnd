@@ -5,7 +5,6 @@ import { UseCaseProvider } from './presentation/context/UseCaseContext.jsx';
 import HomePage from './presentation/pages/general/HomePage.jsx'; // Ruta actualizada
 import RegisterPage from './presentation/components/Auth/RegisterPage.jsx'; // Se mantiene en components/Auth
 import BookingPage from './presentation/pages/bookings/BookingPage.jsx'; // Ruta actualizada
-import ProfilePage from './presentation/pages/users/ProfilePage.jsx'; // Ruta actualizada
 import ProtectedRoute from './presentation/components/Auth/ProtectedRoute.jsx';
 import AuthPage from './presentation/components/Auth/AuthPage.jsx';
 import AdminRegisterPage from './presentation/components/Auth/AdminRegisterPage.jsx';
@@ -63,7 +62,7 @@ function App() {
           <Route path="bookings" element={<MyBookingsPage />} />
           <Route path="history" element={<BookingHistoryPage />} />
           <Route path="matches" element={<OpenMatchesPage />} />
-          <Route path="profile" element={<ProfilePage />} />
+          <Route path="profile" element={<DashboardProfilePage />} />
         </Route>
 
         <Route
@@ -113,7 +112,7 @@ function App() {
           element={
             <ProtectedRoute>
               <Layout>
-                <ProfilePage />
+                <DashboardProfilePage />
               </Layout>
             </ProtectedRoute>
           }
@@ -129,7 +128,7 @@ function App() {
           {/* Ruta índice para el dashboard adminglobal, podría ser un resumen o la gestión de admins */}
           <Route index element={<ManageAdminsTable />} /> {/* Mostrar tabla de admins por defecto */}
           <Route path="manage-admins" element={<ManageAdminsTable />} />
-          <Route path="profile" element={<ProfilePage />} /> {/* Perfil dentro del layout adminglobal */}
+          <Route path="profile" element={<DashboardProfilePage />} /> {/* Perfil dentro del layout adminglobal */}
           <Route path="register-admin" element={<AdminRegisterPage />} /> {/* Registrar admin dentro del layout adminglobal */}
         </Route>
       </Routes>

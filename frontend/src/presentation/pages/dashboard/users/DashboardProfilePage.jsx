@@ -1,10 +1,12 @@
 import React from 'react';
 import LogoutButton from '../../../components/Auth/LogoutButton.jsx'; // Ruta actualizada
 import { useProfilePageLogic } from '../../../hooks/users/useProfilePageLogic.js'
+import Spinner from '../../../components/common/Spinner.jsx'; // Importar Spinner
 
 function DashboardProfilePage() {
   const {
     user,
+    loading, // Añadir loading del hook
     isEditing,
     setIsEditing,
     isPasswordModalOpen,
@@ -33,6 +35,27 @@ function DashboardProfilePage() {
     handleProfileSubmit,
     handleChangePasswordSubmit,
   } = useProfilePageLogic();
+
+  // Si el usuario está cargando, mostrar Spinner
+  if (loading) {
+    return <Spinner />;
+  }
+
+  // Si no hay usuario y no está cargando, mostrar mensaje de no autenticado
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
+        <div className="text-center p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">
+            Usuario no autenticado.
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400">
+            Por favor, inicia sesión para ver tu perfil.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
@@ -234,7 +257,7 @@ function DashboardProfilePage() {
         </div>
       )}
 
-      {/* Cuentas vinculadas 
+      {/* Cuentas vinculadas */}
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 mt-6">
         <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-3">Cuentas Vinculadas</h2>
         {user.social_profiles && user.social_profiles.length > 0 ? (
@@ -252,16 +275,12 @@ function DashboardProfilePage() {
         ) : (
           <p className="text-sm text-gray-500 dark:text-gray-400">No hay cuentas sociales vinculadas.</p>
         )}
-      </div>*/}
+      </div>
 
       {/* Cierre de sesión */}
-
-
-
-      {/* <div className="mt-6 flex justify-center">
-        
+      <div className="mt-6 flex justify-center">
         <LogoutButton />
-      </div> */}
+      </div>
     </div>
   );
 }
