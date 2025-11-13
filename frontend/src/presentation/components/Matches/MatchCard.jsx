@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import MatchChat from "../Chat/MatchChat";
 
 const MatchCard = ({ match, onJoin, onCancel, onRemove, onEdit, currentUser }) => {
   const [showParticipants, setShowParticipants] = useState(false);
@@ -116,6 +117,14 @@ const MatchCard = ({ match, onJoin, onCancel, onRemove, onEdit, currentUser }) =
           </>
         )}
       </div>
+
+      {/* Chat del partido */}
+      {(isCreator || match.participants.some(p => p.user.id === currentUser?.id)) && (
+        <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <h5 className="text-md font-semibold mb-2">Chat del Partido</h5>
+          <MatchChat matchId={match.id} />
+        </div>
+      )}
     </div>
   );
 };
