@@ -26,115 +26,136 @@ import ClientDashboardLayout from './presentation/components/Dashboard/ClientDas
 import MyBookingsPage from './presentation/pages/bookings/MyBookingsPage.jsx'; // Ruta actualizada
 import BookingHistoryPage from './presentation/pages/bookings/BookingHistoryPage.jsx'; // Ruta actualizada
 import OpenMatchesPage from './presentation/pages/Matches/OpenMatchesPage.jsx';
+import { AuthProvider, useAuth } from './presentation/context/AuthContext.jsx'; // Importar AuthProvider y useAuth
+import Spinner from './presentation/components/common/Spinner.jsx'; // Importar Spinner
 
 function App() {
   return (
     <RepositoryProvider>
       <UseCaseProvider>
-        <Routes>
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <DashboardLayout />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<DashboardOverviewPage />} />
-          <Route path="canchas/manage" element={<DashboardManageCourtsPage />} />
-          <Route path="canchas/create" element={<DashboardCourtsPage />} />
-          <Route path="reservas" element={<DashboardBookingsPage />} />
-          <Route path="usuarios" element={<DashboardUsersPage />} />
-          <Route path="perfil" element={<DashboardProfilePage />} /> {/* Usar DashboardProfilePage */}
-          {/* Ruta para la página de modificación de canchas */}
-          <Route path="manage-courts/:id" element={<DashboardModifyCourtPage />} />
-        </Route>
-
-        <Route
-          path="/client"
-          element={
-            <ProtectedRoute>
-              <ClientDashboardLayout />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<MyBookingsPage />} />
-          <Route path="bookings" element={<MyBookingsPage />} />
-          <Route path="history" element={<BookingHistoryPage />} />
-          <Route path="matches" element={<OpenMatchesPage />} />
-          <Route path="profile" element={<DashboardProfilePage />} />
-        </Route>
-
-        <Route
-          path="/"
-          element={
-            <Layout>
-              <HomePage />
-            </Layout>
-          }
-        />
-        <Route
-          path="/login"
-          element={
-            <Layout>
-              <AuthPage />
-            </Layout>
-          }
-        />
-        <Route
-          path="/register"
-          element={
-            <Layout>
-              <RegisterPage />
-            </Layout>
-          }
-        />
-        <Route
-          path="/courts/:courtId"
-          element={
-            <Layout>
-              <CourtDetailPage />
-            </Layout>
-          }
-        />
-        <Route
-          path="/booking/:courtId"
-          element={
-            <ProtectedRoute>
-              <Layout>
-                <BookingPage />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <Layout>
-                <DashboardProfilePage />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/adminglobal"
-          element={
-            <ProtectedRoute>
-              <AdminGlobalDashboardPage /> {/* Este es ahora el layout */}
-            </ProtectedRoute>
-          }
-        >
-          {/* Ruta índice para el dashboard adminglobal, podría ser un resumen o la gestión de admins */}
-          <Route index element={<ManageAdminsTable />} /> {/* Mostrar tabla de admins por defecto */}
-          <Route path="manage-admins" element={<ManageAdminsTable />} />
-          <Route path="profile" element={<DashboardProfilePage />} /> {/* Perfil dentro del layout adminglobal */}
-          <Route path="register-admin" element={<AdminRegisterPage />} /> {/* Registrar admin dentro del layout adminglobal */}
-        </Route>
-      </Routes>
+        <AuthProvider> {/* Envolver las rutas con AuthProvider */}
+          <AuthContent /> {/* Componente auxiliar para manejar el contenido condicional */}
+        </AuthProvider>
       </UseCaseProvider>
       <ToastContainer position="top-right" autoClose={1500} /> {/* Componente para mostrar las notificaciones */}
     </RepositoryProvider>
+  );
+}
+
+// Componente auxiliar para manejar el contenido condicional basado en el estado de carga de autenticación
+function AuthContent() {
+  const { loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
+        <Spinner />
+      </div>
+    );
+  }
+
+  return (
+    <Routes>
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<DashboardOverviewPage />} />
+        <Route path="canchas/manage" element={<DashboardManageCourtsPage />} />
+        <Route path="canchas/create" element={<DashboardCourtsPage />} />
+        <Route path="reservas" element={<DashboardBookingsPage />} />
+        <Route path="usuarios" element={<DashboardUsersPage />} />
+        <Route path="perfil" element={<DashboardProfilePage />} /> {/* Usar DashboardProfilePage */}
+        {/* Ruta para la página de modificación de canchas */}
+        <Route path="manage-courts/:id" element={<DashboardModifyCourtPage />} />
+      </Route>
+
+      <Route
+        path="/client"
+        element={
+          <ProtectedRoute>
+            <ClientDashboardLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<MyBookingsPage />} />
+        <Route path="bookings" element={<MyBookingsPage />} />
+        <Route path="history" element={<BookingHistoryPage />} />
+        <Route path="matches" element={<OpenMatchesPage />} />
+        <Route path="profile" element={<DashboardProfilePage />} />
+      </Route>
+
+      <Route
+        path="/"
+        element={
+          <Layout>
+            <HomePage />
+          </Layout>
+        }
+      />
+      <Route
+        path="/login"
+        element={
+          <Layout>
+            <AuthPage />
+          </Layout>
+        }
+      />
+      <Route
+        path="/register"
+        element={
+          <Layout>
+            <RegisterPage />
+          </Layout>
+        }
+      />
+      <Route
+        path="/courts/:courtId"
+        element={
+          <Layout>
+            <CourtDetailPage />
+          </Layout>
+        }
+      />
+      <Route
+        path="/booking/:courtId"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <BookingPage />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <DashboardProfilePage />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/adminglobal"
+        element={
+          <ProtectedRoute>
+            <AdminGlobalDashboardPage /> {/* Este es ahora el layout */}
+          </ProtectedRoute>
+        }
+      >
+        {/* Ruta índice para el dashboard adminglobal, podría ser un resumen o la gestión de admins */}
+        <Route index element={<ManageAdminsTable />} /> {/* Mostrar tabla de admins por defecto */}
+        <Route path="manage-admins" element={<ManageAdminsTable />} />
+        <Route path="profile" element={<DashboardProfilePage />} /> {/* Perfil dentro del layout adminglobal */}
+        <Route path="register-admin" element={<AdminRegisterPage />} /> {/* Registrar admin dentro del layout adminglobal */}
+      </Route>
+    </Routes>
   );
 }
 
