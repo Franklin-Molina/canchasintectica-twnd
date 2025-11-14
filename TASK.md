@@ -19,4 +19,5 @@
 - [x] Implementar modo oscuro en `RegisterPage.jsx` (05/11/2025)
 - [x] Implementar modo oscuro en `LoginForm.jsx` (05/11/2025)
 - [x] Trabajar en `frontend/src/presentation/pages/courts/CourtDetailPage.jsx` (10/11/2025)
-- [ ] Refactorizar `CourtDetailPage.jsx` dividiendo en componentes reutilizables
+- [x] Refactorizar `CourtDetailPage.jsx` dividiendo en componentes reutilizables
+- [x] Implementar opciones de pago (100%, 50%, 10%) al confirmar reserva en `CourtDetailPage.jsx` (14/11/2025)

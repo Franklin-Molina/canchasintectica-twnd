@@ -4,9 +4,6 @@ import { format, addDays } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Calendar, Clock, Users, Check, DollarSign, Eye, CalendarDays } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import '../../../styles/HomePage.css';
-import '../../../styles/dashboard.css';
-import '../../../styles/CourtDetailPage.css';
 
 import Spinner from '../../components/common/Spinner';
 import Modal from '../../components/common/Modal';
@@ -46,7 +43,12 @@ function CourtDetailPage({ openAuthModal }) {
     openModal,
     closeModal,
     selectedSlot, // Desestructurar selectedSlot
+    paymentPercentage, // Desestructurar paymentPercentage
+    setPaymentPercentage, // Desestructurar setPaymentPercentage
   } = useCourtDetailLogic();
+
+  // Calcular el precio a pagar basado en el porcentaje seleccionado
+  const priceToPay = bookingDetailsToConfirm ? (bookingDetailsToConfirm.price * paymentPercentage) / 100 : 0;
 
   useEffect(() => {
     if (bookingSuccess) {
@@ -161,10 +163,56 @@ function CourtDetailPage({ openAuthModal }) {
                     </div>
                     <div className="bg-gray-100 dark:bg-slate-900 rounded-lg p-4 border border-slate-200 dark:border-slate-700">
                         <div className="flex justify-between items-center">
-                        <span className="text-slate-600 dark:text-slate-300">Total a Pagar:</span>
-                        <span className="text-2xl font-bold text-emerald-500 dark:text-emerald-400">
+                        <span className="text-slate-600 dark:text-slate-300">Precio por hora:</span>
+                        <span className="font-semibold">
                             ${formatPrice(bookingDetailsToConfirm.price)}
                         </span>
+                        </div>
+                        <div className="mt-4">
+                            <label className="block text-slate-600 dark:text-slate-300 text-sm font-bold mb-2">
+                                Selecciona el porcentaje a pagar:
+                            </label>
+                            <div className="flex space-x-4 mt-2">
+                                <label className="inline-flex items-center">
+                                    <input
+                                        type="radio"
+                                        className="form-radio text-emerald-500"
+                                        name="paymentOption"
+                                        value="100"
+                                        checked={paymentPercentage === 100}
+                                        onChange={() => setPaymentPercentage(100)}
+                                    />
+                                    <span className="ml-2 text-slate-700 dark:text-slate-200">100%</span>
+                                </label>
+                                <label className="inline-flex items-center">
+                                    <input
+                                        type="radio"
+                                        className="form-radio text-emerald-500"
+                                        name="paymentOption"
+                                        value="50"
+                                        checked={paymentPercentage === 50}
+                                        onChange={() => setPaymentPercentage(50)}
+                                    />
+                                    <span className="ml-2 text-slate-700 dark:text-slate-200">50%</span>
+                                </label>
+                                <label className="inline-flex items-center">
+                                    <input
+                                        type="radio"
+                                        className="form-radio text-emerald-500"
+                                        name="paymentOption"
+                                        value="10"
+                                        checked={paymentPercentage === 10}
+                                        onChange={() => setPaymentPercentage(10)}
+                                    />
+                                    <span className="ml-2 text-slate-700 dark:text-slate-200">10%</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div className="flex justify-between items-center mt-4 pt-4 border-t border-slate-300 dark:border-slate-600">
+                            <span className="text-slate-600 dark:text-slate-300">Total a Pagar ({paymentPercentage}%):</span>
+                            <span className="text-2xl font-bold text-emerald-500 dark:text-emerald-400">
+                                ${formatPrice(priceToPay)}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -172,7 +220,7 @@ function CourtDetailPage({ openAuthModal }) {
                     <button onClick={cancelConfirmation} className="flex-1 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-gray-800 dark:text-white px-6 py-3 rounded-lg transition-colors">
                         Cancelar
                     </button>
-                    <button onClick={confirmBooking} disabled={isBooking} className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 dark:from-emerald-600 dark:to-teal-600 dark:hover:from-emerald-700 dark:hover:to-teal-700 text-white px-6 py-3 rounded-lg transition-all shadow-lg disabled:opacity-50">
+                    <button onClick={() => confirmBooking(paymentPercentage)} disabled={isBooking} className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 dark:from-emerald-600 dark:to-teal-600 dark:hover:from-emerald-700 dark:hover:to-teal-700 text-white px-6 py-3 rounded-lg transition-all shadow-lg disabled:opacity-50">
                         {isBooking ? 'Procesando...' : 'Confirmar'}
                     </button>
                 </div>

@@ -20,16 +20,18 @@ export class CreateBookingUseCase {
      * @returns {Promise<object>} Los datos de la reserva creada.
      * @throws {Error} Si ocurre un error al crear la reserva.
      */
-    async execute(courtId, startTime, endTime) {
+    async execute(bookingDetails) {
         // Aquí se podría añadir lógica de validación de negocio antes de llamar al repositorio
         // Por ejemplo, verificar si el usuario tiene permisos para reservar, etc.
+
+        const { courtId, startDateTime, endDateTime, paymentPercentage } = bookingDetails;
 
         try {
             const bookingData = {
                 court: parseInt(courtId), // Convertir courtId a entero
-                start_time: startTime,
-                end_time: endTime,
-                // Otros campos necesarios para la reserva, como el usuario, se manejarían en el backend
+                start_time: startDateTime, // Usar startDateTime
+                end_time: endDateTime, // Usar endDateTime
+                payment_percentage: paymentPercentage, // Incluir el porcentaje de pago
             };
             return await this.bookingRepository.createBooking(bookingData);
         } catch (error) {

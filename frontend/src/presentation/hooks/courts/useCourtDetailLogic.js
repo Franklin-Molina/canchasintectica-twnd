@@ -35,6 +35,8 @@ import { useUseCases } from '../../context/UseCaseContext';
  * @property {Function} handleNextWeek - Navega a la semana siguiente en el calendario.
  * @property {Function} openModal - Abre el modal de imagen.
  * @property {Function} closeModal - Cierra el modal de imagen.
+ * @property {number} paymentPercentage - Porcentaje de pago seleccionado (100, 50, 10).
+ * @property {Function} setPaymentPercentage - Función para actualizar el porcentaje de pago.
  */
 export const useCourtDetailLogic = () => {
   const { courtId } = useParams();
@@ -54,6 +56,7 @@ export const useCourtDetailLogic = () => {
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [bookingDetailsToConfirm, setBookingDetailsToConfirm] = useState(null);
+  const [paymentPercentage, setPaymentPercentage] = useState(100); // Nuevo estado para el porcentaje de pago
 
   const [weeklyAvailability, setWeeklyAvailability] = useState({});
   const [loadingWeeklyAvailability, setLoadingWeeklyAvailability] = useState(false);
@@ -131,6 +134,7 @@ export const useCourtDetailLogic = () => {
         formattedEndTime,
         courtName: court?.name,
         price: court?.price,
+        paymentPercentage: paymentPercentage, // Añadir el porcentaje de pago aquí
       });
       setSelectedSlot({ date, hour }); // Actualizar selectedSlot
       setShowConfirmModal(true);
@@ -144,7 +148,7 @@ export const useCourtDetailLogic = () => {
     }
   };
 
-  const confirmBooking = async () => {
+  const confirmBooking = async () => { // Ya no recibe el porcentaje como argumento, lo toma de bookingDetailsToConfirm
     if (!bookingDetailsToConfirm) return;
 
     setIsBooking(true);
@@ -153,11 +157,12 @@ export const useCourtDetailLogic = () => {
     setShowConfirmModal(false);
 
     try {
-      await createBookingUseCase.execute(
-        bookingDetailsToConfirm.courtId,
-        bookingDetailsToConfirm.formattedStartTime,
-        bookingDetailsToConfirm.formattedEndTime
-      );
+      await createBookingUseCase.execute({ // Pasar un objeto con los datos de la reserva
+        courtId: bookingDetailsToConfirm.courtId,
+        startDateTime: bookingDetailsToConfirm.formattedStartTime,
+        endDateTime: bookingDetailsToConfirm.formattedEndTime,
+        paymentPercentage: bookingDetailsToConfirm.paymentPercentage, // Pasa el porcentaje al caso de uso
+      });
       setBookingSuccess(true);
       fetchWeeklyAvailability();
     } catch (err) {
@@ -177,6 +182,7 @@ export const useCourtDetailLogic = () => {
       setIsBooking(false);
       setBookingDetailsToConfirm(null);
       setSelectedSlot(null); // Limpiar selectedSlot después de la confirmación
+      setPaymentPercentage(100); // Resetear el porcentaje de pago
     }
   };
 
@@ -185,6 +191,7 @@ export const useCourtDetailLogic = () => {
     setBookingDetailsToConfirm(null);
     setIsBooking(false);
     setSelectedSlot(null); // Limpiar selectedSlot al cancelar
+    setPaymentPercentage(100); // Resetear el porcentaje de pago
   };
 
   const handleCloseLoginModal = () => {
@@ -244,5 +251,7 @@ export const useCourtDetailLogic = () => {
     openModal,
     closeModal,
     selectedSlot, // Retornar selectedSlot
+    paymentPercentage, // Retornar paymentPercentage
+    setPaymentPercentage, // Retornar setPaymentPercentage
   };
 };
