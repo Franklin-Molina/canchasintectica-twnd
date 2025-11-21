@@ -13,7 +13,10 @@ import { useUseCases } from '../../context/UseCaseContext';
  * @property {object|null} court - Detalles de la cancha.
  * @property {boolean} loading - Estado de carga inicial de la cancha.
  * @property {string|null} error - Error al cargar la cancha.
- * @property {string|null} selectedImage - URL de la imagen seleccionada para el modal.
+ * @property {number|null} currentImageIndex - Índice de la imagen actualmente mostrada en el modal.
+ * @property {string|null} selectedImage - URL de la imagen seleccionada para el modal (basada en el índice).
+ * @property {Function} handlePreviousImage - Navega a la imagen anterior en el modal.
+ * @property {Function} handleNextImage - Navega a la imagen siguiente en el modal.
  * @property {boolean} isBooking - Indica si una reserva está en proceso.
  * @property {string|null} bookingError - Error específico de la reserva.
  * @property {boolean} bookingSuccess - Indica si la reserva fue exitosa.
@@ -45,6 +48,8 @@ export const useCourtDetailLogic = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(null);
+  const [zoom, setZoom] = useState(1); // Estado para el zoom
 
   const { courtRepository, bookingRepository } = useRepositories();
   const { getCourtByIdUseCase, checkAvailabilityUseCase, getWeeklyAvailabilityUseCase, createBookingUseCase } = useUseCases();
@@ -110,6 +115,27 @@ export const useCourtDetailLogic = () => {
       fetchWeeklyAvailability();
     }
   }, [court, fetchWeeklyAvailability]);
+
+  const closeModal = useCallback(() => {
+    setSelectedImage(null);
+    setCurrentImageIndex(null);
+    setZoom(1);
+  }, []); // Se usa useCallback para obtener una referencia estable
+
+  // Efecto para manejar la tecla 'Escape' y cerrar el modal
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        closeModal();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [closeModal]); // Depende de la función closeModal
 
   const handleCellClick = async (date, hour) => {
     setIsBooking(true);
@@ -216,12 +242,48 @@ export const useCourtDetailLogic = () => {
     setCurrentWeekStartDate(addDays(currentWeekStartDate, 7));
   };
 
-  const openModal = (image) => {
-    setSelectedImage(image.image);
+  const openModal = (imageIdentifier) => {
+    if (court && court.images && court.images.length > 0) {
+      let index = -1;
+      // Comprueba si el identificador es un número (índice) o un string (URL)
+      if (typeof imageIdentifier === 'number') {
+        index = imageIdentifier;
+      } else if (typeof imageIdentifier === 'string') {
+        index = court.images.findIndex(img => img.image === imageIdentifier);
+      }
+      
+      if (index !== -1 && index < court.images.length) {
+        setCurrentImageIndex(index);
+        setSelectedImage(court.images[index].image);
+        setZoom(1); // Reiniciar zoom al abrir
+      }
+    }
   };
 
-  const closeModal = () => {
-    setSelectedImage(null);
+  const handlePreviousImage = () => {
+    if (court && court.images && currentImageIndex !== null) {
+      const newIndex = (currentImageIndex - 1 + court.images.length) % court.images.length;
+      setCurrentImageIndex(newIndex);
+      setSelectedImage(court.images[newIndex].image);
+      setZoom(1); // Reiniciar zoom al cambiar de imagen
+    }
+  };
+
+  const handleNextImage = () => {
+    if (court && court.images && currentImageIndex !== null) {
+      const newIndex = (currentImageIndex + 1) % court.images.length;
+      setCurrentImageIndex(newIndex);
+      setSelectedImage(court.images[newIndex].image);
+      setZoom(1); // Reiniciar zoom al cambiar de imagen
+    }
+  };
+
+  const handleZoomIn = () => {
+    setZoom(prev => Math.min(prev + 0.2, 3));
+  };
+
+  const handleZoomOut = () => {
+    setZoom(prev => Math.max(prev - 0.2, 1));
   };
 
   return {
@@ -248,10 +310,17 @@ export const useCourtDetailLogic = () => {
     handleCloseLoginModal,
     handlePreviousWeek,
     handleNextWeek,
+    currentImageIndex,
+    selectedImage,
     openModal,
     closeModal,
+    handlePreviousImage,
+    handleNextImage,
     selectedSlot, // Retornar selectedSlot
     paymentPercentage, // Retornar paymentPercentage
     setPaymentPercentage, // Retornar setPaymentPercentage
+    zoom, // Retornar estado de zoom
+    handleZoomIn, // Retornar función de zoom in
+    handleZoomOut, // Retornar función de zoom out
   };
 };

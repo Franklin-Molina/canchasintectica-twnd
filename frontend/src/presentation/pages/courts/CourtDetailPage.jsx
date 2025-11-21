@@ -1,16 +1,14 @@
 import React, { useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { format, addDays } from 'date-fns';
-import { es } from 'date-fns/locale';
-import { Calendar, Clock, Users, Check, DollarSign, Eye, CalendarDays } from 'lucide-react';
+import { format} from 'date-fns';
+
 import { Link } from 'react-router-dom';
 
 import Spinner from '../../components/common/Spinner';
-import Modal from '../../components/common/Modal';
 import CourtHeader from '../../components/courts/CourtHeader';
 import StatsCards from '../../components/courts/StatsCards';
 import CourtInfoSection from '../../components/courts/CourtInfoSection';
-import CourtImageGallery from '../../components/courts/CourtImageGallery';
+import CourtImageGallery from '../../components/Courts/CourtImageGallery';
 import CourtAvailabilityCalendar from '../../components/courts/CourtAvailabilityCalendar';
 import { useCourtDetailLogic } from '../../hooks/courts/useCourtDetailLogic.js';
 import { formatPrice } from '../../utils/formatters.js';
@@ -19,8 +17,11 @@ function CourtDetailPage({ openAuthModal }) {
   const {
     court,
     loading,
-    error,
+    error,   
     selectedImage,
+    currentImageIndex, 
+    handlePreviousImage, 
+    handleNextImage, 
     isBooking,
     bookingError,
     bookingSuccess,
@@ -42,9 +43,12 @@ function CourtDetailPage({ openAuthModal }) {
     handleNextWeek,
     openModal,
     closeModal,
-    selectedSlot, // Desestructurar selectedSlot
-    paymentPercentage, // Desestructurar paymentPercentage
-    setPaymentPercentage, // Desestructurar setPaymentPercentage
+    selectedSlot, 
+    paymentPercentage, 
+    setPaymentPercentage, 
+    zoom,
+    handleZoomIn,
+    handleZoomOut,
   } = useCourtDetailLogic();
 
   // Calcular el precio a pagar basado en el porcentaje seleccionado
@@ -110,7 +114,18 @@ function CourtDetailPage({ openAuthModal }) {
         <CourtInfoSection court={court} />
 
         {/* Galería de imágenes */}
-        <CourtImageGallery court={court} openModal={openModal} />
+        <CourtImageGallery 
+          court={court} 
+          openModal={openModal}
+          closeModal={closeModal}
+          selectedImage={selectedImage}
+          currentImageIndex={currentImageIndex}
+          handlePreviousImage={handlePreviousImage}
+          handleNextImage={handleNextImage}
+          zoom={zoom}
+          handleZoomIn={handleZoomIn}
+          handleZoomOut={handleZoomOut}
+        />
 
         {/* Calendar Section */}
         <CourtAvailabilityCalendar
@@ -134,18 +149,6 @@ function CourtDetailPage({ openAuthModal }) {
         )}
 
       </div>
-
-      {/* Modal de imagen expandida */}
-      {selectedImage && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50" onClick={closeModal}>
-          <div className="relative" onClick={(e) => e.stopPropagation()}>
-            <img src={selectedImage} alt="Imagen expandida" className="max-w-screen-lg max-h-screen-lg rounded-lg" />
-            <button className="absolute top-4 right-4 text-white text-2xl" onClick={closeModal}>
-              &times;
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Modal de confirmación de reserva */}
       {showConfirmModal && bookingDetailsToConfirm && (
