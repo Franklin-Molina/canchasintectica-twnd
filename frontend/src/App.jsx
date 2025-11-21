@@ -15,6 +15,7 @@ import DashboardCourtsPage from './presentation/pages/dashboard/courts/Dashboard
 import DashboardManageCourtsPage from './presentation/pages/dashboard/courts/DashboardManageCourtsPage.jsx'; // Ruta actualizada
 import CourtDetailPage from './presentation/pages/courts/CourtDetailPage.jsx'; // Ruta actualizada
 import DashboardBookingsPage from './presentation/pages/dashboard/bookings/DashboardBookingsPage.jsx'; // Ruta actualizada
+import BookingHistoryPage from './presentation/pages/dashboard/bookings/BookingHistoryPage.jsx'; // Nueva importación
 import DashboardProfilePage from './presentation/pages/dashboard/users/DashboardProfilePage.jsx'; // Ruta actualizada
 import DashboardUsersPage from './presentation/pages/dashboard/users/DashboardUsersPage.jsx'; // Ruta actualizada
 import DashboardModifyCourtPage from './presentation/pages/dashboard/courts/DashboardModifyCourtPage.jsx'; // Ruta actualizada
@@ -24,7 +25,6 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ClientDashboardLayout from './presentation/components/Dashboard/ClientDashboardLayout.jsx';
 import MyBookingsPage from './presentation/pages/bookings/MyBookingsPage.jsx'; // Ruta actualizada
-import BookingHistoryPage from './presentation/pages/bookings/BookingHistoryPage.jsx'; // Ruta actualizada
 import OpenMatchesPage from './presentation/pages/Matches/OpenMatchesPage.jsx';
 import { AuthProvider, useAuth } from './presentation/context/AuthContext.jsx'; // Importar AuthProvider y useAuth
 import Spinner from './presentation/components/common/Spinner.jsx'; // Importar Spinner
@@ -68,6 +68,7 @@ function AuthContent() {
         <Route path="canchas/manage" element={<DashboardManageCourtsPage />} />
         <Route path="canchas/create" element={<DashboardCourtsPage />} />
         <Route path="reservas" element={<DashboardBookingsPage />} />
+        <Route path="reservas/historial" element={<BookingHistoryPage />} />
         <Route path="usuarios" element={<DashboardUsersPage />} />
         <Route path="perfil" element={<DashboardProfilePage />} /> {/* Usar DashboardProfilePage */}
         {/* Ruta para la página de modificación de canchas */}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TrendingUp, TrendingDown, Users, DollarSign, ShoppingBag, BarChart3, Calendar, MapPin, Filter, Plus } from 'lucide-react';
 import CourtTable from '../../components/Dashboard/CourtTable.jsx';
@@ -47,16 +47,16 @@ function DashboardOverviewPage() {
     selectedCourtFilter: bookingCourtFilter,
     setSelectedCourtFilter: setBookingCourtFilter,
     clearFilters: clearBookingFilters,
-  } = useFetchBookings();
+  } = useFetchBookings({ onlyActive: true });
 
   const { courts: allCourts } = useFetchAllCourts();
-  
+
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   useEffect(() => {
     setCourtsItemsPerPage(5);
-    setItemsPerPage(5);
-  }, [setCourtsItemsPerPage, setItemsPerPage]);
+  }, [setCourtsItemsPerPage]);
+
 
 
   const navigate = useNavigate();
@@ -214,12 +214,13 @@ function DashboardOverviewPage() {
               <button
                 onClick={() => {
                   setActiveTab('canchas');
-                  setCurrentPage(1);
+                  setCourtsCurrentPage(1);
                 }}
-                className={`flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-200 ${activeTab === 'canchas'
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-200 ${
+                  activeTab === 'canchas'
                     ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/30'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
-                  }`}
+                }`}
               >
                 <MapPin className="w-4 h-4" />
                 Canchas
@@ -227,12 +228,13 @@ function DashboardOverviewPage() {
               <button
                 onClick={() => {
                   setActiveTab('reservas');
-                  setCurrentPage(1);
+                  setBookingsCurrentPage(1);
                 }}
-                className={`flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-200 ${activeTab === 'reservas'
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-200 ${
+                  activeTab === 'reservas'
                     ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/30'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
-                  }`}
+                }`}
               >
                 <Calendar className="w-4 h-4" />
                 Reservas

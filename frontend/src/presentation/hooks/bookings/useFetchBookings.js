@@ -3,16 +3,15 @@ import { useUseCases } from '../../context/UseCaseContext';
 
 /**
  * Hook personalizado para obtener la lista de reservas con paginación del lado del cliente.
+ * @param {{ onlyActive?: boolean }} options Opciones para configurar el hook.
  * @returns {object} Un objeto con los datos de paginación y funciones.
  */
-export const useFetchBookings = () => {
-  const [allBookings, setAllBookings] = useState([]); // Almacena todas las reservas
-  const [displayedBookings, setDisplayedBookings] = useState([]); // Almacena las reservas para la página actual
+export const useFetchBookings = ({ onlyActive = false } = {}) => {
+  const [allBookings, setAllBookings] = useState([]); // Almacena todas las reservas sin filtrar ni paginar
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
   const [searchFilter, setSearchFilter] = useState('');
   const [paymentStatusFilter, setPaymentStatusFilter] = useState('all'); // 'all', 'pagado', 'pendiente'
   const [selectedCourtFilter, setSelectedCourtFilter] = useState('all'); // 'all' o el ID de una cancha
@@ -20,7 +19,14 @@ export const useFetchBookings = () => {
   const { getBookingsUseCase, deleteBookingUseCase } = useUseCases();
 
   const filteredBookings = useMemo(() => {
-    return allBookings.filter(booking => {
+    let bookingsToFilter = allBookings;
+
+    if (onlyActive) {
+      const now = new Date();
+      bookingsToFilter = bookingsToFilter.filter(booking => new Date(booking.end_time) >= now);
+    }
+
+    return bookingsToFilter.filter(booking => {
       const courtName = booking.court_details?.name || '';
       const userName = `${booking.user_details?.first_name || ''} ${booking.user_details?.last_name || ''}`.trim();
       const paymentStatus = booking.payment || '';
@@ -35,7 +41,7 @@ export const useFetchBookings = () => {
 
       return searchMatch && paymentStatusMatch && courtMatch;
     });
-  }, [allBookings, searchFilter, paymentStatusFilter, selectedCourtFilter]);
+  }, [allBookings, searchFilter, paymentStatusFilter, selectedCourtFilter, onlyActive]);
 
   const fetchAllBookings = async () => {
     try {
@@ -43,7 +49,6 @@ export const useFetchBookings = () => {
       // El backend no pagina, así que obtenemos todo
       const response = await getBookingsUseCase.execute(1);
       setAllBookings(response || []);
-      setTotalPages(Math.ceil((response?.length || 0) / itemsPerPage));
     } catch (err) {
       setError(err);
       console.error('Error al obtener reservas en useFetchBookings:', err);
@@ -57,13 +62,16 @@ export const useFetchBookings = () => {
     fetchAllBookings();
   }, []);
 
-  // Efecto para actualizar las reservas mostradas cuando cambia la página o los datos
-  useEffect(() => {
+  // Calcular las reservas paginadas y el total de páginas basado en filteredBookings
+  const paginatedBookings = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    setDisplayedBookings(filteredBookings.slice(startIndex, endIndex));
-    setTotalPages(Math.ceil((filteredBookings?.length || 0) / itemsPerPage));
+    return filteredBookings.slice(startIndex, endIndex);
   }, [currentPage, filteredBookings, itemsPerPage]);
+
+  const totalPages = useMemo(() => {
+    return Math.ceil((filteredBookings?.length || 0) / itemsPerPage);
+  }, [filteredBookings, itemsPerPage]);
 
   const clearFilters = () => {
     setSearchFilter('');
@@ -85,12 +93,12 @@ export const useFetchBookings = () => {
   };
 
   return {
-    bookings: displayedBookings,
+    bookings: paginatedBookings, // Devolvemos solo las reservas paginadas y filtradas
     loading,
     error,
     currentPage,
     totalPages,
-    totalBookings: filteredBookings.length,
+    totalBookings: filteredBookings.length, // Total de reservas después de filtrar
     setCurrentPage,
     deleteBooking,
     itemsPerPage,

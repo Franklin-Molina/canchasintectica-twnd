@@ -6,6 +6,7 @@ import DashboardNavbar from "./DashboardNavbar.jsx";
 function DashboardLayout() {
   const { user, logout } = useAuth();
   const [isCanchasExpanded, setIsCanchasExpanded] = useState(false);
+  const [isReservasExpanded, setIsReservasExpanded] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const sidebarRef = useRef(null);
   const location = useLocation();
@@ -23,6 +24,7 @@ function DashboardLayout() {
   };
 
   const toggleCanchasMenu = () => setIsCanchasExpanded(!isCanchasExpanded);
+  const toggleReservasMenu = () => setIsReservasExpanded(!isReservasExpanded);
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
   const closeSidebar = () => setIsSidebarOpen(false);
 
@@ -123,17 +125,52 @@ function DashboardLayout() {
             Gestión
           </div>
 
-          <Link
-            to="/dashboard/reservas"
-            className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-colors ${
+          {/* Menú Reservas */}
+          <div
+            role="button"
+            tabIndex="0"
+            onClick={toggleReservasMenu}
+            className={`flex items-center justify-between px-4 py-2 rounded-lg cursor-pointer transition-colors ${
               isActiveLink("/dashboard/reservas")
                 ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-md hover:shadow-lg"
                 : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
             }`}
-            onClick={closeSidebar}
           >
-            <i className={`fas fa-calendar-check ${isActiveLink("/dashboard/reservas") ? "text-white" : "text-gray-500"}`}></i> Reservas
-          </Link>
+            <span className="flex items-center gap-3">
+              <i className={`fas fa-calendar-check ${isActiveLink("/dashboard/reservas") ? "text-white" : "text-gray-500"}`}></i> Reservas
+            </span>
+            <i
+              className={`fas fa-chevron-${isReservasExpanded ? "up" : "down"
+                } ${isActiveLink("/dashboard/reservas") ? "text-white" : "text-gray-500"}`}
+            ></i>
+          </div>
+
+          {isReservasExpanded && (
+            <div className="ml-6 mt-1 space-y-1">
+              <Link
+                to="/dashboard/reservas"
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
+                  isActiveLink("/dashboard/reservas") && !location.pathname.includes('historial')
+                    ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-md hover:shadow-lg"
+                    : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+                }`}
+                onClick={closeSidebar}
+              >
+                <i className={`fas fa-list ${isActiveLink("/dashboard/reservas") && !location.pathname.includes('historial') ? "text-white" : "text-gray-500"}`}></i> Gestionar Reservas
+              </Link>
+              <Link
+                to="/dashboard/reservas/historial"
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
+                  isActiveLink("/dashboard/reservas/historial")
+                    ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-md hover:shadow-lg"
+                    : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+                }`}
+                onClick={closeSidebar}
+              >
+                <i className={`fas fa-history ${isActiveLink("/dashboard/reservas/historial") ? "text-white" : "text-gray-500"}`}></i> Historial
+              </Link>
+            </div>
+          )}
 
           {/* Menú Canchas */}
           <div
