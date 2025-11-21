@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Eye, ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut, Rows4  } from "lucide-react";
 
 function CourtImageGallery({ 
@@ -14,6 +14,42 @@ function CourtImageGallery({
   handleZoomOut
 }) {
   const hasMultipleImages = court && court.images && court.images.length > 1;
+
+  // Efecto para controlar el scroll del body cuando el modal está abierto
+  useEffect(() => {
+    if (selectedImage) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+
+    // Función de limpieza para restaurar el scroll si el componente se desmonta
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [selectedImage]);
+
+  // Efecto para la navegación con teclado
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!selectedImage) return;
+
+      if (e.key === 'ArrowLeft') {
+        handlePreviousImage();
+      } else if (e.key === 'ArrowRight') {
+        handleNextImage();
+      } else if (e.key === 'Escape') {
+        closeModal();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    // Limpieza del event listener
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [selectedImage, handlePreviousImage, handleNextImage, closeModal]);
 
   return (
     <>
