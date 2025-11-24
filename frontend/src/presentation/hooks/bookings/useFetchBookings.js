@@ -3,15 +3,15 @@ import { useUseCases } from '../../context/UseCaseContext';
 
 /**
  * Hook personalizado para obtener la lista de reservas con paginación del lado del cliente.
- * @param {{ onlyActive?: boolean, onlyFinished?: boolean }} options Opciones para configurar el hook.
+ * @param {{ onlyActive?: boolean, onlyFinished?: boolean, initialItemsPerPage?: number }} options Opciones para configurar el hook.
  * @returns {object} Un objeto con los datos de paginación y funciones.
  */
-export const useFetchBookings = ({ onlyActive = false, onlyFinished = false } = {}) => {
+export const useFetchBookings = ({ onlyActive = false, onlyFinished = false, initialItemsPerPage = 5 } = {}) => {
   const [allBookings, setAllBookings] = useState([]); // Almacena todas las reservas sin filtrar ni paginar
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5); // Cambiado de 5 a 10
+  const [itemsPerPage, setItemsPerPage] = useState(initialItemsPerPage);
   const [searchFilter, setSearchFilter] = useState('');
   const [paymentStatusFilter, setPaymentStatusFilter] = useState('all'); // 'all', 'pagado', 'pendiente'
   const [selectedCourtFilter, setSelectedCourtFilter] = useState('all'); // 'all' o el ID de una cancha

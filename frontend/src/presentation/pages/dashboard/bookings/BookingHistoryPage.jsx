@@ -15,7 +15,7 @@ function BookingHistoryPage() {
     setItemsPerPage,
     totalPages, // Total de páginas calculadas por el hook
     totalBookings, // Total de reservas después de filtrar por historial
-  } = useFetchBookings({ onlyFinished: true, itemsPerPage: 10 }); // Forzar itemsPerPage a 10
+  } = useFetchBookings({ onlyFinished: true, initialItemsPerPage: 10 }); // Forzar itemsPerPage a 10
 
   if (loading) {
     return (
