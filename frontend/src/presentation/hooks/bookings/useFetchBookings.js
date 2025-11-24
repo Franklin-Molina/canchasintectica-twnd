@@ -46,7 +46,7 @@ export const useFetchBookings = ({ onlyActive = false, onlyFinished = false, ini
 
       return searchMatch && paymentStatusMatch && courtMatch;
     });
-  }, [allBookings, searchFilter, paymentStatusFilter, selectedCourtFilter, onlyActive]);
+  }, [allBookings, searchFilter, paymentStatusFilter, selectedCourtFilter, onlyActive, onlyFinished]); // Agregado onlyFinished a las dependencias
 
   const fetchAllBookings = async () => {
     try {
@@ -115,5 +115,6 @@ export const useFetchBookings = ({ onlyActive = false, onlyFinished = false, ini
     selectedCourtFilter,
     setSelectedCourtFilter,
     clearFilters,
+    fetchAllBookings, // Exportar la función para refrescar
   };
 };
