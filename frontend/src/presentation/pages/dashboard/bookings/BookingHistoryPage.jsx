@@ -5,7 +5,7 @@ import { useFetchBookings } from '../../../hooks/bookings/useFetchBookings';
 
 function BookingHistoryPage() {
   const {
-    bookings: allBookings,
+    bookings, // Ahora 'bookings' ya viene paginado y filtrado como historial
     loading,
     error,
     currentPage,
@@ -13,21 +13,9 @@ function BookingHistoryPage() {
     deleteBooking,
     itemsPerPage,
     setItemsPerPage,
-  } = useFetchBookings();
-
-  const historyBookings = useMemo(() => {
-    const now = new Date();
-    // Filtramos para mostrar solo las reservas cuya fecha de finalización ya pasó
-    return allBookings.filter(booking => new Date(booking.end_time) < now);
-  }, [allBookings]);
-
-  // Lógica de paginación sobre los datos del historial
-  const paginatedBookings = useMemo(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    return historyBookings.slice(startIndex, startIndex + itemsPerPage);
-  }, [historyBookings, currentPage, itemsPerPage]);
-
-  const totalPages = Math.ceil(historyBookings.length / itemsPerPage);
+    totalPages, // Total de páginas calculadas por el hook
+    totalBookings, // Total de reservas después de filtrar por historial
+  } = useFetchBookings({ onlyFinished: true, itemsPerPage: 10 }); // Forzar itemsPerPage a 10
 
   if (loading) {
     return (
@@ -51,7 +39,7 @@ function BookingHistoryPage() {
         Historial de Reservas
       </h1>
 
-      {historyBookings.length === 0 ? (
+      {totalBookings === 0 ? (
         <div className="text-center text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 p-6 rounded-xl shadow-sm">
           No hay reservas finalizadas en el historial.
         </div>
@@ -63,13 +51,13 @@ function BookingHistoryPage() {
             </h2>
           </div>
           <BookingTable
-            bookings={paginatedBookings}
+            bookings={bookings} // Usar directamente las reservas paginadas del hook
             currentPage={currentPage}
-            totalPages={totalPages}
+            totalPages={totalPages} // Usar totalPages del hook
             setCurrentPage={setCurrentPage}
             itemsPerPage={itemsPerPage}
             setItemsPerPage={setItemsPerPage}
-            totalBookings={historyBookings.length}
+            totalBookings={totalBookings} // Usar totalBookings del hook
             deleteBooking={deleteBooking}
           />
         </div>
