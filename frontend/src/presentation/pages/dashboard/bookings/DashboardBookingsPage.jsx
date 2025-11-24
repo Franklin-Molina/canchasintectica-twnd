@@ -15,7 +15,7 @@ function DashboardBookingsPage() {
     deleteBooking,
     itemsPerPage,
     setItemsPerPage,
-  } = useFetchBookings({ onlyActive: true }); // Pasamos onlyActive: true al hook
+  } = useFetchBookings({ onlyActive: true, initialItemsPerPage: 10 }); // Pasamos onlyActive: true y initialItemsPerPage: 10 al hook
 
   if (loading) {
     return (
