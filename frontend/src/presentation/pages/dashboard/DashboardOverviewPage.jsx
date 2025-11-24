@@ -202,7 +202,7 @@ function DashboardOverviewPage() {
                 </button>
                 <button
                   onClick={activeTab === 'canchas' ? handleCreateCourtClick : () => { }}
-                  className="flex items-center gap-2 px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors text-sm font-semibold shadow-lg shadow-purple-600/20">
+                  className="flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors text-sm font-semibold shadow-lg shadow-emerald-600/20">
                   <Plus className="w-4 h-4" />
                   {activeTab === 'canchas' ? 'Nueva Cancha' : 'Nueva Reserva'}
                 </button>
@@ -218,7 +218,7 @@ function DashboardOverviewPage() {
                 }}
                 className={`flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-200 ${
                   activeTab === 'canchas'
-                    ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/30'
+                    ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/30'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
                 }`}
               >
@@ -232,7 +232,7 @@ function DashboardOverviewPage() {
                 }}
                 className={`flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-200 ${
                   activeTab === 'reservas'
-                    ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/30'
+                    ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/30'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
                 }`}
               >

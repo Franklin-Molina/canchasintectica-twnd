@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { format, addDays } from 'date-fns';
 import { Clock, Check, X } from 'lucide-react';
 import { useWeeklyAvailabilityCalendar } from '../../hooks/courts/useWeeklyAvailabilityCalendar.js';
-import '../../../styles/WeeklyAvailabilityCalendar.css';
+import Spinner from '../../components/common/Spinner.jsx';
 
 function WeeklyAvailabilityCalendar({
   weeklyAvailability,
@@ -39,9 +39,7 @@ function WeeklyAvailabilityCalendar({
 
   if (loadingWeeklyAvailability) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-emerald-500"></div>
-      </div>
+      <Spinner />      
     );
   }
 
