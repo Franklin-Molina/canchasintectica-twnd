@@ -232,7 +232,7 @@ function DashboardLayout() {
           </Link>
 
           <Link
-            to="/dashboard/pagos"
+            to="#"
             className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-colors ${
               isActiveLink("/dashboard/pagos")
                 ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-md hover:shadow-lg"
@@ -244,7 +244,7 @@ function DashboardLayout() {
           </Link>
 
           <Link
-            to="/dashboard/estadisticas"
+            to="#"
             className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-colors ${
               isActiveLink("/dashboard/estadisticas")
                 ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-md hover:shadow-lg"
