@@ -1,5 +1,5 @@
 import React from 'react';
-import CourtForm from '../../../components/Dashboard/CourtForm.jsx';
+import CourtForm from '../../../components/Courts/CourtForm.jsx';
 
 function DashboardCourtsPage() {
   return (

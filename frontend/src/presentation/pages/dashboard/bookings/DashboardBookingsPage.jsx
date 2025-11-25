@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import Spinner from '../../../components/common/Spinner';
-import BookingTable from '../../../components/Dashboard/BookingTable';
+import BookingTable from '../../../components/Bookings/BookingTable';
 import { useFetchBookings } from '../../../hooks/bookings/useFetchBookings';
 import { RefreshCw } from 'lucide-react'; // Importar el icono de refrescar
 
