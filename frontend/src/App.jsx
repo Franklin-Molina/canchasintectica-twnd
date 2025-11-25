@@ -99,14 +99,6 @@ function AuthContent() {
         }
       />
       <Route
-        path="/login"
-        element={
-          <Layout>
-            <AuthPage />
-          </Layout>
-        }
-      />
-      <Route
         path="/register"
         element={
           <Layout>

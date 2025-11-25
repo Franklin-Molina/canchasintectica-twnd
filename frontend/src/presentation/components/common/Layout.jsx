@@ -1,6 +1,7 @@
 import React, { useState } from 'react'; // Importar useState
 import Header from './Header.jsx'; // Importar el componente Header
 import AuthPage from '../Auth/AuthPage.jsx'; // Importar AuthPage
+import Modal from './Modal.jsx'; // Importar el componente Modal
 
 /**
  * Componente de layout básico.
@@ -37,13 +38,9 @@ function Layout({ children }) {
       {/* Aquí se podría añadir un componente Footer si es necesario */}
 
       {/* Modal de Autenticación */}
-      {showAuthModal && (
-        <div className="modal-overlay" onClick={closeAuthModal}> {/* Overlay del modal */}
-          <div className="modal-content" onClick={(e) => e.stopPropagation()} > {/* Contenido del modal */}
-            <AuthPage /> {/* Contenido de la página de autenticación */}
-          </div>
-        </div>
-      )}
+      <Modal show={showAuthModal} onClose={closeAuthModal}>
+        <AuthPage />
+      </Modal>
     </div>
   );
 }
