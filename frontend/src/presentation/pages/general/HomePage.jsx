@@ -2,8 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Pagination from '../../components/common/Pagination.jsx';
 import { useHomePageLogic } from '../../hooks/general/useHomePageLogic.js';
+import { useAuth } from '../../context/AuthContext.jsx';
 
 function HomePage({ openAuthModal }) {
+  const { isAuthenticated } = useAuth();
   const {
     courts,
     loading,
@@ -189,24 +191,23 @@ function HomePage({ openAuthModal }) {
       </section>
 
       {/* CTA */}
-      <section className="max-w-8xl mx-auto px-6 pb-20">
-        <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-700 dark:via-purple-700 dark:to-pink-700 rounded-3xl p-12 text-center relative overflow-hidden shadow-2xl">
-          <div className="relative z-10">
-            <h2 className="text-4xl font-black text-white mb-4">¿No tienes cuenta?</h2>
-            <p className="text-lg text-white/90 mb-8 max-w-2xl mx-auto">
-              Únete a nuestra plataforma y comienza a reservar un espacio deportivo.
-            </p>
-       <button className="bg-white text-indigo-600 font-bold px-8 py-4 rounded-xl transition-all shadow-xl hover:shadow-2xl animate-float animate-pulse-glow">
-        <Link to="/register">
-          Registrarse
-        </Link>
-       </button>
-
-
-
+      {!isAuthenticated && (
+        <section className="max-w-8xl mx-auto px-6 pb-20">
+          <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-700 dark:via-purple-700 dark:to-pink-700 rounded-3xl p-12 text-center relative overflow-hidden shadow-2xl">
+            <div className="relative z-10">
+              <h2 className="text-4xl font-black text-white mb-4">¿No tienes cuenta?</h2>
+              <p className="text-lg text-white/90 mb-8 max-w-2xl mx-auto">
+                Únete a nuestra plataforma y comienza a reservar un espacio deportivo.
+              </p>
+              <button className="bg-white text-indigo-600 font-bold px-8 py-4 rounded-xl transition-all shadow-xl hover:shadow-2xl animate-float animate-pulse-glow">
+                <Link to="/register">
+                  Registrarse
+                </Link>
+              </button>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 }
