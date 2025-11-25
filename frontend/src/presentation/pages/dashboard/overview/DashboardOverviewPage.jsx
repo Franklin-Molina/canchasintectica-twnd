@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TrendingUp, TrendingDown, Users, DollarSign, ShoppingBag, BarChart3, Calendar, MapPin, Filter, Plus } from 'lucide-react';
-import CourtTable from '../../components/Courts/CourtTable.jsx';
-import BookingTable from '../../components/Bookings/BookingTable.jsx';
-import Spinner from '../../components/common/Spinner.jsx';
-import FilterPanel from '../../components/Dashboard/FilterPanel.jsx';
-import { useManageCourtsLogic } from '../../hooks/courts/useManageCourtsLogic.js';
-import { useFetchBookings } from '../../hooks/bookings/useFetchBookings.js';
-import { useFetchAllCourts } from '../../hooks/courts/useFetchAllCourts.js';
+import CourtTable from '../../../components/Courts/CourtTable.jsx';
+import BookingTable from '../../../components/Bookings/BookingTable.jsx';
+import Spinner from '../../../components/common/Spinner.jsx';
+import FilterPanel from '../../../components/Dashboard/FilterPanel.jsx';
+import { useManageCourtsLogic } from '../../../hooks/courts/useManageCourtsLogic.js';
+import { useFetchBookings } from '../../../hooks/bookings/useFetchBookings.js';
+import { useFetchAllCourts } from '../../../hooks/courts/useFetchAllCourts.js';
 
 
 function DashboardOverviewPage() {

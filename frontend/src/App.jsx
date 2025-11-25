@@ -10,7 +10,7 @@ import AuthPage from './presentation/components/Auth/AuthPage.jsx';
 import AdminRegisterPage from './presentation/components/Auth/AdminRegisterPage.jsx';
 import Layout from './presentation/components/common/Layout.jsx';
 import DashboardLayout from './presentation/components/Dashboard/DashboardLayout.jsx';
-import DashboardOverviewPage from './presentation/pages/dashboard/DashboardOverviewPage.jsx'; // Ruta actualizada
+import DashboardOverviewPage from './presentation/pages/dashboard/overview/DashboardOverviewPage.jsx'; // Ruta actualizada
 import DashboardCourtsPage from './presentation/pages/dashboard/courts/DashboardCourtsPage.jsx'; // Ruta actualizada
 import DashboardManageCourtsPage from './presentation/pages/dashboard/courts/DashboardManageCourtsPage.jsx'; // Ruta actualizada
 import CourtDetailPage from './presentation/pages/courts/CourtDetailPage.jsx'; // Ruta actualizada
