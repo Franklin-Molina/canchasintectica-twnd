@@ -165,7 +165,7 @@ function DashboardModifyCourtPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium shadow disabled:opacity-50 transition"
+              className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg font-medium shadow disabled:opacity-50 transition"
             >
               Guardar Cambios
             </button>
