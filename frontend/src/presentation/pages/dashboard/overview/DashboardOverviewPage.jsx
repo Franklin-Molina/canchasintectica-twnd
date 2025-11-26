@@ -15,7 +15,10 @@ function DashboardOverviewPage() {
     courts,
     loading: loadingCourts,
     error: errorCourts,
-    handleOpenModal,
+    handleModifyRequest,
+    handleDeleteRequest,
+    handleSuspendCourtClick,
+    handleReactivateCourtClick,
     currentPage: courtsCurrentPage,
     setCurrentPage: setCourtsCurrentPage,
     totalPages: courtsTotalPages,
@@ -256,7 +259,15 @@ function DashboardOverviewPage() {
             {activeTab === 'canchas' ? (
               <CourtTable
                 courts={courts}
-                onOpenModal={handleOpenModal}
+                onModify={handleModifyRequest}
+                onDelete={handleDeleteRequest}
+                onToggleActive={async (courtId, isActive) => {
+                  if (isActive) {
+                    await handleReactivateCourtClick(courtId);
+                  } else {
+                    await handleSuspendCourtClick(courtId);
+                  }
+                }}
                 currentPage={courtsCurrentPage}
                 totalPages={courtsTotalPages}
                 setCurrentPage={setCourtsCurrentPage}
