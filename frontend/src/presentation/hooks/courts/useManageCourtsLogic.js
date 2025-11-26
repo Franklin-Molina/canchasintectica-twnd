@@ -4,6 +4,7 @@ import useButtonDisable from '../general/useButtonDisable.js';
 import { ApiCourtRepository } from '../../../infrastructure/repositories/api-court-repository'; // Se mantiene para operaciones directas del repo
 import { GetCourtsUseCase } from '../../../application/use-cases/courts/get-courts.js'; // Importar el caso de uso
 import { toast } from 'react-toastify'; // Importar toast de react-toastify
+import Swal from 'sweetalert2'; // Importar Swal
 
 /**
  * Hook personalizado para la lógica de la página de gestión de canchas.
@@ -33,8 +34,6 @@ export const useManageCourtsLogic = () => {
   const [courts, setCourts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedCourt, setSelectedCourt] = useState(null);
-  const [courtToDelete, setCourtToDelete] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [nameFilter, setNameFilter] = useState('');
@@ -101,42 +100,31 @@ export const useManageCourtsLogic = () => {
     }
   });
 
-  const handleDeleteRequest = (court) => {
-    setCourtToDelete(court);
-    handleCloseModal();
-  };
+  const handleDeleteRequest = async (court) => {
+    const result = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: `¡No podrás revertir la eliminación de "${court.name}"!`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+    });
 
-  const [isDeleting, handleConfirmDeleteClick] = useButtonDisable(async () => {
-    if (!courtToDelete) return;
-
-    try {
-      await courtRepository.deleteCourt(courtToDelete.id);
-      setCourts(prevCourts => prevCourts.filter(c => c.id !== courtToDelete.id));
-      toast.success(`Cancha ${courtToDelete.name} eliminada exitosamente.`); // Alerta de éxito
-    } catch (error) {
-      // console.error(`Error al eliminar la cancha ${courtToDelete.id}:`, error); // Eliminado mensaje de consola
-      toast.error(`Error al eliminar cancha ${courtToDelete.name}: ${error.message}`); // Alerta de error
-      throw error;
-    } finally {
-      setCourtToDelete(null);
+    if (result.isConfirmed) {
+      try {
+        await courtRepository.deleteCourt(court.id);
+        setCourts(prevCourts => prevCourts.filter(c => c.id !== court.id));
+        toast.success(`Cancha ${court.name} eliminada exitosamente.`);
+      } catch (error) {
+        toast.error(`Error al eliminar cancha ${court.name}: ${error.message}`);
+      }
     }
-  });
-
-  const handleCancelDelete = () => {
-    setCourtToDelete(null);
   };
 
   const handleModifyRequest = (court) => {
-    handleCloseModal();
     navigate(`/dashboard/manage-courts/${court.id}`);
-  };
-
-  const handleOpenModal = (court) => {
-    setSelectedCourt(court);
-  };
-
-  const handleCloseModal = () => {
-    setSelectedCourt(null);
   };
 
   const clearFilters = () => {
@@ -150,11 +138,8 @@ export const useManageCourtsLogic = () => {
     courts: filteredCourts,
     loading,
     error,
-    selectedCourt,
-    courtToDelete,
     isSuspending,
     isReactivating,
-    isDeleting,
     currentPage,
     totalPages,
     setCurrentPage,
@@ -169,10 +154,6 @@ export const useManageCourtsLogic = () => {
     handleSuspendCourtClick,
     handleReactivateCourtClick,
     handleDeleteRequest,
-    handleConfirmDeleteClick,
-    handleCancelDelete,
     handleModifyRequest,
-    handleOpenModal,
-    handleCloseModal,
   };
 };

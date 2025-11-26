@@ -1,6 +1,7 @@
 import React from 'react';
 import Swal from 'sweetalert2';
 import Pagination from '../common/Pagination.jsx';
+import { Eye, Edit2, Trash2 } from 'lucide-react'; // Importar los iconos
 
 const BookingTable = ({
   bookings,
@@ -72,13 +73,18 @@ const BookingTable = ({
                 </span>
               </td>
               <td className="px-6 py-4 text-sm text-slate-900 dark:text-white font-semibold text-right">{booking.payment}</td>
-              <td className="px-6 py-4 text-right flex gap-2">
-                <button className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium">
-                  Modificar
-                </button>
-                <button onClick={() => handleCancelBooking(booking.id)} className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 font-medium">
-                  Cancelar
-                </button>
+              <td className="px-6 py-4 text-right">
+                <div className="flex items-center justify-end gap-2">
+                 {/*  <button className="p-2 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg text-blue-500 dark:text-blue-400 transition-all" title="Ver detalles">
+                    <Eye size={16} />
+                  </button> */}
+                {/*   <button className="p-2 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg text-yellow-500 dark:text-yellow-400 transition-all" title="Modificar">
+                    <Edit2 size={16} />
+                  </button> */}
+                  <button onClick={() => handleCancelBooking(booking.id)} className="p-2 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg text-red-500 dark:text-red-400 transition-all" title="Cancelar">
+                    <Trash2 size={16} />
+                  </button>
+                </div>
               </td>
             </tr>
           ))}

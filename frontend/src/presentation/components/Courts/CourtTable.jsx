@@ -1,10 +1,12 @@
 import React from 'react';
 import { formatPrice } from '../../utils/formatters.js'; // Importar la función de formato de precio
 import Pagination from '../common/Pagination.jsx';
-
+import { Eye, Edit2, Trash2, ToggleLeft, ToggleRight } from 'lucide-react'; // Importar los iconos
 function CourtTable({
   courts,
-  onOpenModal,
+  onModify,
+  onDelete,
+  onToggleActive,
   currentPage,
   totalPages,
   setCurrentPage,
@@ -52,12 +54,31 @@ function CourtTable({
                   </span>
                 </td>
                 <td className="px-6 py-4 text-right">
-                  <button
-                    onClick={() => onOpenModal(court)}
-                    className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
-                  >
-                    Ver más
-                  </button>
+                  <div className="flex items-center justify-end gap-2">
+                    <button
+                      onClick={() => onModify(court)}
+                      className="p-2 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg text-yellow-500 dark:text-yellow-400 transition-all"
+                      title="Modificar"
+                    >
+                      <Edit2 size={16} />
+                    </button>
+                    <button
+                      onClick={() => onDelete(court)}
+                      className="p-2 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg text-red-500 dark:text-red-400 transition-all"
+                      title="Eliminar"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                    <button
+                      onClick={() => onToggleActive(court.id, !court.is_active)}
+                      className={`p-2 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg ${
+                        court.is_active ? 'text-green-500 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'
+                      } transition-all`}
+                      title={court.is_active ? 'Desactivar' : 'Activar'}
+                    >
+                      {court.is_active ? <ToggleRight size={16} /> : <ToggleLeft size={16} />}
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
