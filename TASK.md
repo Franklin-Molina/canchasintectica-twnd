@@ -22,3 +22,4 @@
 - [x] Refactorizar `CourtDetailPage.jsx` dividiendo en componentes reutilizables
 - [x] Implementar opciones de pago (100%, 50%, 10%) al confirmar reserva en `CourtDetailPage.jsx` (14/11/2025)
 - [x] Resolver el "flash" de los botones de inicio de sesión/registro al recargar la página (14/11/2025)
+- [x] Mostrar la hora de creación de la reserva en `DashboardBookingsPage.jsx` (26/11/2025)

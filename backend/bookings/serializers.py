@@ -25,7 +25,7 @@ class BookingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Booking
-        fields = ('id', 'user', 'user_details', 'court', 'court_details', 'start_time', 'end_time', 'status', 'payment', 'payment_percentage')
+        fields = ('id', 'user', 'user_details', 'court', 'court_details', 'start_time', 'end_time', 'status', 'payment', 'payment_percentage', 'created_at')
 
     def create(self, validated_data):
         # Obtener el usuario del contexto de la petición (establecido por CurrentUserDefault)

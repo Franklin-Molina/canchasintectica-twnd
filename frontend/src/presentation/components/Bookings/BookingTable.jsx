@@ -51,6 +51,7 @@ const BookingTable = ({
             <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Usuario</th>
             <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Inicio</th>
             <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Fin</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Fecha de Reserva</th>
             <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Estado</th>
             <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Pago</th>
             <th className="px-6 py-4 text-right text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Acciones</th>
@@ -64,6 +65,7 @@ const BookingTable = ({
               <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-300">{booking.user_details.first_name} {booking.user_details.last_name}</td>
               <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-300">{new Date(booking.start_time).toLocaleString()}</td>
               <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-300">{new Date(booking.end_time).toLocaleString()}</td>
+              <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-300">{new Date(booking.created_at).toLocaleString()}</td>
               <td className="px-6 py-4">
                 <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border ${getEstadoColor(booking.status)}`}>
                   {booking.status}
