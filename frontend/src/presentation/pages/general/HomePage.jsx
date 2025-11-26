@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Pagination from '../../components/common/Pagination.jsx';
 import { useHomePageLogic } from '../../hooks/general/useHomePageLogic.js';
 import { useAuth } from '../../context/AuthContext.jsx';
+import Spinner from '../../components/common/Spinner.jsx';
 
 function HomePage({ openAuthModal }) {
   const { isAuthenticated } = useAuth();
@@ -22,7 +23,7 @@ function HomePage({ openAuthModal }) {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-900 dark:to-gray-800">
-        <div className="animate-spin rounded-full h-16 w-16 border-4 border-indigo-600 border-t-transparent"></div>
+       <Spinner/>
       </div>
     );
   }
