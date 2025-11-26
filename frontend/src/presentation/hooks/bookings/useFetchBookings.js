@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useUseCases } from '../../context/UseCaseContext';
 
 /**
@@ -48,24 +48,23 @@ export const useFetchBookings = ({ onlyActive = false, onlyFinished = false, ini
     });
   }, [allBookings, searchFilter, paymentStatusFilter, selectedCourtFilter, onlyActive, onlyFinished]); // Agregado onlyFinished a las dependencias
 
-  const fetchAllBookings = async () => {
+  const fetchAllBookings = useCallback(async () => {
     try {
       setLoading(true);
-      // El backend no pagina, así que obtenemos todo
-      const response = await getBookingsUseCase.execute(1);
-      setAllBookings(response || []);
+      const newBookingsData = await getBookingsUseCase.execute(1) || [];
+      setAllBookings(newBookingsData);
     } catch (err) {
       setError(err);
       console.error('Error al obtener reservas en useFetchBookings:', err);
     } finally {
       setLoading(false);
     }
-  };
+  }, [getBookingsUseCase]);
 
   // Efecto para obtener todas las reservas una sola vez
   useEffect(() => {
     fetchAllBookings();
-  }, []);
+  }, [fetchAllBookings]);
 
   // Calcular las reservas paginadas y el total de páginas basado en filteredBookings
   const paginatedBookings = useMemo(() => {

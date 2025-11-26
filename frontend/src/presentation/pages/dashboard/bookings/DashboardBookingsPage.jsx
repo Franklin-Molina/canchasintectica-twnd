@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Spinner from '../../../components/common/Spinner';
 import BookingTable from '../../../components/Bookings/BookingTable';
 import { useFetchBookings } from '../../../hooks/bookings/useFetchBookings';
@@ -6,18 +6,51 @@ import { RefreshCw } from 'lucide-react'; // Importar el icono de refrescar
 
 function DashboardBookingsPage() {
   const {
-    bookings, // Ahora 'bookings' ya viene paginado y filtrado
+    bookings,
     loading,
     error,
     currentPage,
-    totalPages, // Total de páginas calculado en el hook
-    totalBookings, // Total de reservas después de aplicar filtros
+    totalPages,
+    totalBookings,
     setCurrentPage,
     deleteBooking,
     itemsPerPage,
     setItemsPerPage,
-    fetchAllBookings, // Función para refrescar reservas
-  } = useFetchBookings({ onlyActive: true, initialItemsPerPage: 10 }); // Pasamos onlyActive: true y initialItemsPerPage: 10 al hook
+    fetchAllBookings,
+  } = useFetchBookings({ onlyActive: true, initialItemsPerPage: 10 });
+
+  const [timeSinceLastUpdate, setTimeSinceLastUpdate] = useState(0);
+
+  // Refresco automático cada 10 segundos
+  useEffect(() => {
+    const autoRefreshInterval = setInterval(() => {
+      fetchAllBookings();
+    }, 10000); // 10 segundos
+
+    return () => clearInterval(autoRefreshInterval);
+  }, [fetchAllBookings]);
+
+  // Reiniciar el contador de tiempo después de cada actualización de `bookings`
+  useEffect(() => {
+    setTimeSinceLastUpdate(0);
+  }, [bookings]);
+  
+  // Contador de segundos para la UI
+  useEffect(() => {
+    const timerInterval = setInterval(() => {
+      setTimeSinceLastUpdate(prev => prev + 1);
+    }, 1000); // Cada segundo
+
+    return () => clearInterval(timerInterval);
+  }, []);
+
+  const formatearTiempo = (segundos) => {
+    if (segundos < 60) return `hace ${segundos}s`;
+    const minutos = Math.floor(segundos / 60);
+    if (minutos < 60) return `hace ${minutos}min`;
+    const horas = Math.floor(minutos / 60);
+    return `hace ${horas}h`;
+  };
 
   if (loading) {
     return (
@@ -37,17 +70,22 @@ function DashboardBookingsPage() {
 
   return (
     <div className="p-6">
-      <div className="flex justify-between items-center mb-6"> {/* Contenedor para título y botón */}
+      <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">
           Gestión de Reservas
         </h1>
-        <button
-          onClick={fetchAllBookings} // Llamada directa a la función de refresco
-          className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-medium transition-all bg-blue-500 text-white hover:bg-blue-600"
-        >
-          <RefreshCw className="w-4 h-4" />
-          <span className="hidden sm:inline">Refrescar</span>
-        </button>
+        <div className="flex items-center gap-4 bg-green-500/10 border border-green-500/30 px-5 py-3 rounded-lg">
+          <div className="relative">
+            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+            <div className="absolute inset-0 w-3 h-3 bg-green-500 rounded-full animate-ping"></div>
+          </div>
+          <div>
+            <div className="text-green-500 font-medium text-sm">Sistema Activo</div>
+            <div className="text-xs text-gray-400">
+              Última actualización: {formatearTiempo(timeSinceLastUpdate)}
+            </div>
+          </div>
+        </div>
       </div>
 
       {totalBookings === 0 ? (

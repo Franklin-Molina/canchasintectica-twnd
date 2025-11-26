@@ -25,3 +25,4 @@
 - [x] Mostrar la hora de creaciรณn de la reserva en `DashboardBookingsPage.jsx` (26/11/2025)
 - [x] Implementar nuevos botones de acciรณn en la tabla de reservas (26/11/2025)
 - [x] Implementar botones de acción con iconos en `DashboardManageCourtsPage.jsx` (26/11/2025)
+- [ ] Implementar refresco automático en `DashboardBookingsPage.jsx` (26/11/2025)

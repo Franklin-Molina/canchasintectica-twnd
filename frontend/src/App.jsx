@@ -2,6 +2,9 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { RepositoryProvider } from './presentation/context/RepositoryContext.jsx';
 import { UseCaseProvider } from './presentation/context/UseCaseContext.jsx';
+import { NotificationProvider, useNotification } from './presentation/context/NotificationContext.jsx';
+import { useBookingNotifier } from './presentation/hooks/bookings/useBookingNotifier.js';
+import Notification from './presentation/components/common/Notification.jsx';
 import HomePage from './presentation/pages/general/HomePage.jsx'; // Ruta actualizada
 import RegisterPage from './presentation/components/Auth/RegisterPage.jsx'; // Se mantiene en components/Auth
 import BookingPage from './presentation/pages/bookings/BookingPage.jsx'; // Ruta actualizada
@@ -33,13 +36,23 @@ function App() {
   return (
     <RepositoryProvider>
       <UseCaseProvider>
-        <AuthProvider> {/* Envolver las rutas con AuthProvider */}
-          <AuthContent /> {/* Componente auxiliar para manejar el contenido condicional */}
-        </AuthProvider>
+        <NotificationProvider>
+          <AuthProvider>
+            <GlobalNotificationHandler />
+            <AuthContent />
+          </AuthProvider>
+        </NotificationProvider>
       </UseCaseProvider>
-      <ToastContainer position="top-right" autoClose={1500} /> {/* Componente para mostrar las notificaciones */}
+      <ToastContainer position="top-right" autoClose={1500} />
     </RepositoryProvider>
   );
+}
+
+// Componente para manejar la lógica de notificaciones globales
+function GlobalNotificationHandler() {
+  useBookingNotifier(); // Este hook ejecuta la lógica de notificación en segundo plano
+  const { notification } = useNotification();
+  return <Notification message={notification} />;
 }
 
 // Componente auxiliar para manejar el contenido condicional basado en el estado de carga de autenticación
