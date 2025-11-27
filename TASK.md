@@ -30,3 +30,4 @@
 - [x] Asegurar que las notificaciones solo se muestren a usuarios con rol 'admin' (27/11/2025)
 - [x] Implementar refresco automático en `DashboardOverviewPage.jsx` (27/11/2025)
 - [x] Corregir el contador de refresco automático en la vista de reservas (27/11/2025)
+- [x] Refactorizar `DashboardOverviewPage.jsx` moviendo la funcionalidad a componentes (27/11/2025)

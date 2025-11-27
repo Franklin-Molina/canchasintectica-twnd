@@ -1,33 +1,32 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 // Hook para gestionar el refresco automático y el tiempo transcurrido.
 export const useAutoRefresh = (callback, interval = 10000, dependency) => {
   const [timeSinceLastUpdate, setTimeSinceLastUpdate] = useState(0);
+  const callbackRef = useRef(callback);
 
+  useEffect(() => {
+    callbackRef.current = callback;
+  }, [callback]);
+  
   // Efecto para el refresco automático de datos.
   useEffect(() => {
+    setTimeSinceLastUpdate(0); // Reiniciar al cambiar la dependencia.
+
     const autoRefreshInterval = setInterval(() => {
-      if (callback) {
-        callback();
-      }
+      callbackRef.current();
     }, interval);
-
-    return () => clearInterval(autoRefreshInterval);
-  }, [callback, interval]);
-
-  // Efecto para reiniciar el contador después de una actualización.
-  useEffect(() => {
-    setTimeSinceLastUpdate(0);
-  }, [dependency]); // Se reinicia cuando la dependencia cambia.
-
-  // Efecto para el contador de segundos.
-  useEffect(() => {
+    
     const timerInterval = setInterval(() => {
       setTimeSinceLastUpdate(prev => prev + 1);
-    }, 1000); // Se actualiza cada segundo.
+    }, 1000);
 
-    return () => clearInterval(timerInterval);
-  }, []);
+    return () => {
+      clearInterval(autoRefreshInterval);
+      clearInterval(timerInterval);
+    };
+  }, [dependency, interval]);
+
 
   // Función para formatear el tiempo en un formato legible.
   const formatearTiempo = (segundos) => {
