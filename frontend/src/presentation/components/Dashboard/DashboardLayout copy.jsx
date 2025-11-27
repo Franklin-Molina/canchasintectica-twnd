@@ -35,14 +35,6 @@ const DashboardLayout = () => {
   };
 
   const NavItem = ({ item, index }) => {
-    if (item.type === 'header') {
-      return (
-        <li className="px-4 pt-3 pb-1 text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400">
-          {item.label}
-        </li>
-      );
-    }
-
     const isActive = item.submenu
       ? item.submenu.some(subItem => location.pathname.startsWith(subItem.to))
       : location.pathname === item.to;
@@ -52,7 +44,7 @@ const DashboardLayout = () => {
         <li>
           <button
             onClick={() => toggleSubmenu(index)}
-            className={`flex items-center justify-between w-full gap-3 px-4 py-2 rounded-xl font-normal transition-all ${
+            className={`flex items-center justify-between w-full gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
               isActive ? 'bg-indigo-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
             }`}
           >
@@ -63,26 +55,10 @@ const DashboardLayout = () => {
             <ChevronDown className={`w-5 h-5 transition-transform ${openSubmenus[index] ? 'rotate-180' : ''}`} />
           </button>
           {openSubmenus[index] && (
-            <ul className="pl-6 pt-1 space-y-1">
-              {item.submenu.map((subItem) => {
-                const isSubActive = location.pathname === subItem.to;
-                return (
-                  <li key={subItem.to}>
-                    <NavLink
-                      to={subItem.to}
-                      onClick={() => setIsSidebarOpen(false)}
-                      className={`flex items-center gap-3 w-full px-3 py-2 rounded-md text-sm transition-all ${
-                        isSubActive
-                          ? 'bg-indigo-500/20 text-indigo-700 dark:text-indigo-300'
-                          : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                      }`}
-                    >
-                      {subItem.icon}
-                      <span>{subItem.label}</span>
-                    </NavLink>
-                  </li>
-                );
-              })}
+            <ul className="pl-8 pt-2 space-y-2">
+              {item.submenu.map((subItem) => (
+                <NavItem key={subItem.to} item={subItem} />
+              ))}
             </ul>
           )}
         </li>
@@ -96,7 +72,7 @@ const DashboardLayout = () => {
           end={item.to === '/' || item.to === '/dashboard' || item.to === '/client' || item.to === '/adminglobal'}
           onClick={() => setIsSidebarOpen(false)}
           className={({ isActive: isNavLinkActive }) =>
-            `flex items-center gap-3 px-4 py-2 rounded-xl font-normal transition-all ${
+            `flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
               isNavLinkActive ? 'bg-indigo-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
             }`
           }
@@ -126,14 +102,13 @@ const DashboardLayout = () => {
           </div>
 
           <nav className="flex flex-col justify-between flex-grow p-4 overflow-y-auto">
-            <ul className="space-y-1">
+            <ul className="space-y-2">
               {currentMenuItems.map((item, index) => (
                 <NavItem key={item.label || item.to} item={item} index={index} />
               ))}
             </ul>
             
             <div>
-              
               <button
                 onClick={handleLogout}
                 className="flex items-center w-full gap-3 px-4 py-3 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-700/20 rounded-xl font-medium transition-all"

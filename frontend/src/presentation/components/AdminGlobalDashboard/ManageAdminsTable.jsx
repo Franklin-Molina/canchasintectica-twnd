@@ -1,115 +1,178 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useOutletContext } from 'react-router-dom'; // Para acceder al contexto del Outlet
-import '../../../styles/AdminGlobalDashboard.css'; // Importar los estilos
-import Spinner from '../common/Spinner';
-import useButtonDisable from '../../hooks/general/useButtonDisable.js'; // Importar el hook personalizado
+import React, { useState } from "react";
+import { Link, useOutletContext } from "react-router-dom";
+import Spinner from "../common/Spinner";
+import useButtonDisable from "../../hooks/general/useButtonDisable";
 
 function ManageAdminsTable() {
-  // Acceder a los datos y funciones pasados a través del contexto del Outlet
-  const { adminUsers, loading, error, fetchAdminUsers, handleSuspendUser, handleReactivateUser, handleDeleteUser } = useOutletContext();
+  const {
+    adminUsers,
+    loading,
+    error,
+    fetchAdminUsers,
+    handleSuspendUser,
+    handleReactivateUser,
+    handleDeleteUser,
+  } = useOutletContext();
 
-  // Estado para controlar la visibilidad del modal de confirmación
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  // Estado para almacenar la información del administrador a eliminar
   const [adminToDelete, setAdminToDelete] = useState(null);
 
-  // Función para abrir el modal de confirmación
   const confirmDelete = (admin) => {
     setAdminToDelete(admin);
     setShowDeleteModal(true);
   };
 
-  // Función para cerrar el modal de confirmación
   const cancelDelete = () => {
     setAdminToDelete(null);
     setShowDeleteModal(false);
   };
 
-  // Usar el hook para manejar la eliminación después de la confirmación
   const [isDeleting, proceedDelete] = useButtonDisable(async () => {
     if (adminToDelete) {
       await handleDeleteUser(adminToDelete.id);
-      cancelDelete(); // Cerrar el modal después de la eliminación
+      cancelDelete();
     }
   });
 
-  // El loading y error se manejan en AdminGlobalDashboardPage, aquí solo mostramos la tabla o mensaje
-  if (loading) {
-    return <Spinner/>;  // O un spinner más elaborado
-  }
+  if (loading) return <Spinner />;
 
-  if (error) {
-    // El error principal se muestra en la página padre, aquí podríamos mostrar un mensaje específico si es necesario
-    return <p style={{ color: 'red' }}>Error al cargar la lista de administradores.</p>;
-  }
+  if (error)
+    return (
+      <p className="text-red-600 dark:text-red-400">
+        Error al cargar la lista de administradores.
+      </p>
+    );
 
   return (
-    <div>
-      <h1 className="page-title">Gestionar Administradores de Cancha</h1>
-    <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'flex-end' }}>
- <div className="align-right">
-  <Link to="/adminglobal/register-admin" style={{ marginRight: '10px' }}>
-    <button className="action-button button-create">➕</button>
-  </Link>
-</div>
+    <div className="w-full">
+      <h1 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100">
+        Gestionar Administradores de Cancha
+      </h1>
 
-</div>
+      {/* Botón crear admin */}
+      <div className="flex justify-end mb-4">
+        <Link to="/adminglobal/register-admin">
+          <button className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium shadow-md transition">
+            ➕ Crear Admin
+          </button>
+        </Link>
+      </div>
 
-
+      {/* Tabla */}
       {adminUsers.length === 0 ? (
-        <p>No hay administradores de cancha registrados.</p>
+        <p className="text-gray-700 dark:text-gray-300">
+          No hay administradores registrados.
+        </p>
       ) : (
-        <table className="admin-table">
-          <thead>
-            <tr>
-             {/*  <th>ID</th> */}
-              <th>Username</th>
-              <th>Email</th>
-              <th>Nombre</th>
-              <th>Estado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {adminUsers.map(admin => (
-              <tr key={admin.id}>
-              {/*   <td>{admin.id}</td> */}
-                <td>{admin.username}</td>
-                <td>{admin.email}</td>
-                <td>{admin.first_name} {admin.last_name}</td>
-                <td>
-                  <span className={`status ${admin.is_active ? 'status-active' : 'status-suspended'}`}>
-                    {admin.is_active ? 'Activo' : ' Suspendido'}
-                  </span>
-                </td>
-                <td>
-                  {admin.is_active ? (
-                    <button onClick={() => handleSuspendUser(admin.id)} className="action-button button-suspend">🛑 Suspender</button>
-                  ) : (
-                    <button onClick={() => handleReactivateUser(admin.id)} className="action-button button-reactivate"><img src="/check.png" alt="Reactivar" className="reactivate-icon" />Reactivar</button>
-                  )}
-                  {/* Modificar el onClick para abrir el modal */}
-                  <button onClick={() => confirmDelete(admin)} className="action-button button-delete"> 🗑 Eliminar</button>
-                </td>
+        <div className="overflow-x-auto rounded-lg shadow">
+          <table className="w-full border-collapse bg-white dark:bg-gray-900 text-left">
+            <thead className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm uppercase">
+              <tr>
+                <th className="py-3 px-4">Username</th>
+                <th className="py-3 px-4">Email</th>
+                <th className="py-3 px-4">Nombre</th>
+                <th className="py-3 px-4">Estado</th>
+                <th className="py-3 px-4">Acciones</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody>
+              {adminUsers.map((admin) => (
+                <tr
+                  key={admin.id}
+                  className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+                >
+                  <td className="py-3 px-4">{admin.username}</td>
+                  <td className="py-3 px-4">{admin.email}</td>
+                  <td className="py-3 px-4">
+                    {admin.first_name} {admin.last_name}
+                  </td>
+
+                  {/* Estado */}
+                  <td className="py-3 px-4">
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        admin.is_active
+                          ? "bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100"
+                          : "bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100"
+                      }`}
+                    >
+                      {admin.is_active ? "Activo" : "Suspendido"}
+                    </span>
+                  </td>
+
+                  {/* Acciones */}
+                  <td className="py-3 px-4 flex gap-2">
+                    {admin.is_active ? (
+                      <button
+                        onClick={() => handleSuspendUser(admin.id)}
+                        className="px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded text-xs shadow transition"
+                      >
+                        🛑 Suspender
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleReactivateUser(admin.id)}
+                        className="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-xs shadow transition flex items-center gap-1"
+                      >
+                        ✔ Reactivar
+                      </button>
+                    )}
+
+                    <button
+                      onClick={() => confirmDelete(admin)}
+                      className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs shadow transition"
+                    >
+                      🗑 Eliminar
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
 
-      {/* Modal de Confirmación de Eliminación */}
+      {/* MODAL ELIMINACIÓN */}
       {showDeleteModal && adminToDelete && (
-        <div className="modal-delete">
-          <div className="modal-contentx">
-            <h2>Confirmar Eliminación</h2>
-            <p>¿Estás seguro de que deseas eliminar al administrador:</p>
-            <p><strong>Username:</strong> {adminToDelete.username}</p>
-            <p><strong>Email:</strong> {adminToDelete.email}</p>
-            <p><strong>Nombre:</strong> {adminToDelete.first_name} {adminToDelete.last_name}</p>
-            <div className="modal-actions">
-              <button onClick={proceedDelete} className="action-button button-delete" disabled={isDeleting}>Sí, Eliminar</button>
-              <button onClick={cancelDelete} className="action-button button-cancel">Cancelar</button>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl p-6 w-full max-w-md animate-fadeIn">
+            <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-3">
+              Confirmar Eliminación
+            </h2>
+
+            <p className="text-gray-700 dark:text-gray-300">
+              ¿Estás seguro de eliminar al administrador?
+            </p>
+
+            <div className="mt-4 text-sm text-gray-600 dark:text-gray-300">
+              <p>
+                <strong>Username:</strong> {adminToDelete.username}
+              </p>
+              <p>
+                <strong>Email:</strong> {adminToDelete.email}
+              </p>
+              <p>
+                <strong>Nombre:</strong>{" "}
+                {adminToDelete.first_name} {adminToDelete.last_name}
+              </p>
+            </div>
+
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                onClick={proceedDelete}
+                disabled={isDeleting}
+                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow disabled:opacity-50"
+              >
+                Sí, eliminar
+              </button>
+
+              <button
+                onClick={cancelDelete}
+                className="px-4 py-2 bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg shadow"
+              >
+                Cancelar
+              </button>
             </div>
           </div>
         </div>

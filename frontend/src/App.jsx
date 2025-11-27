@@ -151,15 +151,19 @@ function AuthContent() {
         path="/adminglobal"
         element={
           <ProtectedRoute>
-            <AdminGlobalDashboardPage /> {/* Este es ahora el layout */}
+            <DashboardLayout />
           </ProtectedRoute>
         }
       >
-        {/* Ruta índice para el dashboard adminglobal, podría ser un resumen o la gestión de admins */}
-        <Route index element={<ManageAdminsTable />} /> {/* Mostrar tabla de admins por defecto */}
-        <Route path="manage-admins" element={<ManageAdminsTable />} />
-        <Route path="profile" element={<DashboardProfilePage />} /> {/* Perfil dentro del layout adminglobal */}
-        <Route path="register-admin" element={<AdminRegisterPage />} /> {/* Registrar admin dentro del layout adminglobal */}
+        <Route
+          path=""
+          element={<AdminGlobalDashboardPage />}
+        >
+          <Route index element={<ManageAdminsTable />} />
+          <Route path="manage-admins" element={<ManageAdminsTable />} />
+        </Route>
+        <Route path="profile" element={<DashboardProfilePage />} />
+        <Route path="register-admin" element={<AdminRegisterPage />} />
       </Route>
     </Routes>
   );

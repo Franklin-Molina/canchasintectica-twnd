@@ -36,3 +36,4 @@
 - [x] Corregir errores de registro de administrador (TypeError y 404 Not Found) (27/11/2025)
 - [x] Corregir error 401 Unauthorized en el registro de administradores (27/11/2025)
 - [x] Asegurar que `is_superuser` sea `false` al crear un usuario admin (27/11/2025)
+- [x] Unificar Sidebar para los tres roles (cliente, admin, adminglobal) (27/11/2025)
