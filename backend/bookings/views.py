@@ -19,6 +19,46 @@ from .application.use_cases.create_booking import CreateBookingUseCase
 from .application.use_cases.get_booking_list import GetBookingListUseCase
 from .application.use_cases.get_booking_details import GetBookingDetailsUseCase
 from .application.use_cases.update_booking_status import UpdateBookingStatusUseCase
+from django.utils import timezone
+from datetime import timedelta
+
+class BookingStatsView(views.APIView):
+    """
+    Vista para obtener estadísticas de reservas (órdenes).
+    """
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        """
+        Calcula y devuelve el total de reservas y el porcentaje de cambio en los últimos 30 días.
+        """
+        # Total de reservas
+        total_bookings_count = Booking.objects.count()
+
+        # Nuevas reservas en los últimos 30 días
+        thirty_days_ago = timezone.now() - timedelta(days=30)
+        new_bookings_count = Booking.objects.filter(created_at__gte=thirty_days_ago).count()
+
+        # Reservas del período anterior (de 60 a 30 días atrás) para comparar
+        sixty_days_ago = timezone.now() - timedelta(days=60)
+        previous_period_bookings_count = Booking.objects.filter(
+            created_at__gte=sixty_days_ago,
+            created_at__lt=thirty_days_ago
+        ).count()
+        
+        # Calcular el cambio porcentual
+        percentage_change = 0.0
+        if previous_period_bookings_count > 0:
+            percentage_change = ((new_bookings_count - previous_period_bookings_count) / previous_period_bookings_count) * 100
+        elif new_bookings_count > 0:
+            percentage_change = 100.0
+
+        stats = {
+            'total_bookings': total_bookings_count,
+            'percentage_change': round(percentage_change, 2)
+        }
+        
+        return Response(stats, status=status.HTTP_200_OK)
 
 
 @method_decorator(csrf_exempt, name='dispatch')

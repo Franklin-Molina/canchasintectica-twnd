@@ -10,6 +10,7 @@ import { useFetchBookings } from '../../../hooks/bookings/useFetchBookings.js';
 import { useFetchAllCourts } from '../../../hooks/courts/useFetchAllCourts.js';
 import { useAutoRefresh } from '../../../hooks/bookings/useAutoRefresh.js';
 import useUserStats from '../../../hooks/users/useUserStats.js';
+import useBookingStats from '../../../hooks/bookings/useBookingStats.js';
 
 
 function DashboardOverviewPage() {
@@ -59,6 +60,7 @@ function DashboardOverviewPage() {
   const { courts: allCourts } = useFetchAllCourts();
 
   const { stats: userStats, loading: loadingUserStats, error: errorUserStats } = useUserStats();
+  const { stats: bookingStats, loading: loadingBookingStats, error: errorBookingStats } = useBookingStats();
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('canchas'); // 'canchas' o 'reservas'
@@ -192,18 +194,28 @@ function DashboardOverviewPage() {
 
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800">
             <div className="flex items-start justify-between mb-4">
-              <div className="text-slate-500 dark:text-slate-400 text-sm font-medium">ÓRDENES</div>
+              <div className="text-slate-500 dark:text-slate-400 text-sm font-medium">RESERVAS</div>
               <div className="w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center">
                 <ShoppingBag className="w-6 h-6 text-amber-500" />
               </div>
             </div>
-            <div className="space-y-2">
-              <div className="text-3xl font-bold text-slate-900 dark:text-white">586</div>
-              <div className="flex items-center gap-1 text-red-500 text-sm">
-                <TrendingDown className="w-4 h-4" />
-                <span>3.2%</span>
+            {loadingBookingStats ? (
+              <div className="space-y-2">
+                <div className="text-3xl font-bold text-slate-900 dark:text-white">Cargando...</div>
               </div>
-            </div>
+            ) : errorBookingStats ? (
+              <div className="space-y-2">
+                <div className="text-sm font-bold text-red-500 dark:text-red-400">Error al cargar</div>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <div className="text-3xl font-bold text-slate-900 dark:text-white">{bookingStats?.total_bookings.toLocaleString() || 'N/A'}</div>
+                <div className={`flex items-center gap-1 text-sm ${bookingStats?.percentage_change >= 0 ? 'text-emerald-500' : 'text-red-500'}`}>
+                  {bookingStats?.percentage_change >= 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
+                  <span>{bookingStats?.percentage_change.toFixed(1) || '0.0'}%</span>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800">

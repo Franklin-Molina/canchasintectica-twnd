@@ -4,10 +4,7 @@ import useRegisterForm from '../../hooks/auth/useRegisterForm.js';
 import { User, Mail, Lock, Calendar, Eye, EyeOff, CheckCircle, AlertCircle,Check } from 'lucide-react';
 import InputWithIcon from '../../../components/ui/InputWithIcon';
 
-/**
- * Página de registro profesional con Tailwind CSS v3.
- * Ya NO necesitas importar '../../../styles/RegisterPage.css'
- */
+
 function RegisterPage() {
   const {
     username, setUsername, usernameError, setUsernameError, validateUsername,
