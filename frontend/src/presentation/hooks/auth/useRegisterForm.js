@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import api from '../../../infrastructure/api/api';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { toast } from 'react-toastify'; // Importar toast para notificaciones
@@ -8,9 +8,10 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 /**
  * Hook personalizado para manejar la lógica del formulario de registro y sus validaciones.
+ * @param {string} userRole El rol del usuario a registrar ('cliente' o 'admin').
  * @returns {Object} Un objeto que contiene los estados del formulario, errores y funciones de manejo.
  */
-const useRegisterForm = () => {
+const useRegisterForm = (userRole = 'cliente') => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -130,7 +131,11 @@ const useRegisterForm = () => {
     }
 
     try {
-      const response = await axios.post(`${API_URL}/api/users/register/`, {
+      const endpoint = userRole === 'admin'
+        ? `/api/users/admin/register/`
+        : `/api/users/register/`;
+
+      const response = await api.post(endpoint, {
         username,
         email,
         password,
@@ -139,12 +144,15 @@ const useRegisterForm = () => {
         last_name: lastName,
         fecha_nacimiento: age,
       });
-
-      //console.log('Registro exitoso:', response.data);
-      setSuccess('¡Registro exitoso! Bienvenido a nuestra plataforma.');
-      setError('');
-      toast.success('¡Registro exitoso! Bienvenido a nuestra plataforma.'); // Mostrar toast de éxito
       
+      const successMessage = userRole === 'admin'
+        ? 'Administrador registrado exitosamente.'
+        : '¡Registro exitoso! Bienvenido a nuestra plataforma.';
+      
+      setSuccess(successMessage);
+      setError('');
+      toast.success(successMessage);
+
       // Limpiar formulario
       setUsername('');
       setFirstName('');
@@ -154,11 +162,17 @@ const useRegisterForm = () => {
       setPassword('');
       setConfirmPassword('');
 
-      // Hacer que el mensaje de éxito desaparezca y redirigir al usuario al home después de 2 segundos
-      setTimeout(() => {
-        setSuccess('');
-        navigate('/');
-      }, 2000);
+      // Lógica post-registro
+      if (userRole === 'cliente') {
+        setTimeout(() => {
+          setSuccess('');
+          navigate('/');
+        }, 2000);
+      } else {
+        setTimeout(() => {
+          setSuccess('');
+        }, 3000);
+      }
     } catch (error) {
       console.error('Error en el registro:', error);
       if (error.response && error.response.data) {
@@ -178,7 +192,10 @@ const useRegisterForm = () => {
         for (const field in backendErrors) {
           if (backendErrors.hasOwnProperty(field)) {
             const friendlyFieldName = fieldMap[field] || field;
-            errorMessages.push(`${friendlyFieldName}: ${backendErrors[field].join(', ')}`);
+            const errorValue = backendErrors[field];
+            // Verificar si el error es un array antes de usar .join()
+            const message = Array.isArray(errorValue) ? errorValue.join(', ') : errorValue;
+            errorMessages.push(`${friendlyFieldName}: ${message}`);
           }
         }
         const fullErrorMessage = `${errorMessage}\n${errorMessages.join('\n')}`;

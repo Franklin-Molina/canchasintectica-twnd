@@ -365,6 +365,7 @@ class AdminRegisterView(views.APIView): # Cambiar a APIView
             # Asegurarse de que el usuario creado sea staff y activo
             user_data['is_staff'] = True
             user_data['is_active'] = True # Establecer explícitamente como activo
+            user_data['is_superuser'] = False # Asegurar que no sea superusuario
             try:
                 # Envolver la llamada asíncrona con async_to_sync
                 user = async_to_sync(register_user_use_case.execute)(user_data)

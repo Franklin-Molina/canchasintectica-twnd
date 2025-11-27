@@ -31,3 +31,8 @@
 - [x] Implementar refresco automático en `DashboardOverviewPage.jsx` (27/11/2025)
 - [x] Corregir el contador de refresco automático en la vista de reservas (27/11/2025)
 - [x] Refactorizar `DashboardOverviewPage.jsx` moviendo la funcionalidad a componentes (27/11/2025)
+- [x] Refactorizar `AdminRegisterPage.jsx` conforme el diseño que ya se ha estado estableciendo (27/11/2025)
+- [x] Reutilizar `RegisterPage.jsx` para el registro de administradores (27/11/2025)
+- [x] Corregir errores de registro de administrador (TypeError y 404 Not Found) (27/11/2025)
+- [x] Corregir error 401 Unauthorized en el registro de administradores (27/11/2025)
+- [x] Asegurar que `is_superuser` sea `false` al crear un usuario admin (27/11/2025)
