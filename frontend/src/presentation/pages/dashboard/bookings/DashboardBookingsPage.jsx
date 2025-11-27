@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React from 'react';
 import Spinner from '../../../components/common/Spinner';
 import BookingTable from '../../../components/Bookings/BookingTable';
 import { useFetchBookings } from '../../../hooks/bookings/useFetchBookings';
-import { RefreshCw } from 'lucide-react'; // Importar el icono de refrescar
+import { useAutoRefresh } from '../../../hooks/bookings/useAutoRefresh';
 
 function DashboardBookingsPage() {
   const {
@@ -19,38 +19,8 @@ function DashboardBookingsPage() {
     fetchAllBookings,
   } = useFetchBookings({ onlyActive: true, initialItemsPerPage: 10 });
 
-  const [timeSinceLastUpdate, setTimeSinceLastUpdate] = useState(0);
-
-  // Refresco automático cada 10 segundos
-  useEffect(() => {
-    const autoRefreshInterval = setInterval(() => {
-      fetchAllBookings();
-    }, 10000); // 10 segundos
-
-    return () => clearInterval(autoRefreshInterval);
-  }, [fetchAllBookings]);
-
-  // Reiniciar el contador de tiempo después de cada actualización de `bookings`
-  useEffect(() => {
-    setTimeSinceLastUpdate(0);
-  }, [bookings]);
-  
-  // Contador de segundos para la UI
-  useEffect(() => {
-    const timerInterval = setInterval(() => {
-      setTimeSinceLastUpdate(prev => prev + 1);
-    }, 1000); // Cada segundo
-
-    return () => clearInterval(timerInterval);
-  }, []);
-
-  const formatearTiempo = (segundos) => {
-    if (segundos < 60) return `hace ${segundos}s`;
-    const minutos = Math.floor(segundos / 60);
-    if (minutos < 60) return `hace ${minutos}min`;
-    const horas = Math.floor(minutos / 60);
-    return `hace ${horas}h`;
-  };
+  // Usar el hook de auto-refresco.
+  const { timeSinceLastUpdate } = useAutoRefresh(fetchAllBookings, 10000, bookings);
 
   if (loading) {
     return (
@@ -82,7 +52,7 @@ function DashboardBookingsPage() {
           <div>
             <div className="text-green-500 font-medium text-sm">Sistema Activo</div>
             <div className="text-xs text-gray-400">
-              Última actualización: {formatearTiempo(timeSinceLastUpdate)}
+              Última actualización: {timeSinceLastUpdate}
             </div>
           </div>
         </div>

@@ -155,5 +155,6 @@ export const useManageCourtsLogic = () => {
     handleReactivateCourtClick,
     handleDeleteRequest,
     handleModifyRequest,
+    fetchAllCourts: fetchCourts, // Exponer la función para recargar
   };
 };
