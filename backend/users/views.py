@@ -452,6 +452,48 @@ class AdminManagementViewSet(viewsets.ViewSet):
 
 from rest_framework.generics import RetrieveUpdateAPIView # Importar RetrieveUpdateAPIView
 from .serializers import UserProfileUpdateSerializer # Importar el nuevo serializador
+from django.utils import timezone
+from datetime import timedelta
+
+class UserStatsView(views.APIView):
+    """
+    Vista para obtener estadísticas de usuarios.
+    """
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        """
+        Calcula y devuelve el total de usuarios y el porcentaje de nuevos usuarios en los últimos 30 días.
+        """
+        # Total de usuarios registrados
+        total_users_count = User.objects.count()
+
+        # Nuevos usuarios en los últimos 30 días
+        thirty_days_ago = timezone.now() - timedelta(days=30)
+        new_users_count = User.objects.filter(date_joined__gte=thirty_days_ago).count()
+
+        # Usuarios del período anterior (de 60 a 30 días atrás) para comparar
+        sixty_days_ago = timezone.now() - timedelta(days=60)
+        previous_period_users_count = User.objects.filter(
+            date_joined__gte=sixty_days_ago,
+            date_joined__lt=thirty_days_ago
+        ).count()
+        
+        # Calcular el cambio porcentual
+        percentage_change = 0.0
+        if previous_period_users_count > 0:
+            percentage_change = ((new_users_count - previous_period_users_count) / previous_period_users_count) * 100
+        elif new_users_count > 0:
+            # Si no hubo usuarios en el período anterior y ahora sí, el crecimiento es teóricamente infinito.
+            # Se puede representar como 100% o un valor especial. Usaremos 100% para simplicidad.
+            percentage_change = 100.0
+
+        stats = {
+            'total_users': total_users_count,
+            'percentage_change': round(percentage_change, 2)
+        }
+        
+        return Response(stats, status=status.HTTP_200_OK)
 
 class UserProfileUpdateView(RetrieveUpdateAPIView):
     """

@@ -3,7 +3,7 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
-from .views import RegisterView, UserViewSet, GroupViewSet, PermissionViewSet, GoogleLogin, AdminRegisterView, AdminManagementViewSet, UserProfileUpdateView, ChangePasswordView, LoginView # Añadir LoginView
+from .views import RegisterView, UserViewSet, GroupViewSet, PermissionViewSet, GoogleLogin, AdminRegisterView, AdminManagementViewSet, UserProfileUpdateView, ChangePasswordView, LoginView, UserStatsView # Añadir LoginView y UserStatsView
 from rest_framework import routers
 from .models import User
 from django.urls import path
@@ -31,6 +31,9 @@ urlpatterns = [
     path('profile/', UserProfileUpdateView.as_view(), name='user_profile_update'),
     # Ruta para cambiar la contraseña
     path('change-password/', ChangePasswordView.as_view(), name='change_password'),
+    
+    # Ruta para obtener estadísticas de usuarios
+    path('stats/', UserStatsView.as_view(), name='user_stats'),
 
     path('', include(router.urls)),
 ]

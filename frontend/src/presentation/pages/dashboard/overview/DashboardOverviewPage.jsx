@@ -9,6 +9,7 @@ import { useManageCourtsLogic } from '../../../hooks/courts/useManageCourtsLogic
 import { useFetchBookings } from '../../../hooks/bookings/useFetchBookings.js';
 import { useFetchAllCourts } from '../../../hooks/courts/useFetchAllCourts.js';
 import { useAutoRefresh } from '../../../hooks/bookings/useAutoRefresh.js';
+import useUserStats from '../../../hooks/users/useUserStats.js';
 
 
 function DashboardOverviewPage() {
@@ -56,6 +57,8 @@ function DashboardOverviewPage() {
   } = useFetchBookings({ onlyActive: true });
 
   const { courts: allCourts } = useFetchAllCourts();
+
+  const { stats: userStats, loading: loadingUserStats, error: errorUserStats } = useUserStats();
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('canchas'); // 'canchas' o 'reservas'
@@ -168,13 +171,23 @@ function DashboardOverviewPage() {
                 <Users className="w-6 h-6 text-emerald-500" />
               </div>
             </div>
-            <div className="space-y-2">
-              <div className="text-3xl font-bold text-slate-900 dark:text-white">1,245</div>
-              <div className="flex items-center gap-1 text-emerald-500 text-sm">
-                <TrendingUp className="w-4 h-4" />
-                <span>12.3%</span>
+            {loadingUserStats ? (
+              <div className="space-y-2">
+                <div className="text-3xl font-bold text-slate-900 dark:text-white">Cargando...</div>
               </div>
-            </div>
+            ) : errorUserStats ? (
+              <div className="space-y-2">
+                 <div className="text-sm font-bold text-red-500 dark:text-red-400">Error al cargar</div>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <div className="text-3xl font-bold text-slate-900 dark:text-white">{userStats?.total_users.toLocaleString() || 'N/A'}</div>
+                <div className={`flex items-center gap-1 text-sm ${userStats?.percentage_change >= 0 ? 'text-emerald-500' : 'text-red-500'}`}>
+                  {userStats?.percentage_change >= 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
+                  <span>{userStats?.percentage_change.toFixed(1) || '0.0'}%</span>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800">
