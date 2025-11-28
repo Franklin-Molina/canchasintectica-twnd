@@ -3,12 +3,13 @@ import { Link, useOutletContext } from "react-router-dom";
 import Spinner from "../common/Spinner";
 import useButtonDisable from "../../hooks/general/useButtonDisable";
 
+import { Trash2, Ban, CheckCircle } from "lucide-react";
+
 function ManageAdminsTable() {
   const {
     adminUsers,
     loading,
     error,
-    fetchAdminUsers,
     handleSuspendUser,
     handleReactivateUser,
     handleDeleteUser,
@@ -49,24 +50,24 @@ function ManageAdminsTable() {
         Gestionar Administradores de Cancha
       </h1>
 
-      {/* Botón crear admin */}
+      {/* BOTÓN CREAR ADMIN */}
       <div className="flex justify-end mb-4">
         <Link to="/adminglobal/register-admin">
-          <button className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium shadow-md transition">
-            ➕ Crear Admin
+          <button className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium shadow-md transition flex items-center gap-2">
+            <span className="text-lg bg-emerald"></span> Crear Admin
           </button>
         </Link>
       </div>
 
-      {/* Tabla */}
+      {/* TABLA */}
       {adminUsers.length === 0 ? (
         <p className="text-gray-700 dark:text-gray-300">
           No hay administradores registrados.
         </p>
       ) : (
-        <div className="overflow-x-auto rounded-lg shadow">
+        <div className="overflow-x-auto rounded-lg shadow-lg">
           <table className="w-full border-collapse bg-white dark:bg-gray-900 text-left">
-            <thead className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm uppercase">
+            <thead className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 text-sm uppercase">
               <tr>
                 <th className="py-3 px-4">Username</th>
                 <th className="py-3 px-4">Email</th>
@@ -82,13 +83,19 @@ function ManageAdminsTable() {
                   key={admin.id}
                   className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
                 >
-                  <td className="py-3 px-4">{admin.username}</td>
-                  <td className="py-3 px-4">{admin.email}</td>
-                  <td className="py-3 px-4">
+                  <td className="py-3 px-4 text-gray-800 dark:text-gray-200">
+                    {admin.username}
+                  </td>
+
+                  <td className="py-3 px-4 text-gray-800 dark:text-gray-200">
+                    {admin.email}
+                  </td>
+
+                  <td className="py-3 px-4 text-gray-800 dark:text-gray-200">
                     {admin.first_name} {admin.last_name}
                   </td>
 
-                  {/* Estado */}
+                  {/* ESTADO */}
                   <td className="py-3 px-4">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-medium ${
@@ -101,29 +108,32 @@ function ManageAdminsTable() {
                     </span>
                   </td>
 
-                  {/* Acciones */}
+                  {/* ACCIONES */}
                   <td className="py-3 px-4 flex gap-2">
                     {admin.is_active ? (
                       <button
                         onClick={() => handleSuspendUser(admin.id)}
-                        className="px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded text-xs shadow transition"
+                        className="p-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg shadow transition flex items-center justify-center"
+                        title="Suspender"
                       >
-                        🛑 Suspender
+                        <Ban size={18} />
                       </button>
                     ) : (
                       <button
                         onClick={() => handleReactivateUser(admin.id)}
-                        className="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-xs shadow transition flex items-center gap-1"
+                        className="p-2 bg-green-600 hover:bg-green-700 text-white rounded-lg shadow transition flex items-center justify-center"
+                        title="Reactivar"
                       >
-                        ✔ Reactivar
+                        <CheckCircle size={18} />
                       </button>
                     )}
 
                     <button
                       onClick={() => confirmDelete(admin)}
-                      className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs shadow transition"
+                      className="p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow transition flex items-center justify-center"
+                      title="Eliminar"
                     >
-                      🗑 Eliminar
+                      <Trash2 size={18} />
                     </button>
                   </td>
                 </tr>
@@ -133,7 +143,7 @@ function ManageAdminsTable() {
         </div>
       )}
 
-      {/* MODAL ELIMINACIÓN */}
+      {/* MODAL ELIMINAR */}
       {showDeleteModal && adminToDelete && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl p-6 w-full max-w-md animate-fadeIn">
@@ -153,8 +163,8 @@ function ManageAdminsTable() {
                 <strong>Email:</strong> {adminToDelete.email}
               </p>
               <p>
-                <strong>Nombre:</strong>{" "}
-                {adminToDelete.first_name} {adminToDelete.last_name}
+                <strong>Nombre:</strong> {adminToDelete.first_name}{" "}
+                {adminToDelete.last_name}
               </p>
             </div>
 
