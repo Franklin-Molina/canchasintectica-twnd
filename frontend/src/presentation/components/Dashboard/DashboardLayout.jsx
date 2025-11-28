@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { menuItems } from './menuConfig.jsx';
-import Header from '../common/Header';
+import DashboardNavbar from './DashboardNavbar'; // Cambiado de Header a DashboardNavbar
 import { ChevronDown, X, LogOut } from 'lucide-react';
 
 const DashboardLayout = () => {
@@ -15,7 +15,6 @@ const DashboardLayout = () => {
   const currentMenuItems = menuItems[userRole] || [];
 
   useEffect(() => {
-    // Activar submenús que contienen el enlace activo
     const activeSubmenus = {};
     currentMenuItems.forEach((item, index) => {
       if (item.submenu && item.submenu.some(subItem => location.pathname.startsWith(subItem.to))) {
@@ -109,49 +108,50 @@ const DashboardLayout = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50 dark:bg-gray-900">
-      <Header onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+    <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
+      {isSidebarOpen && <div className="fixed inset-0 bg-black/40 z-40 md:hidden" onClick={() => setIsSidebarOpen(false)} />}
 
-      <div className="flex flex-1 overflow-hidden">
-        {isSidebarOpen && <div className="fixed inset-0 bg-black/40 z-40 md:hidden" onClick={() => setIsSidebarOpen(false)} />}
-
-        <aside className={`fixed md:static top-0 left-0 h-full w-64 bg-white dark:bg-gray-800 shadow-lg z-50 transform transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
-          <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+      <aside className={`fixed md:static top-0 left-0 h-full w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex-shrink-0 z-50 transform transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+        <div className="flex items-center justify-between p-8 border-b border-gray-200 dark:border-gray-700 h-16">
             <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
               Panel {userRole.charAt(0).toUpperCase() + userRole.slice(1)}
             </h2>
             <button onClick={() => setIsSidebarOpen(false)} className="md:hidden text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
               <X className="w-6 h-6" />
             </button>
-          </div>
+        </div>
 
-          <nav className="flex flex-col justify-between flex-grow p-4 overflow-y-auto">
-            <ul className="space-y-1">
-              {currentMenuItems.map((item, index) => (
-                <NavItem key={item.label || item.to} item={item} index={index} />
-              ))}
-            </ul>
+        <nav className="flex flex-col justify-between flex-grow p-4 overflow-y-auto">
+          <ul className="space-y-1">
+            {currentMenuItems.map((item, index) => (
+              <NavItem key={item.label || item.to} item={item} index={index} />
+            ))}
+          </ul>
             
-            <div>
-              
-              <button
-                onClick={handleLogout}
-                className="flex items-center w-full gap-3 px-4 py-3 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-700/20 rounded-xl font-medium transition-all"
-              >
-                <LogOut className="w-5 h-5" />
-                <span>Cerrar Sesión</span>
-              </button>
-              <div className="p-4 text-sm text-center text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 mt-4">
-                © {new Date().getFullYear()} CanchaBase
-              </div>
+            
+          <div>
+            <button
+              onClick={handleLogout}
+              className="flex items-center w-full gap-3 px-4 py-3 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-700/20 rounded-xl font-medium transition-all"
+            >
+              <LogOut className="w-5 h-5" />
+              <span>Cerrar Sesión</span>
+            </button>
+            <div className="p-4 text-sm text-center text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 mt-4">
+              © {new Date().getFullYear()} CanchaBase
             </div>
-          </nav>
-        </aside>
+          </div>
+        </nav>
+        
+      </aside>
 
-        <main className="flex-1 p-6 md:p-10 transition-all overflow-y-auto">
+
+     <div className="flex flex-col flex-1">
+        <DashboardNavbar onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+        <main className="flex-1 overflow-y-auto ">
           <Outlet />
         </main>
-      </div>
+      </div> 
     </div>
   );
 };

@@ -18,3 +18,39 @@ code {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* === ESTILOS DE SCROLLBAR PERSONALIZADO PARA EL SIDEBAR === */
+
+/* Para Firefox */
+aside nav {
+  scrollbar-width: thin;
+  scrollbar-color: #4b5563 transparent;
+}
+.dark aside nav {
+  scrollbar-color: #6b7280 transparent;
+}
+
+/* Para Navegadores WebKit (Chrome, Safari, Edge) */
+aside nav::-webkit-scrollbar {
+  width: 6px;
+}
+
+aside nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+aside nav::-webkit-scrollbar-thumb {
+  background: #4b5563;
+  border-radius: 10px;
+}
+
+.dark aside nav::-webkit-scrollbar-thumb {
+  background: #6b7280;
+}
+
+aside nav::-webkit-scrollbar-thumb:hover {
+  background: #374151;
+}
+.dark aside nav::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
