@@ -3,10 +3,17 @@ import { useUseCases } from '../../context/UseCaseContext';
 
 /**
  * Hook personalizado para obtener la lista de reservas con paginación del lado del cliente.
- * @param {{ onlyActive?: boolean, onlyFinished?: boolean, initialItemsPerPage?: number }} options Opciones para configurar el hook.
+ * @param {{ onlyActive?: boolean, onlyFinished?: boolean, initialItemsPerPage?: number, year?: number, month?: number, week?: number }} options Opciones para configurar el hook.
  * @returns {object} Un objeto con los datos de paginación y funciones.
  */
-export const useFetchBookings = ({ onlyActive = false, onlyFinished = false, initialItemsPerPage = 5 } = {}) => {
+export const useFetchBookings = ({ 
+  onlyActive = false, 
+  onlyFinished = false, 
+  initialItemsPerPage = 5, 
+  year = -1, 
+  month = -1, 
+  week = 0 
+} = {}) => {
   const [allBookings, setAllBookings] = useState([]); // Almacena todas las reservas sin filtrar ni paginar
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -31,6 +38,30 @@ export const useFetchBookings = ({ onlyActive = false, onlyFinished = false, ini
       bookingsToFilter = bookingsToFilter.filter(booking => new Date(booking.end_time) < now);
     }
 
+    // Filtrado por año, mes y semana
+    if (year !== -1) {
+      bookingsToFilter = bookingsToFilter.filter(booking => {
+        const bookingDate = new Date(booking.start_time);
+        return bookingDate.getFullYear() === year;
+      });
+    }
+
+    if (month !== -1) {
+      bookingsToFilter = bookingsToFilter.filter(booking => {
+        const bookingDate = new Date(booking.start_time);
+        return bookingDate.getMonth() === month;
+      });
+    }
+
+    if (week > 0 && month !== -1) {
+      bookingsToFilter = bookingsToFilter.filter(booking => {
+        const bookingDate = new Date(booking.start_time);
+        const dayOfMonth = bookingDate.getDate();
+        const bookingWeek = Math.ceil(dayOfMonth / 7);
+        return bookingWeek === week;
+      });
+    }
+
     return bookingsToFilter.filter(booking => {
       const courtName = booking.court_details?.name || '';
       const userName = `${booking.user_details?.first_name || ''} ${booking.user_details?.last_name || ''}`.trim();
@@ -46,7 +77,7 @@ export const useFetchBookings = ({ onlyActive = false, onlyFinished = false, ini
 
       return searchMatch && paymentStatusMatch && courtMatch;
     });
-  }, [allBookings, searchFilter, paymentStatusFilter, selectedCourtFilter, onlyActive, onlyFinished]); // Agregado onlyFinished a las dependencias
+  }, [allBookings, searchFilter, paymentStatusFilter, selectedCourtFilter, onlyActive, onlyFinished, year, month, week]); // Agregado dependencias
 
   const fetchAllBookings = useCallback(async () => {
     try {
