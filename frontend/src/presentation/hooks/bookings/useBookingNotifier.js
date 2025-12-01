@@ -5,12 +5,16 @@ import { useNotification } from '../../context/NotificationContext';
 /**
  * Hook para monitorizar nuevas reservas en segundo plano y mostrar notificaciones.
  */
-export const useBookingNotifier = () => {
+export const useBookingNotifier = (enabled = false) => {
   const { getBookingsUseCase } = useUseCases();
   const { showNotification } = useNotification();
-  const bookingsRef = useRef([]); // Usamos una ref para no causar re-renders
+  const bookingsRef = useRef([]);
 
   useEffect(() => {
+    if (!enabled) {
+      return; // No hacer nada si el hook no está habilitado
+    }
+
     const fetchAndNotify = async () => {
       try {
         const newBookingsData = await getBookingsUseCase.execute(1) || [];
@@ -27,18 +31,17 @@ export const useBookingNotifier = () => {
         }
         bookingsRef.current = newBookingsData;
       } catch (error) {
-        // En un escenario real, podrías querer registrar este error
         console.error('Error al verificar nuevas reservas:', error);
       }
     };
 
-    // Hacemos una primera llamada para establecer el estado inicial
+    // Carga inicial solo si está habilitado
     getBookingsUseCase.execute(1).then(initialBookings => {
       bookingsRef.current = initialBookings || [];
     });
 
-    const interval = setInterval(fetchAndNotify, 10000); // Comprueba cada 10 segundos
+    const interval = setInterval(fetchAndNotify, 10000);
 
     return () => clearInterval(interval);
-  }, [getBookingsUseCase, showNotification]);
+  }, [enabled, getBookingsUseCase, showNotification]);
 };

@@ -6,7 +6,7 @@ import { NotificationProvider, useNotification } from './presentation/context/No
 import { useBookingNotifier } from './presentation/hooks/bookings/useBookingNotifier.js';
 import Notification from './presentation/components/common/Notification.jsx';
 import HomePage from './presentation/pages/general/HomePage.jsx'; // Ruta actualizada
-import RegisterPage from './presentation/components/Auth/RegisterPage.jsx'; // Se mantiene en components/Auth
+import RegisterForm from './presentation/components/Auth/RegisterForm.jsx';
 import BookingPage from './presentation/pages/bookings/BookingPage.jsx'; // Ruta actualizada
 import ProtectedRoute from './presentation/components/Auth/ProtectedRoute.jsx';
 import AuthPage from './presentation/components/Auth/AuthPage.jsx';
@@ -50,7 +50,12 @@ function App() {
 
 // Componente para manejar la lógica de notificaciones globales
 function GlobalNotificationHandler() {
-  useBookingNotifier(); // Este hook ejecuta la lógica de notificación en segundo plano
+  const { user } = useAuth(); // Obtener el usuario del contexto de autenticación
+
+  // El notificador se llama incondicionalmente, pero solo se activa si el usuario es admin.
+  const isUserAdmin = user && (user.role === 'admin');
+  useBookingNotifier(isUserAdmin);
+
   const { notification } = useNotification();
   return <Notification message={notification} />;
 }
@@ -115,7 +120,7 @@ function AuthContent() {
         path="/register"
         element={
           <Layout>
-            <RegisterPage />
+            <RegisterForm userRole="cliente" />
           </Layout>
         }
       />
