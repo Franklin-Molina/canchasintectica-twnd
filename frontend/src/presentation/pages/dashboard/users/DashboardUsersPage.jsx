@@ -57,6 +57,12 @@ function DashboardUsersPage() {
 
   const { user } = useAuth();
 
+  // Log para debugging - puedes eliminarlo después
+  useEffect(() => {
+    console.log("Users actualizados:", users);
+    console.log("Página actual:", currentPage);
+  }, [users, currentPage]);
+
   const statusOptions = [
     { value: "all", label: "Todos los estados" },
     { value: "active", label: "Activos" },
@@ -78,6 +84,7 @@ function DashboardUsersPage() {
   const activeFilterCount = [statusFilter, dateFilter].filter(
     (filter) => filter !== "all"
   ).length;
+
   if (loading) return <Spinner />;
   if (error)
     return (
@@ -93,7 +100,6 @@ function DashboardUsersPage() {
       </h1>
 
       {/* Controles de Filtro y Búsqueda */}
-      {/* 🔍 Controles de Filtro y Búsqueda - Diseño Profesional */}
       <div className="mb-8 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 transition-all">
 
         {/* Barra principal de búsqueda y acciones */}
@@ -105,15 +111,15 @@ function DashboardUsersPage() {
             <input
               type="text"
               placeholder="Buscar por nombre o usuario..."
-              value={searchTerm} // Use hook's searchTerm
-              onChange={(e) => setSearchTerm(e.target.value)} // Use hook's setSearchTerm
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50/50 dark:bg-gray-900/50 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 focus:border-transparent transition-all"
             />
           </div>
 
           {/* Botón de filtros avanzados */}
           <button
-            onClick={() => setIsFilterOpen(!isFilterOpen)} // Use local isFilterOpen state
+            onClick={() => setIsFilterOpen(!isFilterOpen)}
             className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-medium transition-all ${isFilterOpen
                 ? 'bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900'
                 : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
@@ -220,7 +226,6 @@ function DashboardUsersPage() {
                 {users.map((clientUser, index) => {
                   // Generar una key única y consistente
                   const uniqueKey = `user-${clientUser.id}-page-${currentPage}-index-${index}`;
-
                   return (
                     <tr
                       key={uniqueKey}
@@ -255,6 +260,7 @@ function DashboardUsersPage() {
                               onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
+                                console.log("Suspendiendo usuario:", clientUser.id);
                                 handleSuspendUserClick(clientUser.id);
                               }}
                               disabled={isSuspending}
@@ -268,6 +274,7 @@ function DashboardUsersPage() {
                               onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
+                                console.log("Reactivando usuario:", clientUser.id);
                                 handleReactivateUserClick(clientUser.id);
                               }}
                               disabled={isReactivating}
@@ -281,6 +288,7 @@ function DashboardUsersPage() {
                             onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
+                              console.log("Eliminando usuario:", clientUser);
                               confirmDelete(clientUser);
                             }}
                             disabled={isDeleting}
@@ -296,6 +304,7 @@ function DashboardUsersPage() {
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
+                            console.log("Ver detalles de usuario:", clientUser);
                             handleViewDetails(clientUser);
                           }}
                           className="inline-flex items-center gap-1 bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-300 px-3 py-1 rounded-lg text-xs font-semibold hover:bg-purple-200 dark:hover:bg-purple-700 transition"
