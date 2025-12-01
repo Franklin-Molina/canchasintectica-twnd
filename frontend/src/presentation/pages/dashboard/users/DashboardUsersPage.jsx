@@ -121,8 +121,8 @@ function DashboardUsersPage() {
           <button
             onClick={() => setIsFilterOpen(!isFilterOpen)}
             className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-medium transition-all ${isFilterOpen
-                ? 'bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900'
-                : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+              ? 'bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900'
+              : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
               }`}
           >
             <Filter className="w-4 h-4" />
@@ -199,8 +199,8 @@ function DashboardUsersPage() {
       {actionStatus && (
         <div
           className={`mb-4 px-4 py-3 rounded-lg text-sm ${actionStatus.includes("Error")
-              ? "bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300"
-              : "bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300"
+            ? "bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300"
+            : "bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300"
             }`}
         >
           {actionStatus}
@@ -234,20 +234,22 @@ function DashboardUsersPage() {
                       <td className="py-3 px-4 text-gray-800 dark:text-gray-100 font-medium">
                         {getRowNumber(index)}
                       </td>
-                      <td className="py-3 px-4">
+                      <td className="py-3 px-4 text-gray-800 dark:text-gray-200">
                         <div className="flex items-center gap-2">
-                          <User className="w-4 h-4 text-blue-500" />
+                          <User className="w-4 h-4 text-blue-500 dark:text-blue-300" />
                           <span>{clientUser.username}</span>
                         </div>
                       </td>
-                      <td className="py-3 px-4">
+
+                      <td className="py-3 px-4 text-gray-800 dark:text-gray-200">
                         {clientUser.first_name} {clientUser.last_name}
                       </td>
+
                       <td className="py-3 px-4">
                         <span
                           className={`px-3 py-1 rounded-full text-xs font-semibold ${clientUser.is_active
-                              ? "bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-300"
-                              : "bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-300"
+                            ? "bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-300"
+                            : "bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-300"
                             }`}
                         >
                           {clientUser.is_active ? "Activo" : "Suspendido"}
