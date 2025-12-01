@@ -161,9 +161,9 @@ function AuthContent() {
         >
           <Route index element={<ManageAdminsTable />} />
           <Route path="manage-admins" element={<ManageAdminsTable />} />
+          <Route path="register-admin" element={<AdminRegisterPage />} />
         </Route>
         <Route path="profile" element={<DashboardProfilePage />} />
-        <Route path="register-admin" element={<AdminRegisterPage />} />
       </Route>
     </Routes>
   );
