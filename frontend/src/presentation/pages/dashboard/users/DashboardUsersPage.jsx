@@ -1,9 +1,9 @@
-import React, { useState } from "react"; // Added useState
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../../../context/AuthContext.jsx";
 import Spinner from "../../../components/common/Spinner.jsx";
 import Pagination from "../../../components/common/Pagination.jsx";
-import CustomSelect from "../../../components/common/CustomSelect.jsx"; // Importar el nuevo componente
-import { useDashboardUsersLogic } from "../../../hooks/dashboard/useDashboardUsersLogic.js"; // Ruta actualizada
+import CustomSelect from "../../../components/common/CustomSelect.jsx";
+import { useDashboardUsersLogic } from "../../../hooks/dashboard/useDashboardUsersLogic.js";
 import {
   User,
   Trash2,
@@ -11,15 +11,14 @@ import {
   UserMinus,
   UserCheck,
   XCircle,
-  Search, // Added
-  Filter, // Added
-  ChevronDown, // Added
-  RefreshCw, // Added for refresh button
+  Search,
+  Filter,
+  ChevronDown,
+  RefreshCw,
 } from "lucide-react";
 
 function DashboardUsersPage() {
-  const [isFilterOpen, setIsFilterOpen] = useState(false); // Added state
-  // Removed local state for dateFilter and setDateFilter as they are assumed to be provided by the hook.
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const {
     users,
@@ -45,13 +44,12 @@ function DashboardUsersPage() {
     handleCloseDetailsModal,
     setSearchTerm,
     setStatusFilter,
-    // Assuming the hook provides these values to control the input/select
-    searchTerm, // Added
-    statusFilter, // Added
-    dateFilter, // Added
-    setDateFilter, // Added
-    fetchAllUsers, // Added for refresh button
-    clearFilters, // Added for clearing filters
+    searchTerm,
+    statusFilter,
+    dateFilter,
+    setDateFilter,
+    fetchAllUsers,
+    clearFilters,
     itemsPerPage,
     setItemsPerPage,
     totalUsers,
@@ -59,7 +57,6 @@ function DashboardUsersPage() {
 
   const { user } = useAuth();
 
-  // Definir las opciones para los selectores personalizados.
   const statusOptions = [
     { value: "all", label: "Todos los estados" },
     { value: "active", label: "Activos" },
@@ -74,12 +71,10 @@ function DashboardUsersPage() {
     { value: "year", label: "Último año" },
   ];
 
- // Calcular el índice inicial para la numeración continua
   const getRowNumber = (index) => {
     return (currentPage - 1) * itemsPerPage + index + 1;
   };
 
- // Calcular el número de filtros activos para mostrar en la UI.
   const activeFilterCount = [statusFilter, dateFilter].filter(
     (filter) => filter !== "all"
   ).length;
@@ -97,114 +92,110 @@ function DashboardUsersPage() {
         Gestión de Usuarios Cliente
       </h1>
 
- {/* 🔍 Controles de Filtro y Búsqueda - Diseño Profesional */}
-<div className="mb-8 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 transition-all">
-  
-  {/* Barra principal de búsqueda y acciones */}
-  <div className="p-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-    
-    {/* Campo de búsqueda principal */}
-    <div className="relative flex-grow">
-      <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
-      <input
-        type="text"
-        placeholder="Buscar por nombre o usuario..."
-        value={searchTerm} // Use hook's searchTerm
-        onChange={(e) => setSearchTerm(e.target.value)} // Use hook's setSearchTerm
-        className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50/50 dark:bg-gray-900/50 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 focus:border-transparent transition-all"
-      />
-    </div>
+      {/* Controles de Filtro y Búsqueda */}
+      {/* 🔍 Controles de Filtro y Búsqueda - Diseño Profesional */}
+      <div className="mb-8 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 transition-all">
 
-    {/* Botón de filtros avanzados */}
-    <button
-      onClick={() => setIsFilterOpen(!isFilterOpen)} // Use local isFilterOpen state
-      className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-medium transition-all ${
-        isFilterOpen
-          ? 'bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900'
-          : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-      }`}
-    >
-      <Filter className="w-4 h-4" />
-      <span className="hidden sm:inline">Filtros</span>
-      <ChevronDown 
-        className={`w-4 h-4 transition-transform ${isFilterOpen ? 'rotate-180' : ''}`}
-      />
-    </button>
+        {/* Barra principal de búsqueda y acciones */}
+        <div className="p-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
 
-    {/* Botón de Refrescar */}
-    <button
-      onClick={() => fetchAllUsers()}
-      className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-medium transition-all bg-blue-500 text-white hover:bg-blue-600"
-    >
-      <RefreshCw className="w-4 h-4" />
-      <span className="hidden sm:inline">Refrescar</span>
-    </button>
-  </div>
+          {/* Campo de búsqueda principal */}
+          <div className="relative flex-grow">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
+            <input
+              type="text"
+              placeholder="Buscar por nombre o usuario..."
+              value={searchTerm} // Use hook's searchTerm
+              onChange={(e) => setSearchTerm(e.target.value)} // Use hook's setSearchTerm
+              className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50/50 dark:bg-gray-900/50 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 focus:border-transparent transition-all"
+            />
+          </div>
 
-  {/* Panel de filtros expandible */}
-  <div
-    className={`transition-all duration-300 ease-in-out ${
-      isFilterOpen ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'
-    }`}
-  >
-    <div className="px-4 pb-4 pt-2 border-t border-gray-100 dark:border-gray-700/50">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        
-        {/* Filtro de estado */}
-        <div>
-          <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5 ml-1">
-            Estado
-          </label>
-          <CustomSelect
-            options={statusOptions}
-            value={statusFilter}
-            onChange={(value) => setStatusFilter(value)}
-          />
+          {/* Botón de filtros avanzados */}
+          <button
+            onClick={() => setIsFilterOpen(!isFilterOpen)} // Use local isFilterOpen state
+            className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-medium transition-all ${isFilterOpen
+                ? 'bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900'
+                : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+              }`}
+          >
+            <Filter className="w-4 h-4" />
+            <span className="hidden sm:inline">Filtros</span>
+            <ChevronDown
+              className={`w-4 h-4 transition-transform ${isFilterOpen ? 'rotate-180' : ''}`}
+            />
+          </button>
+
+          {/* Botón de Refrescar */}
+          <button
+            onClick={() => fetchAllUsers()}
+            className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-medium transition-all bg-blue-500 text-white hover:bg-blue-600"
+          >
+            <RefreshCw className="w-4 h-4" />
+            <span className="hidden sm:inline">Refrescar</span>
+          </button>
         </div>
 
-        {/* Filtro adicional: Fecha de registro */}
-        <div>
-          <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5 ml-1">
-            Fecha de registro
-          </label>
-          <CustomSelect
-            options={dateOptions}
-            value={dateFilter}
-            onChange={(value) => setDateFilter(value)}
-          />
-        </div>
-      </div>
-
-      {/* Botones de acción en filtros */}
-      <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100 dark:border-gray-700/50">
-        <button
-          onClick={clearFilters}
-          className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors"
+        {/* Panel de filtros expandible */}
+        <div
+          className={`transition-all duration-300 ease-in-out ${isFilterOpen ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'
+            }`}
         >
-          Limpiar filtros
-        </button>
-        <div className="flex-grow"></div>
-        <span className="text-xs text-gray-500 dark:text-gray-500">
-          {activeFilterCount === 0
-            ? "Sin filtros"
-            : `${activeFilterCount} filtro${
-                activeFilterCount > 1 ? "s" : ""
-              } activo${activeFilterCount > 1 ? "s" : ""}`}
-        </span>
-      </div>
-    </div>
-  </div>
-</div>
+          <div className="px-4 pb-4 pt-2 border-t border-gray-100 dark:border-gray-700/50">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
 
+              {/* Filtro de estado */}
+              <div>
+                <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5 ml-1">
+                  Estado
+                </label>
+                <CustomSelect
+                  options={statusOptions}
+                  value={statusFilter}
+                  onChange={(value) => setStatusFilter(value)}
+                />
+              </div>
+
+              {/* Filtro adicional: Fecha de registro */}
+              <div>
+                <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5 ml-1">
+                  Fecha de registro
+                </label>
+                <CustomSelect
+                  options={dateOptions}
+                  value={dateFilter}
+                  onChange={(value) => setDateFilter(value)}
+                />
+              </div>
+            </div>
+
+            {/* Botones de acción en filtros */}
+            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100 dark:border-gray-700/50">
+              <button
+                onClick={clearFilters}
+                className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors"
+              >
+                Limpiar filtros
+              </button>
+              <div className="flex-grow"></div>
+              <span className="text-xs text-gray-500 dark:text-gray-500">
+                {activeFilterCount === 0
+                  ? "Sin filtros"
+                  : `${activeFilterCount} filtro${activeFilterCount > 1 ? "s" : ""
+                  } activo${activeFilterCount > 1 ? "s" : ""}`}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Mensaje de acción */}
       {actionStatus && (
         <div
-          className={`mb-4 px-4 py-3 rounded-lg text-sm ${
-            actionStatus.includes("Error")
+          className={`mb-4 px-4 py-3 rounded-lg text-sm ${actionStatus.includes("Error")
               ? "bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300"
               : "bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300"
-          }`}
+            }`}
         >
           {actionStatus}
         </div>
@@ -226,73 +217,96 @@ function DashboardUsersPage() {
                 </tr>
               </thead>
               <tbody>
-                {users.map((clientUser, index) => (
-                  <tr
-                    key={clientUser.id}
-                    className="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
-                  >
-                    <td className="py-3 px-4 text-gray-800 dark:text-gray-100 font-medium">
-                      {getRowNumber(index)}
-                    </td>
-                    <td className="py-3 px-4 flex items-center gap-2">
-                      <User className="w-4 h-4 text-blue-500" />
-                      {clientUser.username}
-                    </td>
-                    <td className="py-3 px-4">
-                      {clientUser.first_name} {clientUser.last_name}
-                    </td>
-                    <td className="py-3 px-4">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          clientUser.is_active
-                            ? "bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-300"
-                            : "bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-300"
-                        }`}
-                      >
-                        {clientUser.is_active ? "Activo" : "Suspendido"}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4 space-x-2">
-                      {clientUser.is_active ? (
-                        <button
-                          onClick={() => handleSuspendUserClick(clientUser.id)}
-                          disabled={isSuspending}
-                          className="inline-flex items-center gap-1 bg-yellow-100 text-yellow-700 dark:bg-yellow-800 dark:text-yellow-300 px-3 py-1 rounded-lg text-xs font-semibold hover:bg-yellow-200 dark:hover:bg-yellow-700 transition"
+                {users.map((clientUser, index) => {
+                  // Generar una key única y consistente
+                  const uniqueKey = `user-${clientUser.id}-page-${currentPage}-index-${index}`;
+
+                  return (
+                    <tr
+                      key={uniqueKey}
+                      className="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+                    >
+                      <td className="py-3 px-4 text-gray-800 dark:text-gray-100 font-medium">
+                        {getRowNumber(index)}
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-2">
+                          <User className="w-4 h-4 text-blue-500" />
+                          <span>{clientUser.username}</span>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4">
+                        {clientUser.first_name} {clientUser.last_name}
+                      </td>
+                      <td className="py-3 px-4">
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-semibold ${clientUser.is_active
+                              ? "bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-300"
+                              : "bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-300"
+                            }`}
                         >
-                          <UserMinus className="w-4 h-4" />
-                          Suspender
-                        </button>
-                      ) : (
+                          {clientUser.is_active ? "Activo" : "Suspendido"}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="flex gap-2">
+                          {clientUser.is_active ? (
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                handleSuspendUserClick(clientUser.id);
+                              }}
+                              disabled={isSuspending}
+                              className="inline-flex items-center gap-1 bg-yellow-100 text-yellow-700 dark:bg-yellow-800 dark:text-yellow-300 px-3 py-1 rounded-lg text-xs font-semibold hover:bg-yellow-200 dark:hover:bg-yellow-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              <UserMinus className="w-4 h-4" />
+                              Suspender
+                            </button>
+                          ) : (
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                handleReactivateUserClick(clientUser.id);
+                              }}
+                              disabled={isReactivating}
+                              className="inline-flex items-center gap-1 bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-300 px-3 py-1 rounded-lg text-xs font-semibold hover:bg-green-200 dark:hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              <UserCheck className="w-4 h-4" />
+                              Reactivar
+                            </button>
+                          )}
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              confirmDelete(clientUser);
+                            }}
+                            disabled={isDeleting}
+                            className="inline-flex items-center gap-1 bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-300 px-3 py-1 rounded-lg text-xs font-semibold hover:bg-red-200 dark:hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                            Eliminar
+                          </button>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4">
                         <button
-                          onClick={() =>
-                            handleReactivateUserClick(clientUser.id)
-                          }
-                          disabled={isReactivating}
-                          className="inline-flex items-center gap-1 bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-300 px-3 py-1 rounded-lg text-xs font-semibold hover:bg-green-200 dark:hover:bg-green-700 transition"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleViewDetails(clientUser);
+                          }}
+                          className="inline-flex items-center gap-1 bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-300 px-3 py-1 rounded-lg text-xs font-semibold hover:bg-purple-200 dark:hover:bg-purple-700 transition"
                         >
-                          <UserCheck className="w-4 h-4" />
-                          Reactivar
+                          <Eye className="w-4 h-4" />
+                          Ver más
                         </button>
-                      )}
-                      <button
-                        onClick={() => confirmDelete(clientUser)}
-                        className="inline-flex items-center gap-1 bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-300 px-3 py-1 rounded-lg text-xs font-semibold hover:bg-red-200 dark:hover:bg-red-700 transition"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                        Eliminar
-                      </button>
-                    </td>
-                    <td className="py-3 px-4">
-                      <button
-                        onClick={() => handleViewDetails(clientUser)}
-                        className="inline-flex items-center gap-1 bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-300 px-3 py-1 rounded-lg text-xs font-semibold hover:bg-purple-200 dark:hover:bg-purple-700 transition"
-                      >
-                        <Eye className="w-4 h-4" />
-                        Ver más
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -308,7 +322,6 @@ function DashboardUsersPage() {
             />
           </div>
         </div>
-        
       ) : (
         <p className="text-gray-600 dark:text-gray-400 mt-4">
           No se encontraron usuarios cliente.
@@ -348,7 +361,7 @@ function DashboardUsersPage() {
               <button
                 onClick={proceedDeleteClick}
                 disabled={isDeleting}
-                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition"
+                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isDeleting ? "Eliminando..." : "Sí, eliminar"}
               </button>
@@ -394,7 +407,7 @@ function DashboardUsersPage() {
                 Cerrar
               </button>
             </div>
-          </div>          
+          </div>
         </div>
       )}
     </div>
