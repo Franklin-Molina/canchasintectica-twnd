@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { format, addDays } from 'date-fns';
-import { Clock, Check, X } from 'lucide-react';
+import { Clock, CheckCircle, XCircle, MinusCircle } from 'lucide-react';
 import { useWeeklyAvailabilityCalendar } from '../../hooks/courts/useWeeklyAvailabilityCalendar.js';
 import Spinner from '../../components/common/Spinner.jsx';
 
@@ -10,24 +10,15 @@ function WeeklyAvailabilityCalendar({
   weeklyAvailabilityError,
   onTimeSlotClick,
   daysOfWeek,
-  hoursOfDay, // This prop is expected to contain strings like "5:00 PM - 6:00 PM"
+  hoursOfDay,
   monday,
   selectedSlot
 }) {
   const { getSlotIconName } = useWeeklyAvailabilityCalendar(weeklyAvailability);
-  const [hoveredSlot, setHoveredSlot] = useState(null); // Stores { date: 'YYYY-MM-DD', hour: number }
+  const [hoveredSlot, setHoveredSlot] = useState(null);
   const [hoveredTime, setHoveredTime] = useState('');
 
-  const handleTimeSlotClick = (formattedDate, hourNumber, isAvailable) => {
-    if (isAvailable && onTimeSlotClick) {
-      onTimeSlotClick(formattedDate, hourNumber);
-    }
-  };
-
   const handleMouseEnter = (formattedDate, hourNumber, hourRange) => {
-    // The user wants the format "5:00 PM - 6:00 PM".
-    // The `hourRange` variable from the `hoursOfDay` map should already be in this format.
-    // We will use it directly.
     setHoveredTime(hourRange);
     setHoveredSlot({ date: formattedDate, hour: hourNumber });
   };
@@ -37,10 +28,14 @@ function WeeklyAvailabilityCalendar({
     setHoveredSlot(null);
   };
 
+  const handleTimeSlotClick = (formattedDate, hourNumber, isAvailable) => {
+    if (isAvailable && onTimeSlotClick) {
+      onTimeSlotClick(formattedDate, hourNumber);
+    }
+  };
+
   if (loadingWeeklyAvailability) {
-    return (
-      <Spinner />      
-    );
+    return <Spinner />;
   }
 
   if (weeklyAvailabilityError) {
@@ -60,84 +55,127 @@ function WeeklyAvailabilityCalendar({
   }
 
   return (
-    <div className="overflow-x-auto relative"> {/* Added relative positioning for absolute time display */}
-      <div className="min-w-max">
-        {/* Header */}
-        <div className="grid grid-cols-8 bg-slate-100 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-700">
-          <div className="p-4 font-semibold border-r border-slate-200 dark:border-slate-700 flex items-center gap-2 text-slate-700 dark:text-white">
-            <Clock className="w-5 h-5" /> Horario
-          </div>
-          {daysOfWeek.map((day, index) => {
-            const currentDay = addDays(monday, index);
-            return (
-              <div key={day} className="p-4 text-center border-r border-slate-200 dark:border-slate-700">
-                <div className="text-emerald-600 dark:text-emerald-400 font-semibold">{day}</div>
-                <div className="text-sm text-slate-500 dark:text-slate-400">{format(currentDay, 'dd/MM')}</div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Time Slots Grid */}
-        <div>
-          {hoursOfDay.map((hourRange, hourIndex) => {
-            // The `hourRange` variable is expected to be a string like "5:00 PM - 6:00 PM"
-            // We use it directly when hovering.
-            const startHour24 = hourIndex + 6; // Assuming hours start from 6 AM
-            return (
-              <div key={hourRange} className="grid grid-cols-8 border-b border-slate-200 dark:border-slate-700/50">
-                <div className="p-3 text-sm text-slate-500 dark:text-slate-400 border-r border-slate-200 dark:border-slate-700/50 flex items-center">
-                  {hourRange}
-                </div>
-                {daysOfWeek.map((day, dayIndex) => {
-                  const currentDay = addDays(monday, dayIndex);
-                  const formattedDate = format(currentDay, 'yyyy-MM-dd');
-                  const hourNumber = startHour24;
-
-                  const dailyAvailability = weeklyAvailability[formattedDate];
-                  const isAvailable = dailyAvailability && dailyAvailability[hourNumber] === true;
-                  const isOccupied = dailyAvailability && dailyAvailability[hourNumber] === false;
-
-                  let cellClassName = 'p-3 border-r border-slate-200 dark:border-slate-700/50 transition-all relative'; // Added relative for absolute positioning of time
-                  if (isAvailable) {
-                    cellClassName += ' bg-emerald-100 dark:bg-emerald-500/10 hover:bg-emerald-200 dark:hover:bg-emerald-500/20 cursor-pointer';
-                  } else if (isOccupied) {
-                    cellClassName += ' bg-rose-100 dark:bg-rose-500/20';
-                  } else {
-                    cellClassName += ' bg-slate-50 dark:bg-slate-800/20';
-                  }
-
-                  const isSelected = selectedSlot?.date === formattedDate && selectedSlot?.hour === hourNumber;
-                  if (isSelected) {
-                    cellClassName += ' ring-2 ring-emerald-500 dark:ring-emerald-400';
-                  }
-
+    <>
+      <div className="bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="bg-slate-800/80 border-b border-slate-700">
+                <th className="sticky left-0 z-20 bg-slate-800 px-4 py-4 text-center w-48">
+                  <div className="flex flex-col items-center gap-1">
+                    <Clock className="w-4 h-4 text-slate-400" />
+                    <span className="text-sm font-semibold text-slate-300">Horario</span>
+                  </div>
+                </th>
+                {daysOfWeek.map((day, index) => {
+                  const currentDay = addDays(monday, index);
                   return (
-                    <div
-                      key={`${day}-${hourRange}`}
-                      className={cellClassName}
-                      onClick={() => handleTimeSlotClick(formattedDate, hourNumber, isAvailable)}
-                      onMouseEnter={() => handleMouseEnter(formattedDate, hourNumber, hourRange)}
-                      onMouseLeave={handleMouseLeave}
-                    >
-                      {hoveredSlot && hoveredSlot.date === formattedDate && hoveredSlot.hour === hourNumber && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70 text-white text-xs font-bold rounded-md z-10">
-                          {hoveredTime}
-                        </div>
-                      )}
-                      <div className="flex items-center justify-center h-full z-0"> {/* z-0 to ensure it's behind the absolute div */}
-                        {isAvailable && <Check className="w-4 h-4 text-emerald-500 dark:text-emerald-400 opacity-50" />}
-                        {isOccupied && <X className="w-4 h-4 text-rose-500 dark:text-rose-400" />}
+                    <th key={day} className="px-2 py-4 text-center">
+                      <div className="flex flex-col">
+                        <span className="text-sm font-bold text-white">{day}</span>
+                        <span className="text-xs text-slate-400">{format(currentDay, 'dd/MM')}</span>
                       </div>
-                    </div>
+                    </th>
                   );
                 })}
-              </div>
-            );
-          })}
+              </tr>
+            </thead>
+            <tbody>
+              {hoursOfDay.map((hourRange, hourIndex) => {
+                const startHour24 = hourIndex + 6;
+                return (
+                  <tr key={hourRange} className="border-b border-slate-700/30 hover:bg-slate-700/20 transition-colors">
+                    <td className="sticky left-0 z-10 bg-slate-800/95 px-4 py-3 border-r border-slate-700/50">
+                      <span className="text-xs md:text-sm font-medium text-slate-300 whitespace-nowrap">
+                        {hourRange}
+                      </span>
+                    </td>
+                    {daysOfWeek.map((day, dayIndex) => {
+                      const now = new Date();
+                      const currentDay = addDays(monday, dayIndex);
+                      const hourNumber = startHour24;
+                      const slotDateTime = new Date(currentDay);
+                      slotDateTime.setHours(hourNumber, 0, 0, 0);
+
+                      const isPast = slotDateTime < now;
+                      const formattedDate = format(currentDay, 'yyyy-MM-dd');
+                      const dailyAvailability = weeklyAvailability[formattedDate];
+                      const isAvailable = dailyAvailability && dailyAvailability[hourNumber] === true;
+                      const isOccupied = dailyAvailability && dailyAvailability[hourNumber] === false;
+                      const isSelected = selectedSlot?.date === formattedDate && selectedSlot?.hour === hourNumber;
+
+                      let slotStatus = 'default';
+                      if (isPast) slotStatus = 'expired';
+                      else if (isSelected) slotStatus = 'selected';
+                      else if (isAvailable) slotStatus = 'available';
+                      else if (isOccupied) slotStatus = 'occupied';
+
+                      const isClickable = !isOccupied && !isPast;
+
+                      const getSlotStyle = (status) => {
+                        switch (status) {
+                          case 'available': return 'bg-teal-500/20 hover:bg-teal-500/30 border-teal-500/30';
+                          case 'occupied': return 'bg-red-500/20 border-red-500/40';
+                          case 'expired': return 'bg-gray-500/10 border-gray-600/20 opacity-40';
+                          case 'selected': return 'bg-blue-500/30 border-blue-500/50 ring-2 ring-blue-400';
+                          default: return 'bg-gray-500/10 border-gray-500/20';
+                        }
+                      };
+
+                      return (
+                        <td key={dayIndex} className="px-2 py-2">
+                          <div
+                            className={`relative w-full h-10 rounded-lg border-2 transition-all flex items-center justify-center ${getSlotStyle(slotStatus)} ${isClickable ? 'cursor-pointer hover:scale-105' : 'cursor-not-allowed'}`}
+                            onClick={() => isClickable && handleTimeSlotClick(formattedDate, hourNumber, isAvailable)}
+                            onMouseEnter={() => isClickable && handleMouseEnter(formattedDate, hourNumber, hourRange)}
+                            onMouseLeave={handleMouseLeave}
+                            title={isPast ? 'Horario pasado' : isOccupied ? 'Ocupado' : 'Disponible'}
+                          >
+                            {hoveredSlot && hoveredSlot.date === formattedDate && hoveredSlot.hour === hourNumber && isClickable && (
+                              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70 text-white text-xs font-bold rounded-md z-10">
+                                {hourRange}
+                              </div>
+                            )}
+                            <div className="z-0">
+                              {isPast ? <MinusCircle className="w-4 h-4 text-gray-500" /> :
+                                isAvailable ? <CheckCircle className="w-4 h-4 text-teal-400" /> :
+                                  isOccupied ? <XCircle className="w-4 h-4 text-red-400" /> : null}
+                            </div>
+                          </div>
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       </div>
-    </div>
+      <div className="mt-6 bg-slate-800/30 backdrop-blur-sm rounded-xl border border-slate-700/50 p-4">
+        <h3 className="text-sm font-semibold text-slate-300 mb-3">Leyenda:</h3>
+        <div className="flex flex-wrap gap-4">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-teal-500/20 border-2 border-teal-500/30 flex items-center justify-center">
+              <CheckCircle className="w-4 h-4 text-teal-400" />
+            </div>
+            <span className="text-sm text-slate-300">Horario disponible</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-red-500/20 border-2 border-red-500/40 flex items-center justify-center">
+              <XCircle className="w-4 h-4 text-red-400" />
+            </div>
+            <span className="text-sm text-slate-300">Horario ocupado</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-gray-500/10 border-2 border-gray-600/20 opacity-40 flex items-center justify-center">
+              <MinusCircle className="w-4 h-4 text-gray-500" />
+            </div>
+            <span className="text-sm text-slate-300">Horario pasado (expirado)</span>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
 
