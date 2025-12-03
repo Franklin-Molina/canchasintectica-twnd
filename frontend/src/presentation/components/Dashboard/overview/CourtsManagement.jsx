@@ -13,6 +13,7 @@ const CourtsManagement = ({
   courtsItemsPerPage,
   setCourtsItemsPerPage,
   totalCourts,
+  getRowNumber,
 }) => {
 
   useEffect(() => {
@@ -37,6 +38,7 @@ const CourtsManagement = ({
       itemsPerPage={courtsItemsPerPage}
       setItemsPerPage={setCourtsItemsPerPage}
       totalCourts={totalCourts}
+      getRowNumber={getRowNumber}
     />
   );
 };

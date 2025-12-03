@@ -10,6 +10,7 @@ const BookingsManagement = ({
   setItemsPerPage,
   totalBookings,
   deleteBooking,
+  getRowNumber,
 }) => {
   return (
     <BookingTable
@@ -21,6 +22,7 @@ const BookingsManagement = ({
       setItemsPerPage={setItemsPerPage}
       totalBookings={totalBookings}
       deleteBooking={deleteBooking}
+      getRowNumber={getRowNumber}
     />
   );
 };

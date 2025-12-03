@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import Spinner from '../../../components/common/Spinner.jsx';
 import CourtTable from '../../../components/Courts/CourtTable.jsx';
 import { useManageCourtsLogic } from '../../../hooks/courts/useManageCourtsLogic.js';
@@ -20,6 +20,15 @@ function DashboardManageCourtsPage() {
     handleDeleteRequest,
     handleModifyRequest,
   } = useManageCourtsLogic();
+
+  const paginatedCourts = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return courts.slice(startIndex, startIndex + itemsPerPage);
+  }, [courts, currentPage, itemsPerPage]);
+
+  const getRowNumber = useCallback((index) => {
+    return (currentPage - 1) * itemsPerPage + index + 1;
+  }, [currentPage, itemsPerPage]);
 
   if (loading) return <Spinner />;
   if (error) return <div className="text-red-500 text-center">{error.message}</div>;
@@ -44,7 +53,7 @@ function DashboardManageCourtsPage() {
 
       {/* Tabla de Canchas */}
       <CourtTable
-        courts={courts}
+        courts={paginatedCourts}
         onModify={handleModifyRequest}
         onDelete={handleDeleteRequest}
         onToggleActive={async (courtId, isActive) => {
@@ -60,6 +69,7 @@ function DashboardManageCourtsPage() {
         itemsPerPage={itemsPerPage}
         setItemsPerPage={setItemsPerPage}
         totalCourts={totalCourts}
+        getRowNumber={getRowNumber}
       />
     </div>
   );

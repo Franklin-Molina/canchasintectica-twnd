@@ -156,7 +156,7 @@ const DashboardLayout = () => {
       </aside>
 
       <div className="flex flex-col flex-1">
-        <DashboardNavbar onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+        <DashboardNavbar toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
         <main className="flex-1 overflow-y-auto">
           <Outlet />
         </main>

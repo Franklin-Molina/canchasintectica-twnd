@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import Spinner from '../../../components/common/Spinner';
 import BookingTable from '../../../components/Bookings/BookingTable';
 import { useFetchBookings } from '../../../hooks/bookings/useFetchBookings';
@@ -49,6 +49,10 @@ function BookingHistoryPage() {
     month: selectedMonth,
     week: selectedWeek,
   });
+
+  const getRowNumber = useCallback((index) => {
+    return (currentPage - 1) * itemsPerPage + index + 1;
+  }, [currentPage, itemsPerPage]);
 
   if (loading) {
     return (
@@ -128,6 +132,7 @@ function BookingHistoryPage() {
             setItemsPerPage={setItemsPerPage}
             totalBookings={totalBookings} // Usar totalBookings del hook
             deleteBooking={deleteBooking}
+            getRowNumber={getRowNumber}
           />
         </div>
       )}

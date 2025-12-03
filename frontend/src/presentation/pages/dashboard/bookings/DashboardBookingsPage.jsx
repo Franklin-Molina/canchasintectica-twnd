@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import Spinner from '../../../components/common/Spinner';
 import BookingTable from '../../../components/Bookings/BookingTable';
 import { useFetchBookings } from '../../../hooks/bookings/useFetchBookings';
@@ -21,6 +21,10 @@ function DashboardBookingsPage() {
 
   // Usar el hook de auto-refresco.
   const { timeSinceLastUpdate } = useAutoRefresh(fetchAllBookings, 10000, bookings);
+
+  const getRowNumber = useCallback((index) => {
+    return (currentPage - 1) * itemsPerPage + index + 1;
+  }, [currentPage, itemsPerPage]);
 
   if (loading) {
     return (
@@ -78,6 +82,7 @@ function DashboardBookingsPage() {
             setItemsPerPage={setItemsPerPage}
             totalBookings={totalBookings} // Usamos el total de reservas filtradas del hook
             deleteBooking={deleteBooking}
+            getRowNumber={getRowNumber}
           />
         </div>
       )}
