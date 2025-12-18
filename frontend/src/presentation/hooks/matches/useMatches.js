@@ -3,6 +3,7 @@ import {
   getOpenMatches,
   getMyUpcomingMatches,
   joinMatch,
+  leaveMatch,
   cancelMatch,
   removeParticipant,
 } from "../../../infrastructure/api/matchesService";
@@ -48,6 +49,11 @@ export const useMatches = () => {
     fetchAllData();
   };
 
+  const handleLeaveMatch = async (matchId) => {
+    await leaveMatch(matchId);
+    fetchAllData();
+  };
+
   const handleCancelMatch = async (matchId) => {
     await cancelMatch(matchId);
     fetchAllData();
@@ -64,6 +70,7 @@ export const useMatches = () => {
     loading,
     fetchAllData,
     handleJoinMatch,
+    handleLeaveMatch,
     handleCancelMatch,
     handleRemoveParticipant,
   };

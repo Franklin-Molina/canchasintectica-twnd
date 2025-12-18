@@ -1,7 +1,7 @@
 import React from "react";
 import MatchCard from "./MatchCard";
 
-const UpcomingMatches = ({ matches, onJoin, onCancel, onRemove, onEdit, currentUser }) => {
+const UpcomingMatches = ({ matches, onJoin, onCancel, onRemove, onEdit, onLeave, currentUser }) => {
   if (matches.length === 0) {
     return null;
   }
@@ -20,6 +20,7 @@ const UpcomingMatches = ({ matches, onJoin, onCancel, onRemove, onEdit, currentU
             onCancel={onCancel}
             onRemove={onRemove}
             onEdit={onEdit}
+            onLeave={onLeave}
             currentUser={currentUser}
           />
         ))}

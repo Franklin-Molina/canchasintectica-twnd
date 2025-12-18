@@ -1,9 +1,14 @@
 import React, { useState } from "react";
 
-const MatchCard = ({ match, onJoin, onCancel, onRemove, onEdit, currentUser }) => {
+const MatchCard = ({ match, onJoin, onCancel, onRemove, onEdit, onLeave, currentUser }) => {
   const [showParticipants, setShowParticipants] = useState(false);
   const isCreator = currentUser?.id === match.creator.id;
   const isFull = match.participants.length >= match.players_needed + 1;
+  
+  // Verificar si el usuario actual es participante del partido
+  const isParticipant = match.participants.some(
+    (p) => p.user.id === currentUser?.id
+  );
 
   return (
     <div
@@ -79,39 +84,62 @@ const MatchCard = ({ match, onJoin, onCancel, onRemove, onEdit, currentUser }) =
 
       {/* Acciones */}
       <div className="mt-4 flex flex-wrap gap-2">
-        {!isCreator && (
-          <button
-            onClick={() => onJoin(match.id)}
-            disabled={isFull || match.status === "CANCELLED"}
-            className={`px-4 py-2 rounded-lg text-white text-sm font-medium transition ${
-              isFull || match.status === "CANCELLED"
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700"
-            }`}
-          >
-            {isFull
-              ? "Completo"
-              : match.status === "CANCELLED"
-              ? "Cancelado"
-              : "Unirse"}
-          </button>
-        )}
-
-        {isCreator && match.status !== "CANCELLED" && (
+        {match.status === "CANCELLED" ? (
+          <div className="px-4 py-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg text-sm font-medium">
+            ❌ Partido Cancelado
+          </div>
+        ) : (
           <>
-            <button
-              onClick={() => onEdit(match)}
-              className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg text-sm font-medium"
-            >
-              Editar
-            </button>
-            {!isFull && (
-              <button
-                onClick={() => onCancel(match.id)}
-                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium"
-              >
-                Cancelar
-              </button>
+            {/* Botones para usuarios no creadores */}
+            {!isCreator && (
+              <>
+                {isParticipant ? (
+                  <button
+                    onClick={() => onLeave(match.id)}
+                    className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg text-sm font-medium transition-all flex items-center gap-2"
+                  >
+                    <span>🚪</span> Salir del Partido
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => onJoin(match.id)}
+                    disabled={isFull}
+                    className={`px-4 py-2 rounded-lg text-white text-sm font-medium transition-all flex items-center gap-2 ${
+                      isFull
+                        ? "bg-gray-400 cursor-not-allowed"
+                        : "bg-green-600 hover:bg-green-700"
+                    }`}
+                  >
+                    {isFull ? (
+                      <>
+                        <span>🔒</span> Partido Completo
+                      </>
+                    ) : (
+                      <>
+                        <span>⚽</span> Unirse al Partido
+                      </>
+                    )}
+                  </button>
+                )}
+              </>
+            )}
+
+            {/* Botones para el creador */}
+            {isCreator && (
+              <>
+                <button
+                  onClick={() => onEdit(match)}
+                  className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg text-sm font-medium transition-all flex items-center gap-2"
+                >
+                  <span>✏️</span> Editar
+                </button>
+                <button
+                  onClick={() => onCancel(match.id)}
+                  className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-all flex items-center gap-2"
+                >
+                  <span>❌</span> Cancelar Partido
+                </button>
+              </>
             )}
           </>
         )}

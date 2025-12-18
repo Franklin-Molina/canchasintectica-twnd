@@ -13,6 +13,7 @@ const OpenMatchesPage = () => {
     loading,
     fetchAllData,
     handleJoinMatch,
+    handleLeaveMatch,
     handleCancelMatch,
     handleRemoveParticipant,
   } = useMatches();
@@ -51,6 +52,7 @@ const OpenMatchesPage = () => {
       <UpcomingMatches
         matches={upcomingMatches}
         onJoin={handleJoinMatch}
+        onLeave={handleLeaveMatch}
         onCancel={handleCancelMatch}
         onRemove={handleRemoveParticipant}
         onEdit={handleEditMatch}
@@ -76,6 +78,7 @@ const OpenMatchesPage = () => {
             category={category}
             matches={matchList}
             onJoin={handleJoinMatch}
+            onLeave={handleLeaveMatch}
             onCancel={handleCancelMatch}
             onRemove={handleRemoveParticipant}
             onEdit={handleEditMatch}

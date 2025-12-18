@@ -1,7 +1,7 @@
 import React from "react";
 import MatchCard from "./MatchCard";
 
-const MatchCategory = ({ category, matches, onJoin, onCancel, onRemove, onEdit, currentUser }) => {
+const MatchCategory = ({ category, matches, onJoin, onCancel, onRemove, onEdit, onLeave, currentUser }) => {
   return (
     <div>
       <h2 className="text-xl font-semibold mb-3 border-b border-gray-300 dark:border-gray-700 pb-1">
@@ -17,6 +17,7 @@ const MatchCategory = ({ category, matches, onJoin, onCancel, onRemove, onEdit, 
               onCancel={onCancel}
               onRemove={onRemove}
               onEdit={onEdit}
+              onLeave={onLeave}
               currentUser={currentUser}
             />
           ))

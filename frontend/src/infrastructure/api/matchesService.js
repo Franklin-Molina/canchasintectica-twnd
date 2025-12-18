@@ -35,6 +35,32 @@ export const joinMatch = async (matchId) => {
   }
 };
 
+// Salir de un partido
+export const leaveMatch = async (matchId) => {
+  const result = await Swal.fire({
+    title: "¿Salir del partido?",
+    text: "¿Estás seguro de que quieres abandonar este partido?",
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonColor: "#ea580c",
+    cancelButtonColor: "#6b7280",
+    confirmButtonText: "Sí, salir",
+    cancelButtonText: "Cancelar",
+  });
+
+  if (result.isConfirmed) {
+    try {
+      await api.post(`/api/matches/open-matches/${matchId}/leave/`);
+      toast.success("Has salido del partido exitosamente.");
+      Swal.fire("¡Listo!", "Has abandonado el partido.", "success");
+    } catch (error) {
+      const errorMsg = error.response?.data?.detail || "No se pudo salir del partido.";
+      Swal.fire("Error", errorMsg, "error");
+      throw error;
+    }
+  }
+};
+
 // Cancelar un partido (creador)
 export const cancelMatch = async (matchId) => {
   const result = await Swal.fire({
