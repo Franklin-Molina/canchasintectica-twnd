@@ -55,6 +55,7 @@ docker compose exec backend python manage.py createsuperuser
 *   **Backend API:** [http://localhost:8000/api/](http://localhost:8000/api/)
 *   **Admin Panel:** [http://localhost:8000/admin/](http://localhost:8000/admin/)
 
+> *Note: If you want stop the container run: `docker compose down`.*
 ---
 
 ## 💻 Option 2: Manual Local Setup
