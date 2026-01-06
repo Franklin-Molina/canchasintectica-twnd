@@ -4,7 +4,6 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
-      # Map our Master variables to what the Postgres Image expects
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -26,11 +25,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    # ---------------------------------------------------------
-    # HERE IS THE MAGIC:
-    # This single line injects ALL the variables from .env
-    # into the Django container (CORS, LOGGING, TIME_ZONE, etc.)
-    # ---------------------------------------------------------
     env_file:
       - .env
 
@@ -45,11 +39,9 @@ services:
     ports:
       - "3000:5173"
     environment:
-      # Map the generic variables to VITE_ specific names
       VITE_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       VITE_GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       VITE_API_URL: ${VITE_API_URL}
-      # If you use the Redirect URI in code, map it too:
       VITE_REDIRECT_URI: http://localhost:3000/auth
     depends_on:
       - backend

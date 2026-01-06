@@ -295,7 +295,6 @@ CORS_ALLOW_ALL_ORIGINS = (
     os.getenv("CORS_ALLOW_ALL_ORIGINS", "False").lower() == "true"
 )  # Deshabilitar para especificar orígenes permitidos
 
-# If variable is found, split it. If not, return empty list.
 cors_origins = os.getenv("CORS_ALLOWED_ORIGINS")
 if cors_origins:
     CORS_ALLOWED_ORIGINS = cors_origins.split(",")
