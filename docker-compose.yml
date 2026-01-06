@@ -1,53 +1,56 @@
-version: '3.8'
-
 services:
   db:
-    image: postgres:13
+    image: postgres:15
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      # Map our Master variables to what the Postgres Image expects
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   backend:
     build: ./backend
-    command: python manage.py runserver 0.0.0.0:8000
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./backend/:/app/
     ports:
       - "8000:8000"
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_HOST: db
-      POSTGRES_PORT: 5432
-      SECRET_KEY: ${SECRET_KEY}
-      DEBUG: ${DEBUG}
-      ALLOWED_HOSTS: ${ALLOWED_HOSTS}
-      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
-      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
-      # Agrega otras variables de entorno necesarias para Django
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    # ---------------------------------------------------------
+    # HERE IS THE MAGIC:
+    # This single line injects ALL the variables from .env
+    # into the Django container (CORS, LOGGING, TIME_ZONE, etc.)
+    # ---------------------------------------------------------
+    env_file:
+      - .env
 
   frontend:
     build:
-        context: ./frontend
-        dockerfile: Dockerfile
-        args:
-          CACHE_INVALIDATOR: ${CACHE_INVALIDATOR:-$(date +%s)}
-    command: npm start
+      context: ./frontend
+      dockerfile: Dockerfile
+    command: npm run dev -- --host 0.0.0.0
     volumes:
       - ./frontend/:/app/
+      - /app/node_modules
     ports:
-      - "3000:3000"
+      - "3000:5173"
     environment:
-      # Agrega variables de entorno necesarias para React
-      REACT_APP_BACKEND_URL: http://localhost:8000
+      # Map the generic variables to VITE_ specific names
+      VITE_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      VITE_GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      VITE_API_URL: ${VITE_API_URL}
+      # If you use the Redirect URI in code, map it too:
+      VITE_REDIRECT_URI: http://localhost:3000/auth
     depends_on:
       - backend
 
