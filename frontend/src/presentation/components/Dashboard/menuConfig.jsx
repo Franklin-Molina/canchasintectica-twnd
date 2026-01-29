@@ -16,7 +16,7 @@ import {
 
 export const menuItems = {
   cliente: [
-    { to: '/client', label: 'Inicio', icon: <Home className="w-5 h-5" /> },
+    { to: '/', label: 'Inicio', icon: <Home className="w-5 h-5" /> },
     { to: '/client/bookings', label: 'Mis Reservas', icon: <CalendarDays className="w-5 h-5" /> },
     { to: '/client/history', label: 'Historial', icon: <History className="w-5 h-5" /> },
     { to: '/client/matches', label: 'Buscar Partido', icon: <Users className="w-5 h-5" /> },

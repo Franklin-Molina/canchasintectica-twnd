@@ -107,18 +107,18 @@ function CourtTable({ courts, onModify, onDelete, onToggleActive, currentPage, t
         </div>
   
         {/* Vista de tabla para escritorio */}
-        <div className="hidden md:block">
-          <table className="w-full">
-            <thead className="bg-slate-100/50 dark:bg-slate-800/50">
+        <div className="hidden md:block shadow-md rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800">
+          <table className="w-full border-collapse">
+            <thead className="bg-slate-100/50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 uppercase text-xs">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">#</th>
+                <th className="px-4 py-3 text-left font-semibold tracking-wider">#</th>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Nombre</th>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Precio</th>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Estado</th>
                 <th className="px-4 py-3 text-right text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Acciones</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
+            <tbody className="divide-y divide-slate-200 dark:divide-slate-800 bg-white dark:bg-slate-900/50">
               {courts.map((court, index) => (
                 <CourtTableRow key={court.id} court={court} index={getRowNumber(index)} {...{ onModify, onDelete, onToggleActive }} />
               ))}

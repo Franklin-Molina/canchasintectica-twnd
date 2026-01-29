@@ -15,7 +15,7 @@
 - [x] Formatear la visualizaciรณn del precio de las canchas de 43333.00 a 43.000 (23/10/2025)
 - [x] Corregir la desapariciรณn de la paginaciรณn al mostrar todos los elementos en `HomePage.jsx` (29/10/2025)
 - [x] Corregir los bordes de la tabla en `DashboardUsersPage.jsx` para que sean redondeados (29/10/2025)
-- [ ] Aplicar correcciรณn de bordes redondeados en `CourtTable.jsx` (29/10/2025)
+- [x] Aplicar correcciรณn de bordes redondeados en `CourtTable.jsx` (23/01/2026)
 - [x] Implementar modo oscuro en `RegisterPage.jsx` (05/11/2025)
 - [x] Implementar modo oscuro en `LoginForm.jsx` (05/11/2025)
 - [x] Trabajar en `frontend/src/presentation/pages/courts/CourtDetailPage.jsx` (10/11/2025)
