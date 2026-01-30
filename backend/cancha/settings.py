@@ -45,6 +45,7 @@ ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -70,7 +71,18 @@ INSTALLED_APPS = [
     "plans",
     "matches",
     "django_filters",  # Añadir django_filters
+    "channels",
 ]
+
+# ASGI Configuration
+ASGI_APPLICATION = "cancha.asgi.application"
+
+# Channels Configuration (Development: InMemory)
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (

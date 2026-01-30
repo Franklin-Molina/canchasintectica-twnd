@@ -56,13 +56,9 @@ class OpenMatchViewSet(viewsets.ModelViewSet):
         return Response(response_serializer.data)
 
     def list(self, request, *args, **kwargs):
-        """Listar todos los partidos abiertos y futuros"""
-        from django.utils import timezone
-        # Solo partidos abiertos y cuya fecha de inicio sea mayor o igual a ahora
-        queryset = self.get_queryset().filter(
-            status='OPEN',
-            start_time__gte=timezone.now()
-        ).order_by('start_time')
+        """Listar todos los partidos abiertos"""
+        # Solo partidos no cancelados
+        queryset = self.get_queryset().filter(status='OPEN').order_by('-created_at')
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 

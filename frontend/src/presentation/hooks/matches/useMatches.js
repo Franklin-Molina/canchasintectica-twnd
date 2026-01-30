@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useMatchesRealtime } from "./useMatchesRealtime";
 import {
   getOpenMatches,
   getMyUpcomingMatches,
@@ -33,7 +34,6 @@ export const useMatches = () => {
       setMatches(groupMatchesByCategory(openMatchesData));
       setUpcomingMatches(upcomingMatchesData);
     } catch (error) {
-      // El manejo de errores ya se hace en el servicio con toasts
       console.error("Error fetching match data:", error);
     } finally {
       setLoading(false);
@@ -63,6 +63,15 @@ export const useMatches = () => {
     await removeParticipant(matchId, userIdToRemove);
     fetchAllData();
   };
+
+  // ✅ WS ACTUALIZA CUANDO HAY EVENTO
+  useMatchesRealtime(
+    useCallback((event) => {
+      console.log("Real-time match event received:", event);
+      // Cualquier tipo de evento debería gatillar un refresco de datos
+      fetchAllData();
+    }, [fetchAllData])
+  );
 
   return {
     matches,
