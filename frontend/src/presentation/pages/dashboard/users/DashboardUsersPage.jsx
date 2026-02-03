@@ -4,6 +4,8 @@ import Spinner from "../../../components/common/Spinner.jsx";
 import Pagination from "../../../components/common/Pagination.jsx";
 import CustomSelect from "../../../components/common/CustomSelect.jsx";
 import { useDashboardUsersLogic } from "../../../hooks/dashboard/useDashboardUsersLogic.js";
+import { useUsersRealtime } from "../../../hooks/users/useUsersRealtime";
+import { toast } from "react-toastify";
 import {
   User,
   Trash2,
@@ -56,6 +58,12 @@ function DashboardUsersPage() {
   } = useDashboardUsersLogic();
 
   const { user } = useAuth();
+
+  // Integrar WebSockets para actualizaciones de usuarios en tiempo real
+  useUsersRealtime(React.useCallback((event) => {
+    console.log("Real-time user update received:", event);
+    fetchAllUsers(); // Refrescar la lista de usuarios
+  }, [fetchAllUsers]));
 
   // Log para debugging - puedes eliminarlo después
   useEffect(() => {
@@ -132,14 +140,7 @@ function DashboardUsersPage() {
             />
           </button>
 
-          {/* Botón de Refrescar */}
-          <button
-            onClick={() => fetchAllUsers()}
-            className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-medium transition-all bg-blue-500 text-white hover:bg-blue-600"
-          >
-            <RefreshCw className="w-4 h-4" />
-            <span className="hidden sm:inline">Refrescar</span>
-          </button>
+         
         </div>
 
         {/* Panel de filtros expandible */}

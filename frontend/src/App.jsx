@@ -36,12 +36,12 @@ function App() {
   return (
     <RepositoryProvider>
       <UseCaseProvider>
-        <NotificationProvider>
-          <AuthProvider>
+        <AuthProvider>
+          <NotificationProvider>
             <GlobalNotificationHandler />
             <AuthContent />
-          </AuthProvider>
-        </NotificationProvider>
+          </NotificationProvider>
+        </AuthProvider>
       </UseCaseProvider>
       <ToastContainer position="top-right" autoClose={1500} />
     </RepositoryProvider>

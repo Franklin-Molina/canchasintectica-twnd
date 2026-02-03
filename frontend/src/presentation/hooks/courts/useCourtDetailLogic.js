@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { format, startOfWeek, addDays, setHours, setMinutes } from 'date-fns';
 import { useRepositories } from '../../context/RepositoryContext';
 import { useUseCases } from '../../context/UseCaseContext';
+import { useBookingsRealtime } from '../bookings/useBookingsRealtime';
 
 /**
  * Hook personalizado para la lógica de la página de detalles de la cancha.
@@ -115,6 +116,13 @@ export const useCourtDetailLogic = () => {
       fetchWeeklyAvailability();
     }
   }, [court, fetchWeeklyAvailability]);
+
+  // Actualización en tiempo real vía WebSocket para la disponibilidad
+  useBookingsRealtime(useCallback((event) => {
+    console.log('Real-time booking update for court detail:', event);
+    // Si hay un cambio en las reservas, refrescamos la disponibilidad del calendario
+    fetchWeeklyAvailability();
+  }, [fetchWeeklyAvailability]));
 
   const closeModal = useCallback(() => {
     setSelectedImage(null);

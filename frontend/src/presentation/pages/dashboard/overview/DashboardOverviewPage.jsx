@@ -15,6 +15,8 @@ import { useFetchAllCourts } from '../../../hooks/courts/useFetchAllCourts.js';
 import { useAutoRefresh } from '../../../hooks/bookings/useAutoRefresh.js';
 import useUserStats from '../../../hooks/users/useUserStats.js';
 import useBookingStats from '../../../hooks/bookings/useBookingStats.js';
+import { useBookingsRealtime } from '../../../hooks/bookings/useBookingsRealtime';
+import { toast } from 'react-toastify';
 
 function DashboardOverviewPage() {
   const navigate = useNavigate();
@@ -68,8 +70,14 @@ function DashboardOverviewPage() {
   } = useFetchBookings({ onlyActive: true });
 
   const { courts: allCourts } = useFetchAllCourts();
-  const { stats: userStats } = useUserStats();
-  const { stats: bookingStats } = useBookingStats();
+  const { stats: userStats, fetchUserStats } = useUserStats();
+  const { stats: bookingStats, fetchBookingStats } = useBookingStats();
+
+  // Refrescar datos en tiempo real (las notificaciones se manejan en el componente Notification global)
+  useBookingsRealtime(useCallback(() => {
+    fetchAllBookings();
+    if (fetchBookingStats) fetchBookingStats();
+  }, [fetchAllBookings, fetchBookingStats]));
 
   const refreshData = useCallback(() => {
     activeTab === 'canchas' ? fetchAllCourts() : fetchAllBookings();
@@ -77,7 +85,7 @@ function DashboardOverviewPage() {
 
   const { timeSinceLastUpdate } = useAutoRefresh(
     refreshData,
-    10000,
+    100000,
     activeTab === 'canchas' ? courts : bookings
   );
 

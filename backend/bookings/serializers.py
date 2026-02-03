@@ -1,18 +1,18 @@
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError # Importar ValidationError
+from rest_framework.exceptions import ValidationError
 from .models import Booking
-from users.models import User # Importar el modelo User
-from courts.models import Court # Importar el modelo Court
-from courts.serializers import CourtSerializer # Importar CourtSerializer
-from users.serializers import UserSerializer # Importar UserSerializer
-from django.utils import timezone # Importar timezone
+from users.models import User
+from courts.models import Court
+from courts.serializers import CourtSerializer
+from users.serializers import UserSerializer
+from django.utils import timezone
 
 class BookingSerializer(serializers.ModelSerializer):
-    user_details = UserSerializer(source='user', read_only=True) # Añadir serializador anidado para el usuario
+    user_details = UserSerializer(source='user', read_only=True)
     user = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(),
         default=serializers.CurrentUserDefault(),
-        write_only=True # Hacer que el campo 'user' sea solo de escritura para evitar conflictos
+        write_only=True
     )
     court_details = CourtSerializer(source='court', read_only=True)
     court = serializers.PrimaryKeyRelatedField(
@@ -21,39 +21,16 @@ class BookingSerializer(serializers.ModelSerializer):
 
     start_time = serializers.DateTimeField()
     end_time = serializers.DateTimeField()
-    payment_percentage = serializers.IntegerField(required=False, default=100, min_value=10, max_value=100) # Nuevo campo para el porcentaje de pago
+    payment_percentage = serializers.IntegerField(required=False, default=100, min_value=10, max_value=100)
 
     class Meta:
         model = Booking
         fields = ('id', 'user', 'user_details', 'court', 'court_details', 'start_time', 'end_time', 'status', 'payment', 'payment_percentage', 'created_at')
 
     def create(self, validated_data):
-        # Obtener el usuario del contexto de la petición (establecido por CurrentUserDefault)
-        user = validated_data.pop('user')
-        court = validated_data.pop('court')
-        payment_percentage = validated_data.pop('payment_percentage', 100) # Extraer el porcentaje de pago
-
-        # Crear un diccionario con los datos que espera el caso de uso/repositorio
-        booking_data_for_use_case = {
-            'user': user,
-            'court': court,
-            'start_time': validated_data['start_time'],
-            'end_time': validated_data['end_time'],
-            'payment_percentage': payment_percentage,
-        }
-        
-        # Importar el caso de uso aquí para evitar importaciones circulares
-        from backend.bookings.application.use_cases.create_booking import CreateBookingUseCase
-        from backend.bookings.infrastructure.repositories.django_booking_repository import DjangoBookingRepository
-        
-        booking_repository = DjangoBookingRepository()
-        create_booking_use_case = CreateBookingUseCase(booking_repository)
-
-        # Ejecutar el caso de uso para crear la reserva
-        # Usamos async_to_sync porque el serializer es síncrono y el caso de uso es asíncrono
-        from asgiref.sync import async_to_sync
-        booking = async_to_sync(create_booking_use_case.execute)(booking_data_for_use_case)
-        return booking
+        # Lógica síncrona directa para evitar problemas ASGI durante el desarrollo
+        validated_data.pop('payment_percentage', 100) # El modelo Booking no tiene este campo
+        return Booking.objects.create(**validated_data)
 
     def validate(self, data):
         """

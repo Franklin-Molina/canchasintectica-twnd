@@ -20,7 +20,11 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cancha.settings')
 django_asgi_app = get_asgi_application()
 
 # Ahora SÍ importar las rutas (después de configurar Django)
-from matches.routing import websocket_urlpatterns
+from matches.routing import websocket_urlpatterns as matches_ws
+from bookings.routing import websocket_urlpatterns as bookings_ws
+from users.routing import websocket_urlpatterns as users_ws
+
+combined_ws_urlpatterns = matches_ws + bookings_ws + users_ws
 
 application = ProtocolTypeRouter({
     # HTTP normal usa Django ASGI
@@ -29,7 +33,7 @@ application = ProtocolTypeRouter({
     # Solo WebSocket usa el routing especial
     "websocket": AuthMiddlewareStack(
         URLRouter(
-            websocket_urlpatterns
+            combined_ws_urlpatterns
         )
     ),
 })

@@ -22,6 +22,7 @@ from dj_rest_auth.registration.views import SocialLoginView
 # from rest_framework_simplejwt.views import TokenObtainPairView # Duplicado, ya importado arriba
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer # TokenObtainPairSerializer ya importado
 from .serializers_jwt import CustomTokenObtainPairSerializer
+from .utils.websocket_notifier import user_notifier
 
 # Importar casos de uso y repositorio
 from .infrastructure.repositories.django_user_repository import DjangoUserRepository
@@ -61,6 +62,8 @@ class RegisterView(views.APIView): # Cambiar a APIView
             try:
                 # Envolver la llamada asíncrona con async_to_sync
                 user = async_to_sync(register_user_use_case.execute)(user_data_for_creation)
+                # Notificar vía WebSocket a los administradores
+                user_notifier.notify_user_created(UserSerializer(user).data)
                 # Devolver los datos del usuario creado usando UserSerializer para la respuesta
                 response_serializer = UserSerializer(user) 
                 return Response(response_serializer.data, status=status.HTTP_201_CREATED)
@@ -148,6 +151,7 @@ class UserViewSet(viewsets.ModelViewSet): # Mantener ModelViewSet por ahora, ref
 
         user = async_to_sync(update_user_status_use_case.execute)(user_id=pk, is_active=True)
         if user:
+            user_notifier.notify_user_updated(UserSerializer(user).data)
             return Response({"detail": f"Usuario {user.username} activado."}, status=status.HTTP_200_OK)
         return Response({"detail": "Usuario no encontrado."}, status=status.HTTP_404_NOT_FOUND)
 
@@ -173,6 +177,7 @@ class UserViewSet(viewsets.ModelViewSet): # Mantener ModelViewSet por ahora, ref
 
         user = async_to_sync(update_user_status_use_case.execute)(user_id=pk, is_active=False)
         if user:
+            user_notifier.notify_user_updated(UserSerializer(user).data)
             return Response({"detail": f"Usuario {user.username} desactivado."}, status=status.HTTP_200_OK)
         return Response({"detail": "Usuario no encontrado."}, status=status.HTTP_404_NOT_FOUND)
 
@@ -369,6 +374,8 @@ class AdminRegisterView(views.APIView): # Cambiar a APIView
             try:
                 # Envolver la llamada asíncrona con async_to_sync
                 user = async_to_sync(register_user_use_case.execute)(user_data)
+                # Notificar vía WebSocket a los administradores
+                user_notifier.notify_user_created(UserSerializer(user).data)
                 response_serializer = UserSerializer(user) # Usar UserSerializer para la respuesta
                 return Response(response_serializer.data, status=status.HTTP_201_CREATED)
             except ValueError as e:
@@ -423,6 +430,7 @@ class AdminManagementViewSet(viewsets.ViewSet):
         
         user = async_to_sync(update_user_status_use_case.execute)(user_id=pk, is_active=False)
         if user:
+            user_notifier.notify_user_updated(UserSerializer(user).data)
             return Response({"detail": f"Usuario admin {user.username} suspendido."}, status=status.HTTP_200_OK)
         return Response({"detail": "Usuario admin no encontrado."}, status=status.HTTP_404_NOT_FOUND)
 
@@ -436,6 +444,7 @@ class AdminManagementViewSet(viewsets.ViewSet):
 
         user = async_to_sync(update_user_status_use_case.execute)(user_id=pk, is_active=True)
         if user:
+            user_notifier.notify_user_updated(UserSerializer(user).data)
             return Response({"detail": f"Usuario admin {user.username} reactivado."}, status=status.HTTP_200_OK)
         return Response({"detail": "Usuario admin no encontrado."}, status=status.HTTP_404_NOT_FOUND)
 
@@ -448,6 +457,7 @@ class AdminManagementViewSet(viewsets.ViewSet):
 
         success = async_to_sync(delete_user_use_case.execute)(user_id=pk)
         if success:
+            user_notifier.notify_user_deleted(pk)
             return Response({"detail": "Usuario admin eliminado."}, status=status.HTTP_204_NO_CONTENT)
         return Response({"detail": "Usuario admin no encontrado."}, status=status.HTTP_404_NOT_FOUND)
 

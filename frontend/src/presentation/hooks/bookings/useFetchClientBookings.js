@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useUseCases } from '../../context/UseCaseContext';
 import { useAuth } from '../../context/AuthContext.jsx';
+import { useBookingsRealtime } from './useBookingsRealtime';
 
 /**
  * Hook personalizado para obtener la lista de reservas de un cliente específico.
@@ -13,25 +14,29 @@ export const useFetchClientBookings = () => {
   const { getBookingsUseCase } = useUseCases();
   const { user } = useAuth();
 
-  useEffect(() => {
+  const fetchBookings = useCallback(async () => {
     if (!user) return;
-
-    const fetchBookings = async () => {
-      try {
-        setLoading(true);
-        // Asumimos que el caso de uso puede tomar un userId para filtrar
-        const bookingsList = await getBookingsUseCase.execute({ userId: user.id });
-        setBookings(bookingsList);
-      } catch (err) {
-        setError(err);
-        console.error('Error al obtener reservas del cliente:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBookings();
+    try {
+      setLoading(true);
+      const bookingsList = await getBookingsUseCase.execute({ userId: user.id });
+      setBookings(bookingsList);
+    } catch (err) {
+      setError(err);
+      console.error('Error al obtener reservas del cliente:', err);
+    } finally {
+      setLoading(false);
+    }
   }, [getBookingsUseCase, user]);
 
-  return { bookings, loading, error };
+  useEffect(() => {
+    fetchBookings();
+  }, [fetchBookings]);
+
+  // Sincronización en tiempo real vía WebSocket
+  useBookingsRealtime(useCallback((event) => {
+    console.log('Real-time client booking update:', event);
+    fetchBookings();
+  }, [fetchBookings]));
+
+  return { bookings, loading, error, refreshBookings: fetchBookings };
 };

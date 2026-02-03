@@ -6,6 +6,7 @@ import WeeklyAvailabilityCalendar from '../../pages/courts/WeeklyAvailabilityCal
 import { format, addDays, startOfWeek, setHours, setMinutes, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { X } from 'lucide-react';
+import { formatPrice } from '../../utils/formatters';
 
 const CreateMatchForm = ({ onClose, onMatchCreated, match }) => {
   const isEditing = !!match;
@@ -15,6 +16,7 @@ const CreateMatchForm = ({ onClose, onMatchCreated, match }) => {
     start_time: '',
     end_time: '',
     players_needed: 1,
+    should_reserve: false,
   });
   const [courts, setCourts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -24,6 +26,9 @@ const CreateMatchForm = ({ onClose, onMatchCreated, match }) => {
   const [weeklyAvailabilityError, setWeeklyAvailabilityError] = useState(null);
   const [selectedSlot, setSelectedSlot] = useState(null); // { date: 'YYYY-MM-DD', hour: number }
   const [showCalendar, setShowCalendar] = useState(false); // Controla la visibilidad del calendario
+  const [showConfirmBooking, setShowConfirmBooking] = useState(false);
+  const [paymentPercentage, setPaymentPercentage] = useState(100);
+  const [isBooking, setIsBooking] = useState(false);
 
   const daysOfWeek = useMemo(() => ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'], []);
   const hoursOfDay = useMemo(() => {
@@ -155,13 +160,21 @@ const CreateMatchForm = ({ onClose, onMatchCreated, match }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("Datos enviados al backend:", formData); // Añadir console.log para depuración
+    // Siempre mostramos el modal de confirmación de reserva al crear un nuevo partido
+    if (!isEditing) {
+      setShowConfirmBooking(true);
+      return;
+    }
 
-    const apiCall = isEditing
-      ? api.put(`/api/matches/open-matches/${match.id}/`, formData)
-      : api.post('/api/matches/open-matches/', formData);
+    await saveMatch();
+  };
 
+  const saveMatch = async () => {
     try {
+      const apiCall = isEditing
+        ? api.put(`/api/matches/open-matches/${match.id}/`, formData)
+        : api.post('/api/matches/open-matches/', formData);
+
       await apiCall;
       toast.success(isEditing ? "¡Partido actualizado!" : "¡Partido creado con éxito!");
       onMatchCreated();
@@ -174,6 +187,46 @@ const CreateMatchForm = ({ onClose, onMatchCreated, match }) => {
       );
     }
   };
+
+  const confirmBookingAndMatch = async () => {
+    setIsBooking(true);
+    try {
+      // 1. Realizar la reserva
+      const bookingData = {
+        court: formData.court_id,
+        start_time: formData.start_time,
+        end_time: formData.end_time,
+        payment_percentage: paymentPercentage,
+        status: 'confirmed' // Lo marcamos como confirmado
+      };
+      
+      console.log("Intentando crear reserva con datos:", bookingData);
+      
+      // Corregir endpoint de reserva (de acuerdo a ApiBookingRepository)
+      const bookingResponse = await api.post('/api/bookings/bookings/', bookingData);
+      console.log("Respuesta de reserva:", bookingResponse.data);
+      
+      toast.info("Cancha reservada con éxito.");
+
+      // 2. Crear el partido
+      await saveMatch();
+    } catch (bookingError) {
+      console.error("Error creating booking:", bookingError);
+      const errorMsg = bookingError.response?.data?.detail || 
+                       (bookingError.response?.data?.non_field_errors && bookingError.response?.data?.non_field_errors[0]) ||
+                       "La cancha no está disponible para este horario.";
+      toast.error(`Error en la reserva: ${errorMsg}`);
+    } finally {
+      setIsBooking(false);
+      setShowConfirmBooking(false);
+    }
+  };
+
+  const selectedCourt = useMemo(() => courts.find(c => c.id === formData.court_id), [courts, formData.court_id]);
+  const priceToPay = useMemo(() => {
+    if (!selectedCourt) return 0;
+    return (selectedCourt.price * paymentPercentage) / 100;
+  }, [selectedCourt, paymentPercentage]);
 
   return (
     <>
@@ -264,6 +317,7 @@ const CreateMatchForm = ({ onClose, onMatchCreated, match }) => {
               />
             </div>
 
+
             {/* Botones */}
             <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-slate-700">
               <button
@@ -289,6 +343,96 @@ const CreateMatchForm = ({ onClose, onMatchCreated, match }) => {
         </div>
       </div>
 
+      {/* Modal de confirmación de reserva (Estilo CourtDetailPage) */}
+      {showConfirmBooking && selectedCourt && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[70] p-4">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-md w-full border border-slate-200 dark:border-slate-700">
+            <div className="p-6 border-b border-slate-200 dark:border-slate-700">
+              <h2 className="text-2xl font-bold text-emerald-500 dark:text-emerald-400">
+                Confirmar Reserva y Partido
+              </h2>
+            </div>
+            <div className="p-6 space-y-4">
+              <p className="text-slate-600 dark:text-slate-300 text-sm">
+                Se realizará la reserva de la cancha y se creará tu partido simultáneamente.
+              </p>
+              <div className="bg-gray-100 dark:bg-slate-900 rounded-lg p-4 border border-slate-200 dark:border-slate-700 space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-slate-500 dark:text-slate-400">Cancha:</span>
+                  <span className="font-semibold text-gray-800 dark:text-slate-100">{selectedCourt.name}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-slate-500 dark:text-slate-400">Fecha:</span>
+                  <span className="font-semibold text-gray-800 dark:text-slate-100">
+                    {format(parseISO(formData.start_time), 'dd/MM/yyyy', { locale: es })}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-slate-500 dark:text-slate-400">Hora:</span>
+                  <span className="font-semibold text-gray-800 dark:text-slate-100">
+                    {format(parseISO(formData.start_time), 'h:mm a')} - {format(parseISO(formData.end_time), 'h:mm a')}
+                  </span>
+                </div>
+              </div>
+
+              <div className="bg-gray-100 dark:bg-slate-900 rounded-lg p-4 border border-slate-200 dark:border-slate-700">
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-600 dark:text-slate-300 text-sm">Precio por hora:</span>
+                  <span className="font-semibold text-gray-800 dark:text-slate-100">${formatPrice(selectedCourt.price)}</span>
+                </div>
+                <div className="mt-4">
+                  <label className="block text-slate-600 dark:text-slate-300 text-xs font-bold mb-2 uppercase tracking-wider">
+                    Porcentaje a pagar ahora:
+                  </label>
+                  <div className="flex justify-between gap-2 mt-2">
+                    {[100, 50, 10].map((pct) => (
+                      <label key={pct} className={`flex-1 flex items-center justify-center p-2 rounded-lg border cursor-pointer transition-all ${
+                        paymentPercentage === pct 
+                        ? 'bg-emerald-500 border-emerald-500 text-white shadow-md' 
+                        : 'bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-600 dark:text-slate-400 hover:border-emerald-400'
+                      }`}>
+                        <input
+                          type="radio"
+                          className="hidden"
+                          name="paymentOption"
+                          value={pct}
+                          checked={paymentPercentage === pct}
+                          onChange={() => setPaymentPercentage(pct)}
+                        />
+                        <span className="text-sm font-bold">{pct}%</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex justify-between items-center mt-4 pt-4 border-t border-slate-300 dark:border-slate-600">
+                  <span className="text-slate-600 dark:text-slate-300 font-medium">Total a Pagar:</span>
+                  <span className="text-2xl font-bold text-emerald-500 dark:text-emerald-400">
+                    ${formatPrice(priceToPay)}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="p-6 border-t border-slate-200 dark:border-slate-700 flex gap-3">
+              <button
+                type="button"
+                onClick={() => setShowConfirmBooking(false)}
+                className="flex-1 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-gray-800 dark:text-white px-4 py-3 rounded-xl transition-colors font-semibold"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={confirmBookingAndMatch}
+                disabled={isBooking}
+                className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white px-4 py-3 rounded-xl transition-all shadow-lg disabled:opacity-50 font-semibold"
+              >
+                {isBooking ? "Procesando..." : "Confirmar"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Modal Separado para el Calendario - Más Amplio */}
       {showCalendar && selectedCourtId && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
@@ -300,9 +444,10 @@ const CreateMatchForm = ({ onClose, onMatchCreated, match }) => {
                   Selecciona Fecha y Hora
                 </h2>
                 <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">
-                  Elige un horario disponible para tu partido
+                  Elige un horario disponible para tu partidos
                 </p>
               </div>
+              
               <button
                 onClick={() => setShowCalendar(false)}
                 className="p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition"

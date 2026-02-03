@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useUseCases } from '../../context/UseCaseContext';
+import { useBookingsRealtime } from './useBookingsRealtime';
 
 /**
  * Hook personalizado para obtener la lista de reservas con paginación del lado del cliente.
@@ -96,6 +97,12 @@ export const useFetchBookings = ({
   useEffect(() => {
     fetchAllBookings();
   }, [fetchAllBookings]);
+
+  // Sincronización en tiempo real vía WebSocket
+  useBookingsRealtime(useCallback((event) => {
+    console.log('Real-time booking update:', event);
+    fetchAllBookings();
+  }, [fetchAllBookings]));
 
   // Calcular las reservas paginadas y el total de páginas basado en filteredBookings
   const paginatedBookings = useMemo(() => {

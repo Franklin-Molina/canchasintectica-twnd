@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useMatchesRealtime } from "./useMatchesRealtime";
+import { useBookingsRealtime } from "../bookings/useBookingsRealtime";
 import {
   getOpenMatches,
   getMyUpcomingMatches,
@@ -64,11 +65,18 @@ export const useMatches = () => {
     fetchAllData();
   };
 
-  // ✅ WS ACTUALIZA CUANDO HAY EVENTO
+  // ✅ WS ACTUALIZA CUANDO HAY EVENTO EN PARTIDOS
   useMatchesRealtime(
     useCallback((event) => {
       console.log("Real-time match event received:", event);
-      // Cualquier tipo de evento debería gatillar un refresco de datos
+      fetchAllData();
+    }, [fetchAllData])
+  );
+
+  // ✅ WS ACTUALIZA CUANDO HAY CAMBIOS EN RESERVAS
+  useBookingsRealtime(
+    useCallback((event) => {
+      console.log("Real-time booking event received:", event);
       fetchAllData();
     }, [fetchAllData])
   );

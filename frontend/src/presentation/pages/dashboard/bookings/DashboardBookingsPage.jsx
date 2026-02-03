@@ -19,8 +19,7 @@ function DashboardBookingsPage() {
     fetchAllBookings,
   } = useFetchBookings({ onlyActive: true, initialItemsPerPage: 10 });
 
-  // Usar el hook de auto-refresco.
-  const { timeSinceLastUpdate } = useAutoRefresh(fetchAllBookings, 10000, bookings);
+ 
 
   const getRowNumber = useCallback((index) => {
     return (currentPage - 1) * itemsPerPage + index + 1;
@@ -56,7 +55,7 @@ function DashboardBookingsPage() {
           <div>
             <div className="text-green-500 font-medium text-sm">Sistema Activo</div>
             <div className="text-xs text-gray-400">
-              Última actualización: {timeSinceLastUpdate}
+           
             </div>
           </div>
         </div>
