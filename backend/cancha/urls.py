@@ -49,6 +49,7 @@ urlpatterns = [
     path('api/payments/', include('payments.urls')),
     path('api/plans/', include('plans.urls')),
     path('api/matches/', include('matches.urls')),
+    path('api/chat/', include('chat.urls')),
     # URLs de django-allauth
     path('accounts/', include('allauth.urls')),
     # URL para obtener la cookie CSRF

@@ -1,12 +1,16 @@
 import React, { useState } from "react";
+import MatchChat from "./MatchChat";
+import { MessageCircle } from "lucide-react";
 
 const MatchCard = ({ match, onJoin, onCancel, onRemove, onEdit, onLeave, currentUser }) => {
   const [showParticipants, setShowParticipants] = useState(false);
+  const [showChat, setShowChat] = useState(false);
   const isCreator = currentUser?.id === match.creator.id;
+  // El creador también es un participante. isFull ya considera al creador.
   const isFull = match.participants.length >= match.players_needed + 1;
   
-  // Verificar si el usuario actual es participante del partido
-  const isParticipant = match.participants.some(
+  // Verificar si el usuario actual es participante del partido (incluyendo al creador)
+  const isParticipant = isCreator || match.participants.some(
     (p) => p.user.id === currentUser?.id
   );
 
@@ -141,9 +145,24 @@ const MatchCard = ({ match, onJoin, onCancel, onRemove, onEdit, onLeave, current
                 </button>
               </>
             )}
+
+            {/* Chat del partido - Solo visible si está lleno y el usuario es participante */}
+            {isFull && isParticipant && (
+              <button
+                onClick={() => setShowChat(!showChat)}
+                className={`px-4 py-2 rounded-lg text-white text-sm font-medium transition-all flex items-center gap-2 ${
+                  showChat ? "bg-indigo-700" : "bg-indigo-600 hover:bg-indigo-700"
+                }`}
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span>Chat del Grupo</span>
+              </button>
+            )}
           </>
         )}
       </div>
+
+      {showChat && <MatchChat matchId={match.id} onClose={() => setShowChat(false)} />}
     </div>
   );
 };

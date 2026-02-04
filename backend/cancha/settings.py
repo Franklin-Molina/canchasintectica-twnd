@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     "payments",
     "plans",
     "matches",
+    "chat",
     "django_filters",  # Añadir django_filters
     "channels",
 ]
