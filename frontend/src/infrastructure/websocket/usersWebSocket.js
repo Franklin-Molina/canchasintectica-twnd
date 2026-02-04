@@ -10,7 +10,8 @@ class UsersWebSocket {
   connect(token) {
     if (this.ws?.readyState === WebSocket.OPEN) return;
 
-    const host = window.location.hostname === 'localhost' ? 'localhost:8000' : window.location.host;
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+    const host = apiUrl.replace(/^https?:\/\//, '');
     const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const wsUrl = `${wsProtocol}//${host}/ws/users/?token=${token}`;
 

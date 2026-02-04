@@ -14,10 +14,9 @@ class MatchesWebSocket {
       return;
     }
 
-    // Construir URL del WebSocket
-    // Nota: Si el backend está en un puerto diferente (ej: 8000), 
-    // podrías necesitar ajustar esto. Usamos localhost:8000 por defecto para desarrollo.
-    const host = window.location.hostname === 'localhost' ? 'localhost:8000' : window.location.host;
+    // Construir URL del WebSocket dinámicamente usando la IP de red si está configurada
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+    const host = apiUrl.replace(/^https?:\/\//, '');
     const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const wsUrl = `${wsProtocol}//${host}/ws/matches/?token=${token}`;
 

@@ -24,7 +24,14 @@ class ChatWebSocket {
     const token = localStorage.getItem('accessToken');
     
     const wsBaseUrl = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsHost = 'localhost:8000'; 
+    
+    // Obtener el host del API desde las variables de entorno de Vite
+    // VITE_API_URL suele ser http://localhost:8000 o http://192.168.1.111:8000
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+    
+    // Extraer solo el host (dominio/ip + puerto) eliminando el protocolo
+    const wsHost = apiUrl.replace(/^https?:\/\//, '');
+    
     const wsUrl = `${wsBaseUrl}//${wsHost}/ws/chat/${matchId}/?token=${token}`;
 
     console.log(`Intentando conectar a WebSocket: ${wsUrl}`);
@@ -48,6 +55,12 @@ class ChatWebSocket {
     this.ws.onclose = (event) => {
       this.connecting = false;
       console.log(`🔌 Chat WebSocket desconectado del match ${matchId}. Código: ${event.code}`);
+      
+      // Reconectar automáticamente si no fue un cierre normal (1000) o cierre por token/invalidez
+      if (event.code !== 1000 && event.code < 4000) {
+        console.log('🔄 Intentando reconectar chat...');
+        setTimeout(() => this.connect(matchId), 3000);
+      }
     };
   }
 
