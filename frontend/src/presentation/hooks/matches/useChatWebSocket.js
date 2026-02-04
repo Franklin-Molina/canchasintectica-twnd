@@ -1,4 +1,5 @@
 import { useEffect, useCallback, useRef } from 'react';
+import { refreshToken } from '../../../infrastructure/api/api';
 
 class ChatWebSocket {
   constructor() {
@@ -8,7 +9,7 @@ class ChatWebSocket {
     this.connecting = false;
   }
 
-  connect(matchId) {
+  async connect(matchId) {
     if (this.connecting) return;
     
     if (this.ws && this.ws.readyState === WebSocket.OPEN && this.matchId === matchId) {
@@ -21,20 +22,21 @@ class ChatWebSocket {
 
     this.connecting = true;
     this.matchId = matchId;
-    const token = localStorage.getItem('accessToken');
     
+    // Validar y refrescar token antes de conectar
+    let token = localStorage.getItem('accessToken');
+    
+    // Intentamos refrescar siempre para asegurar token fresco al conectar WebSocket
+    // o podrías decodificar el JWT para ver si expiró. Por simplicidad, refrescamos.
+    const newToken = await refreshToken();
+    if (newToken) token = newToken;
+
     const wsBaseUrl = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    
-    // Obtener el host del API desde las variables de entorno de Vite
-    // VITE_API_URL suele ser http://localhost:8000 o http://192.168.1.111:8000
     const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-    
-    // Extraer solo el host (dominio/ip + puerto) eliminando el protocolo
     const wsHost = apiUrl.replace(/^https?:\/\//, '');
-    
     const wsUrl = `${wsBaseUrl}//${wsHost}/ws/chat/${matchId}/?token=${token}`;
 
-    console.log(`Intentando conectar a WebSocket: ${wsUrl}`);
+    //console.log(`Intentando conectar a WebSocket: ${wsUrl}`);
     this.ws = new WebSocket(wsUrl);
 
     this.ws.onopen = () => {
@@ -56,7 +58,6 @@ class ChatWebSocket {
       this.connecting = false;
       console.log(`🔌 Chat WebSocket desconectado del match ${matchId}. Código: ${event.code}`);
       
-      // Reconectar automáticamente si no fue un cierre normal (1000) o cierre por token/invalidez
       if (event.code !== 1000 && event.code < 4000) {
         console.log('🔄 Intentando reconectar chat...');
         setTimeout(() => this.connect(matchId), 3000);

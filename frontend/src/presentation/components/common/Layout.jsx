@@ -20,8 +20,7 @@ function Layout({ children }) {
   };
 
   // Función para cerrar el modal de autenticación
-  const closeAuthModal = () => {
-    console.log('Cerrando modal de autenticación');
+  const closeAuthModal = () => {   
     setShowAuthModal(false);
   };
 

@@ -14,12 +14,28 @@ const api = axios.create({
   withCredentials: true, // Importante para enviar cookies a través de dominios/puertos
 });
 
+// Función auxiliar para refrescar el token
+export const refreshToken = async () => {
+  const refresh = localStorage.getItem('refreshToken');
+  if (!refresh) return null;
+  
+  try {
+    const response = await axios.post(`${API_BASE_URL}/api/users/login/refresh/`, { refresh });
+    const { access } = response.data;
+    localStorage.setItem('accessToken', access);
+    return access;
+  } catch (error) {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    return null;
+  }
+};
+
 api.interceptors.request.use(
   (config) => {
-    const accessToken = localStorage.getItem('accessToken'); // Asumiendo que el token se guarda en localStorage
+    const accessToken = localStorage.getItem('accessToken'); 
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
-     // console.log("Enviando token en header Authorization:", accessToken);
     }
     return config;
   },
@@ -37,44 +53,15 @@ api.interceptors.response.use(
 
     // Verificar si es un error 401 y no es una solicitud de refresh token
     if (error.response && error.response.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true; // Marcar para evitar bucles de reintento
+      originalRequest._retry = true; 
 
-      try {
-        const refreshToken = localStorage.getItem('refreshToken');
-        if (!refreshToken) {
-          // No hay refreshToken, no se puede refrescar, desloguear o redirigir
-          console.error('No refresh token available for token refresh.');
-          // Aquí se podría llamar a una función de logout del AuthContext si estuviera disponible
-          // o emitir un evento para que AuthContext maneje el logout.
-          localStorage.removeItem('accessToken');
-          localStorage.removeItem('refreshToken');
-          // Podríamos redirigir al login aquí, pero es mejor que lo maneje el componente/contexto que usa la API.
-          return Promise.reject(error);
-        }
-
-        // Solicitar un nuevo accessToken usando el refreshToken
-        const response = await axios.post(`${API_BASE_URL}/api/users/login/refresh/`, {
-          refresh: refreshToken,
-        });
-
-        const newAccessToken = response.data.access;
-        localStorage.setItem('accessToken', newAccessToken);
-
-        // Actualizar el encabezado de autorización de la solicitud original y reintentarla
+      const newAccessToken = await refreshToken();
+      if (newAccessToken) {
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-        return api(originalRequest); // Reintentar la solicitud original con el nuevo token
-
-      } catch (refreshError) {
-      //  console.error('Error refreshing token:', refreshError);
-        // Si el refresh falla (ej. refreshToken expirado), desloguear o redirigir
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        // Aquí también se podría llamar a una función de logout o emitir un evento.
-        return Promise.reject(refreshError); // O el error original, dependiendo de la política
+        return api(originalRequest);
       }
     }
 
-    // Si no es un error 401 o ya se intentó refrescar, rechazar la promesa
     return Promise.reject(error);
   }
 );
