@@ -29,7 +29,7 @@ export const useHomePageLogic = () => {
         setAllCourts(courtsList);
       } catch (err) {
         setError(err);
-        console.error('Error al obtener canchas:', err);
+       //console.error('Error al obtener canchas:', err);
       } finally {
         setLoading(false);
       }

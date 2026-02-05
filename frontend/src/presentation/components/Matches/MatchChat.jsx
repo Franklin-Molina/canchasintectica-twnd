@@ -13,6 +13,17 @@ const MatchChat = ({ matchId, onClose }) => {
   const messagesEndRef = useRef(null);
   const typingTimeoutRef = useRef(null);
 
+  // Helper para formatear la hora
+  const formatTime = (dateString) => {
+    if (!dateString) return '';
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    } catch (e) {
+      return '';
+    }
+  };
+
   // Cargar mensajes históricos
   useEffect(() => {
     const loadHistory = async () => {
@@ -114,11 +125,16 @@ const MatchChat = ({ matchId, onClose }) => {
             const isOwn = msg.username === user?.username;
             return (
               <div key={msg.id || index} className={`flex flex-col ${isOwn ? 'items-end' : 'items-start'}`}>
-                {!isOwn && (
-                  <span className="text-[10px] text-slate-500 dark:text-slate-400 ml-1 mb-1 font-medium">
-                    {msg.username}
+                <div className="flex items-center gap-2 mb-1">
+                  {!isOwn && (
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium ml-1">
+                      {msg.username}
+                    </span>
+                  )}
+                  <span className="text-[9px] text-slate-400 dark:text-slate-500">
+                    {formatTime(msg.created_at)}
                   </span>
-                )}
+                </div>
                 <div className={`max-w-[85%] px-4 py-2 text-sm shadow-sm dark:shadow-lg transition-all ${
                   isOwn 
                     ? 'bg-emerald-600 dark:bg-gradient-to-br dark:from-emerald-700 dark:to-emerald-900 text-white rounded-[20px] rounded-tr-none border border-emerald-500/20' 
