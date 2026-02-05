@@ -9,7 +9,9 @@ const MatchChat = ({ matchId, onClose }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [error, setError] = useState(null);
+  const [typingUsers, setTypingUsers] = useState({});
   const messagesEndRef = useRef(null);
+  const typingTimeoutRef = useRef(null);
 
   // Cargar mensajes históricos
   useEffect(() => {
@@ -35,17 +37,28 @@ const MatchChat = ({ matchId, onClose }) => {
         user_id: data.user_id,
         created_at: data.created_at
       }]);
+      // Si recibimos un mensaje, dejamos de mostrar que está escribiendo
+      setTypingUsers(prev => {
+        const newTyping = { ...prev };
+        delete newTyping[data.username];
+        return newTyping;
+      });
+    } else if (data.type === 'typing') {
+      setTypingUsers(prev => ({
+        ...prev,
+        [data.username]: data.is_typing
+      }));
     } else if (data.type === 'error') {
       setError(data.message);
     }
   }, []);
 
-  const { sendMessage } = useChatWebSocket(matchId, handleIncomingMessage);
+  const { sendMessage, sendTyping } = useChatWebSocket(matchId, handleIncomingMessage);
 
   // Auto-scroll al final
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [messages, typingUsers]);
 
   const handleSend = (e) => {
     e.preventDefault();
@@ -53,7 +66,26 @@ const MatchChat = ({ matchId, onClose }) => {
 
     sendMessage(newMessage);
     setNewMessage('');
+    sendTyping(false);
   };
+
+  const handleInputChange = (e) => {
+    setNewMessage(e.target.value);
+    
+    // Notificar que está escribiendo
+    sendTyping(true);
+
+    // Timeout para limpiar el estado de escritura si deja de escribir
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    typingTimeoutRef.current = setTimeout(() => {
+      sendTyping(false);
+    }, 2000);
+  };
+
+  // Obtener lista de usuarios escribiendo (excluyendo valores falsos)
+  const usersTyping = Object.entries(typingUsers)
+    .filter(([_, isTyping]) => isTyping)
+    .map(([username]) => username);
 
   return (
     <div className="fixed bottom-4 right-4 w-80 h-[450px] bg-white dark:bg-[#1a2332] rounded-2xl shadow-2xl border border-slate-200 dark:border-emerald-500/30 flex flex-col z-50 overflow-hidden backdrop-blur-sm transition-colors duration-300">
@@ -98,6 +130,21 @@ const MatchChat = ({ matchId, onClose }) => {
             );
           })
         )}
+        
+        {/* Indicador de escritura */}
+        {usersTyping.length > 0 && (
+          <div className="flex flex-col items-start animate-pulse">
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 ml-1 mb-1 font-medium">
+              {usersTyping.join(', ')}
+            </span>
+            <div className="bg-slate-200 dark:bg-[#2a374a] px-4 py-2 rounded-[20px] rounded-tl-none border border-slate-300 dark:border-slate-700/50 flex gap-1">
+              <span className="w-1 h-1 bg-slate-500 dark:bg-slate-400 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+              <span className="w-1 h-1 bg-slate-500 dark:bg-slate-400 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+              <span className="w-1 h-1 bg-slate-500 dark:bg-slate-400 rounded-full animate-bounce"></span>
+            </div>
+          </div>
+        )}
+        
         <div ref={messagesEndRef} />
       </div>
 
@@ -107,7 +154,7 @@ const MatchChat = ({ matchId, onClose }) => {
           <input
             type="text"
             value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
+            onChange={handleInputChange}
             disabled={!!error}
             placeholder={error ? "Chat cerrado" : "Escribe..."}
             className="flex-1 bg-transparent text-sm text-slate-900 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none py-1 disabled:cursor-not-allowed"

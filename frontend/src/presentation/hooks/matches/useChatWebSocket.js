@@ -46,10 +46,10 @@ class ChatWebSocket {
 
     this.ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      this.listeners.forEach(callback => callback(data));
-    };
+    this.listeners.forEach(callback => callback(data));
+  };
 
-    this.ws.onerror = (error) => {
+  this.ws.onerror = (error) => {
       this.connecting = false;
       console.error('❌ Error Chat WebSocket:', error);
     };
@@ -68,6 +68,12 @@ class ChatWebSocket {
   sendMessage(message) {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify({ message }));
+    }
+  }
+
+  sendTyping(isTyping) {
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+      this.ws.send(JSON.stringify({ type: 'typing', is_typing: isTyping }));
     }
   }
 
@@ -105,5 +111,9 @@ export const useChatWebSocket = (matchId, onMessage) => {
     chatWebSocket.sendMessage(message);
   }, []);
 
-  return { sendMessage };
+  const sendTyping = useCallback((isTyping) => {
+    chatWebSocket.sendTyping(isTyping);
+  }, []);
+
+  return { sendMessage, sendTyping };
 };
