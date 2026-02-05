@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import MatchChat from "./MatchChat";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, LogOut } from "lucide-react";
 
 const MatchCard = ({ match, onJoin, onCancel, onRemove, onEdit, onLeave, currentUser }) => {
   const [showParticipants, setShowParticipants] = useState(false);
@@ -87,28 +87,30 @@ const MatchCard = ({ match, onJoin, onCancel, onRemove, onEdit, onLeave, current
       </div>
 
       {/* Acciones */}
-      <div className="mt-4 flex flex-wrap gap-2">
+      <div className="mt-4 flex flex-col gap-2">
         {match.status === "CANCELLED" ? (
-          <div className="px-4 py-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg text-sm font-medium">
+          <div className="w-full px-4 py-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg text-sm font-medium text-center">
             ❌ Partido Cancelado
           </div>
         ) : (
-          <>
+          <div className="grid grid-cols-1 gap-2">
             {/* Botones para usuarios no creadores */}
             {!isCreator && (
               <>
                 {isParticipant ? (
                   <button
                     onClick={() => onLeave(match.id)}
-                    className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg text-sm font-medium transition-all flex items-center gap-2"
+                    className="w-full px-4 py-2 bg-transparent border border-red-500 text-red-500 
+                              hover:bg-red-500 hover:text-white rounded-lg text-sm 
+                              font-medium transition-all flex items-center justify-center gap-2"
                   >
-                    <span>🚪</span> Salir del Partido
+                    <LogOut className="w-4 h-4" /> Salir del partido
                   </button>
                 ) : (
                   <button
                     onClick={() => onJoin(match.id)}
                     disabled={isFull}
-                    className={`px-4 py-2 rounded-lg text-white text-sm font-medium transition-all flex items-center gap-2 ${
+                    className={`w-full px-4 py-2 rounded-lg text-white text-sm font-medium transition-all flex items-center justify-center gap-2 ${
                       isFull
                         ? "bg-gray-400 cursor-not-allowed"
                         : "bg-green-600 hover:bg-green-700"
@@ -130,27 +132,27 @@ const MatchCard = ({ match, onJoin, onCancel, onRemove, onEdit, onLeave, current
 
             {/* Botones para el creador */}
             {isCreator && (
-              <>
+              <div className="grid grid-cols-2 gap-2 w-full">
                 <button
                   onClick={() => onEdit(match)}
-                  className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg text-sm font-medium transition-all flex items-center gap-2"
+                  className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2"
                 >
                   <span>✏️</span> Editar
                 </button>
                 <button
                   onClick={() => onCancel(match.id)}
-                  className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-all flex items-center gap-2"
+                  className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2"
                 >
-                  <span>❌</span> Cancelar Partido
+                  <span>❌</span> Cancelar
                 </button>
-              </>
+              </div>
             )}
 
             {/* Chat del partido - Solo visible si está lleno y el usuario es participante */}
             {isFull && isParticipant && (
               <button
                 onClick={() => setShowChat(!showChat)}
-                className={`px-4 py-2 rounded-lg text-white text-sm font-medium transition-all flex items-center gap-2 ${
+                className={`w-full px-4 py-2 rounded-lg text-white text-sm font-medium transition-all flex items-center justify-center gap-2 ${
                   showChat ? "bg-indigo-700" : "bg-indigo-600 hover:bg-indigo-700"
                 }`}
               >
@@ -158,7 +160,7 @@ const MatchCard = ({ match, onJoin, onCancel, onRemove, onEdit, onLeave, current
                 <span>Chat del Grupo</span>
               </button>
             )}
-          </>
+          </div>
         )}
       </div>
 

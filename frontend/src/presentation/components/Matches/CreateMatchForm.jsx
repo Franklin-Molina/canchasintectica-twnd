@@ -138,9 +138,9 @@ const CreateMatchForm = ({ onClose, onMatchCreated, match }) => {
     const newSelectedSlot = { date, hour };
     setSelectedSlot(newSelectedSlot);
 
-    console.log("Slot seleccionado:", newSelectedSlot);
-    console.log("Índice para hoursOfDay:", hour - 6);
-    console.log("Valor de hoursOfDay en el índice:", hoursOfDay[hour - 6]);
+    //console.log("Slot seleccionado:", newSelectedSlot);
+    //console.log("Índice para hoursOfDay:", hour - 6);
+    //console.log("Valor de hoursOfDay en el índice:", hoursOfDay[hour - 6]);
 
     // Construir las fechas y horas de inicio y fin
     let startTime = setHours(parseISO(date), hour);
@@ -200,11 +200,11 @@ const CreateMatchForm = ({ onClose, onMatchCreated, match }) => {
         status: 'confirmed' // Lo marcamos como confirmado
       };
       
-      console.log("Intentando crear reserva con datos:", bookingData);
+     // console.log("Intentando crear reserva con datos:", bookingData);
       
       // Corregir endpoint de reserva (de acuerdo a ApiBookingRepository)
       const bookingResponse = await api.post('/api/bookings/bookings/', bookingData);
-      console.log("Respuesta de reserva:", bookingResponse.data);
+      // console.log("Respuesta de reserva:", bookingResponse.data);
       
       toast.info("Cancha reservada con éxito.");
 

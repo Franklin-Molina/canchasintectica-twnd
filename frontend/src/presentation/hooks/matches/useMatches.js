@@ -76,7 +76,7 @@ export const useMatches = () => {
   // ✅ WS ACTUALIZA CUANDO HAY CAMBIOS EN RESERVAS
   useBookingsRealtime(
     useCallback((event) => {
-      console.log("Real-time booking event received:", event);
+     // console.log("Real-time booking event received:", event);
       fetchAllData();
     }, [fetchAllData])
   );
