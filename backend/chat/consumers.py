@@ -54,7 +54,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             )
 
             await self.accept()
-            print(f"✅ User {self.user.username} connected to chat {self.match_id}")
+           # print(f"✅ User {self.user.username} connected to chat {self.match_id}")
 
         except (InvalidToken, TokenError) as e:
             print(f"❌ Invalid token error: {e}")
@@ -69,7 +69,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 self.room_group_name,
                 self.channel_name
             )
-        print(f"🔌 User disconnected from chat {self.match_id}. Code: {close_code}")
+       # print(f"🔌 User disconnected from chat {self.match_id}. Code: {close_code}")
 
     async def receive(self, text_data):
         try:

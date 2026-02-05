@@ -49,10 +49,16 @@ api.interceptors.response.use(
     return response;
   },
   async (error) => {
+    // CASO 1: El servidor está apagado o no hay internet
+    if (!error.response) {
+      console.warn("⚠️ Error de red o servidor caído. NO desloguear.");
+      return Promise.reject(error);
+    }
+
     const originalRequest = error.config;
 
     // Verificar si es un error 401 y no es una solicitud de refresh token
-    if (error.response && error.response.status === 401 && !originalRequest._retry) {
+    if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true; 
 
       const newAccessToken = await refreshToken();

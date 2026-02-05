@@ -25,6 +25,13 @@ class ChatWebSocket {
     
     // Validar y refrescar token antes de conectar
     let token = localStorage.getItem('accessToken');
+
+    // Si no hay token, no intentar conectar
+    if (!token || token === 'null' || token === 'undefined') {
+     // console.warn("⛔ No hay token disponible. Deteniendo intento de conexión WS.");
+      this.connecting = false;
+      return;
+    }
     
     // Intentamos refrescar siempre para asegurar token fresco al conectar WebSocket
     // o podrías decodificar el JWT para ver si expiró. Por simplicidad, refrescamos.
@@ -56,10 +63,10 @@ class ChatWebSocket {
 
     this.ws.onclose = (event) => {
       this.connecting = false;
-      console.log(`🔌 Chat WebSocket desconectado del match ${matchId}. Código: ${event.code}`);
+     // console.log(`🔌 Chat WebSocket desconectado del match ${matchId}. Código: ${event.code}`);
       
       if (event.code !== 1000 && event.code < 4000) {
-        console.log('🔄 Intentando reconectar chat...');
+       // console.log('🔄 Intentando reconectar chat...');
         setTimeout(() => this.connect(matchId), 3000);
       }
     };

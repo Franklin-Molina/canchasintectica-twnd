@@ -92,7 +92,7 @@ class MatchesWebSocket {
     if (this.ws?.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(data));
     } else {
-      console.warn('WebSocket is not connected. Cannot send message.');
+     // console.warn('WebSocket is not connected. Cannot send message.');
     }
   }
 }
