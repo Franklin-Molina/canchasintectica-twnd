@@ -1,122 +1,137 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useAuth } from '../../context/AuthContext';
-import { useChatWebSocket } from '../../hooks/matches/useChatWebSocket';
-import { getChatMessages } from '../../../infrastructure/api/chatService';
-import { Send, X, MessageSquare } from 'lucide-react';
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useAuth } from "../../context/AuthContext";
+import { useChatWebSocket } from "../../hooks/matches/useChatWebSocket";
+import { getChatMessages } from "../../../infrastructure/api/chatService";
+import { Send, X, MessageSquare } from "lucide-react";
 
 const MatchChat = ({ matchId, onClose }) => {
   const { user } = useAuth();
   const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState('');
+  const [newMessage, setNewMessage] = useState("");
   const [error, setError] = useState(null);
   const messagesEndRef = useRef(null);
 
-  // Cargar mensajes históricos
   useEffect(() => {
     const loadHistory = async () => {
       try {
         const history = await getChatMessages(matchId);
         setMessages(history);
-      } catch (err) {
-        console.error('Error cargando historial de chat:', err);
-        setError('No se pudo cargar el historial.');
+      } catch {
+        setError("No se pudo cargar el historial");
       }
     };
     if (matchId) loadHistory();
   }, [matchId]);
 
-  // Manejar mensajes entrantes por WebSocket
   const handleIncomingMessage = useCallback((data) => {
-    if (data.type === 'chat_message') {
-      setMessages(prev => [...prev, {
-        id: data.id,
-        message: data.message,
-        username: data.username,
-        user_id: data.user_id,
-        created_at: data.created_at
-      }]);
-    } else if (data.type === 'error') {
+    if (data.type === "chat_message") {
+      setMessages((prev) => [...prev, data]);
+    }
+    if (data.type === "error") {
       setError(data.message);
     }
   }, []);
 
   const { sendMessage } = useChatWebSocket(matchId, handleIncomingMessage);
 
-  // Auto-scroll al final
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const handleSend = (e) => {
     e.preventDefault();
     if (!newMessage.trim() || error) return;
-
     sendMessage(newMessage);
-    setNewMessage('');
+    setNewMessage("");
   };
 
   return (
-    <div className="fixed bottom-4 right-4 w-80 h-96 bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 flex flex-col z-50 overflow-hidden">
+    <div className="fixed bottom-4 right-4 w-80 h-[450px] z-50 flex flex-col rounded-2xl overflow-hidden
+      bg-white dark:bg-slate-900
+      border border-slate-200 dark:border-emerald-500/30
+      shadow-xl">
+
       {/* Header */}
-      <div className="p-3 bg-blue-600 text-white flex justify-between items-center">
+      <div className="flex items-center justify-between px-4 py-3
+        bg-emerald-600 dark:bg-emerald-700 text-white">
         <div className="flex items-center gap-2">
-          <MessageSquare className="w-4 h-4" />
-          <h3 className="font-semibold text-sm">Chat del Partido</h3>
+          <MessageSquare className="w-5 h-5" />
+          <h3 className="text-sm font-semibold">Chat del Partido</h3>
         </div>
-        <button onClick={onClose} className="hover:bg-blue-700 rounded-full p-1 transition">
+        <button onClick={onClose} className="hover:bg-white/10 p-1 rounded-full">
           <X className="w-4 h-4" />
         </button>
       </div>
 
-      {/* Mensajes */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-2 bg-slate-50 dark:bg-slate-800/50">
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-3
+                      bg-slate-50 dark:bg-slate-900
+                      
+                      scrollbar-thin
+                      scrollbar-thumb-transparent
+                      scrollbar-track-transparent
+
+                      hover:scrollbar-thumb-slate-300
+                      dark:hover:scrollbar-thumb-slate-600
+
+                      transition-colors">
+
         {error ? (
-          <div className="text-center p-4">
-            <p className="text-xs text-red-500">{error}</p>
-          </div>
+          <p className="text-center text-xs text-red-500">{error}</p>
         ) : (
-          messages.map((msg, index) => {
+          messages.map((msg, i) => {
             const isOwn = msg.username === user?.username;
             return (
-              <div key={msg.id || index} className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[85%]`}>
-                  {!isOwn && (
-                    <span className="text-[10px] text-slate-500 ml-1 mb-1 block">
-                      {msg.username}
-                    </span>
-                  )}
-                  <div className={`px-3 py-1.5 rounded-2xl text-xs ${
-                    isOwn 
-                      ? 'bg-blue-600 text-white rounded-tr-none' 
-                      : 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-600 rounded-tl-none'
+              <div
+                key={msg.id || i}
+                className={`flex flex-col ${isOwn ? "items-end" : "items-start"}`}
+              >
+                {!isOwn && (
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 mb-1">
+                    {msg.username}
+                  </span>
+                )}
+
+                <div className={`px-3 py-2 text-sm max-w-[80%] rounded-2xl
+                  ${isOwn
+                    ? "bg-emerald-600 text-white rounded-tr-none"
+                    : "bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-100 rounded-tl-none"
                   }`}>
-                    {msg.message}
-                  </div>
+                  {msg.message}
                 </div>
               </div>
             );
           })
         )}
+
         <div ref={messagesEndRef} />
       </div>
+      
 
       {/* Input */}
-      <form onSubmit={handleSend} className="p-2 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
-        <div className="flex gap-1">
+      <form
+        onSubmit={handleSend}
+        className="p-3 border-t border-slate-200 dark:border-slate-700
+          bg-white dark:bg-slate-900">
+        <div className="flex items-center gap-2 rounded-xl px-3 py-2
+          bg-slate-100 dark:bg-slate-800
+          focus-within:ring-1 focus-within:ring-emerald-500">
+
           <input
-            type="text"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             disabled={!!error}
             placeholder={error ? "Chat cerrado" : "Escribe..."}
-            className="flex-1 px-3 py-1.5 text-xs rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-1 focus:ring-blue-500 outline-none disabled:bg-slate-100 dark:disabled:bg-slate-900"
+            className="flex-1 bg-transparent text-sm outline-none
+              text-slate-900 dark:text-slate-100
+              placeholder:text-slate-400"
           />
+
           <button
             type="submit"
             disabled={!!error}
-            className="p-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition disabled:bg-slate-400"
-          >
-            <Send className="w-4 h-4" />
+            className="text-emerald-600 dark:text-emerald-400 hover:opacity-80">
+            <Send className="w-4 h-4 rotate-45" />
           </button>
         </div>
       </form>

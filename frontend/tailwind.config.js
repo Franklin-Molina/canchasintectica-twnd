@@ -12,7 +12,7 @@ module.exports = {
           '50%': { transform: 'translateY(-6px)' },
         },
         glow: {
-          '0%, 100%': { boxShadow: '0 0 10px rgba(99,102,241,0.4)' },
+          '0%, 100%': { boxShadow: '0 0 10px rgba(241, 99, 205, 0.4)' },
           '50%': { boxShadow: '0 0 25px rgba(99,102,241,0.7)' },
         },
       },
@@ -22,5 +22,7 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('tailwind-scrollbar'),
+  ],
 };
