@@ -25,7 +25,7 @@ const useButtonDisable = (action) => {
       }
       await action(event); // Ejecutar la acción original
     } catch (error) {
-      console.error("Error en la acción del botón:", error);
+     // console.error("Error en la acción del botón:", error);
       // Opcional: re-habilitar el botón si la acción falla y se desea permitir reintentos
       // setIsDisabled(false);
     } finally {

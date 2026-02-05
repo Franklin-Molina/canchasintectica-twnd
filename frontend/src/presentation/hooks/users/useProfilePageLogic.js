@@ -5,7 +5,7 @@ import { UpdateUserProfileUseCase } from '../../../application/use-cases/users/u
 import { ChangePasswordUseCase } from '../../../application/use-cases/users/change-password.js';
 import useButtonDisable from '../general/useButtonDisable.js';
 import { useEffect } from 'react'; // Importar useEffect
-
+import { toast } from 'react-toastify'; // Importar toast para notificaciones
 /**
  * Hook personalizado para la lógica de la página de perfil del usuario.
  * Encapsula la gestión de la edición del perfil y el cambio de contraseña.
@@ -108,8 +108,8 @@ export const useProfilePageLogic = () => {
       };
 
       const updatedUser = await updateUserProfileUseCase.execute(user.id, userData);
-      console.log('Perfil actualizado exitosamente:', updatedUser);
-      setSuccess('Perfil actualizado exitosamente.');
+     // console.log('Perfil actualizado exitosamente:', updatedUser);
+      toast.success('Perfil actualizado exitosamente.');
       updateUser(updatedUser);
       setHasChanges(false); // Resetear al guardar
       setTimeout(() => {
