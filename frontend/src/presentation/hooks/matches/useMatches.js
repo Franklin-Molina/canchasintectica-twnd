@@ -68,7 +68,7 @@ export const useMatches = () => {
   // ✅ WS ACTUALIZA CUANDO HAY EVENTO EN PARTIDOS
   useMatchesRealtime(
     useCallback((event) => {
-      console.log("Real-time match event received:", event);
+      //console.log("Real-time match event received:", event);
       fetchAllData();
     }, [fetchAllData])
   );

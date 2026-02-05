@@ -41,7 +41,7 @@ class ChatWebSocket {
 
     this.ws.onopen = () => {
       this.connecting = false;
-      console.log(`✅ Chat WebSocket conectado al match ${matchId}`);
+    //  console.log(`✅ Chat WebSocket conectado al match ${matchId}`);
     };
 
     this.ws.onmessage = (event) => {

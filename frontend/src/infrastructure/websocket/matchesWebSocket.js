@@ -10,7 +10,7 @@ class MatchesWebSocket {
 
   connect(token) {
     if (this.ws?.readyState === WebSocket.OPEN) {
-      console.log('WebSocket already connected');
+     // console.log('WebSocket already connected');
       return;
     }
 
@@ -24,14 +24,14 @@ class MatchesWebSocket {
       this.ws = new WebSocket(wsUrl);
 
       this.ws.onopen = () => {
-        console.log('✅ WebSocket connected to matches');
+       // console.log('✅ WebSocket connected to matches');
         this.reconnectAttempts = 0;
       };
 
       this.ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
-          console.log('📨 WebSocket message received:', data);
+         // console.log('📨 WebSocket message received:', data);
           
           // Notificar a todos los listeners
           this.listeners.forEach(callback => callback(data));
