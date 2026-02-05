@@ -27,7 +27,7 @@ class UserConsumer(AsyncWebsocketConsumer):
             )
 
             await self.accept()
-            print(f"✅ Users WebSocket connected: {self.channel_name}")
+         #   print(f"✅ Users WebSocket connected: {self.channel_name}")
             
         except (InvalidToken, TokenError) as e:
             print(f"❌ Users WebSocket invalid token: {e}")

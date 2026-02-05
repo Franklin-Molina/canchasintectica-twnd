@@ -126,7 +126,6 @@ const useRegisterForm = (userRole = 'cliente') => {
     // Si hay algún error, detener el envío
     if (usernameErr || firstNameErr || lastNameErr || ageErr || emailErr || passwordErr || confirmPasswordErr) {
       setLoading(false);
-      setError('Por favor, corrige los errores en el formulario.');
       return;
     }
 
@@ -174,33 +173,36 @@ const useRegisterForm = (userRole = 'cliente') => {
         }, 3000);
       }
     } catch (error) {
-      console.error('Error en el registro:', error);
+     // console.error('Error en el registrox1:', error);
       if (error.response && error.response.data) {
         const backendErrors = error.response.data;
-        let errorMessage = 'Error en el registro:';
-        const fieldMap = {
-          username: 'usuario',
-          email: 'correo electrónico',
-          password: 'contraseña',
-          password2: 'confirmación de contraseña',
-          first_name: 'nombre',
-          last_name: 'apellido',
-          fecha_nacimiento: 'fecha de nacimiento',
-        };
-
-        const errorMessages = [];
-        for (const field in backendErrors) {
-          if (backendErrors.hasOwnProperty(field)) {
-            const friendlyFieldName = fieldMap[field] || field;
-            const errorValue = backendErrors[field];
-            // Verificar si el error es un array antes de usar .join()
-            const message = Array.isArray(errorValue) ? errorValue.join(', ') : errorValue;
-            errorMessages.push(`${friendlyFieldName}: ${message}`);
-          }
+        
+        // Mapear errores de backend a estados de error específicos
+        if (backendErrors.username) {
+          setUsernameError(Array.isArray(backendErrors.username) ? backendErrors.username[0] : backendErrors.username);
         }
-        const fullErrorMessage = `${errorMessage}\n${errorMessages.join('\n')}`;
-        setError(fullErrorMessage);
-        toast.error(fullErrorMessage); // Mostrar toast de error
+        if (backendErrors.email) {
+          setEmailError(Array.isArray(backendErrors.email) ? backendErrors.email[0] : backendErrors.email);
+        }
+        if (backendErrors.password) {
+          setPasswordError(Array.isArray(backendErrors.password) ? backendErrors.password[0] : backendErrors.password);
+        }
+        if (backendErrors.password2) {
+          setConfirmPasswordError(Array.isArray(backendErrors.password2) ? backendErrors.password2[0] : backendErrors.password2);
+        }
+        if (backendErrors.first_name) {
+          setFirstNameError(Array.isArray(backendErrors.first_name) ? backendErrors.first_name[0] : backendErrors.first_name);
+        }
+        if (backendErrors.last_name) {
+          setLastNameError(Array.isArray(backendErrors.last_name) ? backendErrors.last_name[0] : backendErrors.last_name);
+        }
+        if (backendErrors.fecha_nacimiento) {
+          setAgeError(Array.isArray(backendErrors.fecha_nacimiento) ? backendErrors.fecha_nacimiento[0] : backendErrors.fecha_nacimiento);
+        }
+
+       
+         toast.error('Corrige los errores indicados en cada campo.'); 
+        // setError('Hubo errores en el registro. Por favor, revisa los campos.');
       } else {
         setError('Error en el registro. Por favor, inténtalo de nuevo.');
         toast.error('Error en el registro. Por favor, inténtalo de nuevo.'); // Mostrar toast de error genérico

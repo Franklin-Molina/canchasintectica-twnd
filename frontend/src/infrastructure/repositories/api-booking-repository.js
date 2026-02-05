@@ -21,7 +21,7 @@ export class ApiBookingRepository extends BookingRepository {
             const response = await api.post('/api/bookings/bookings/', bookingData);
             return response.data;
         } catch (error) {
-            console.error("Error en ApiBookingRepository al crear reserva:", error);
+          //  console.error("Error en ApiBookingRepository al crear reserva:", error);
             // Propagar el error para que el caso de uso lo maneje
             throw error;
         }

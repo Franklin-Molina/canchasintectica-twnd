@@ -31,10 +31,10 @@ class BookingConsumer(AsyncWebsocketConsumer):
             )
 
             await self.accept()
-            print(f"✅ Booking WebSocket connected: {self.channel_name}")
+          #  print(f"✅ Booking WebSocket connected: {self.channel_name}")
             
         except (InvalidToken, TokenError) as e:
-            print(f"❌ Booking WebSocket invalid token: {e}")
+           # print(f"❌ Booking WebSocket invalid token: {e}")
             await self.close()
 
     async def disconnect(self, close_code):
@@ -43,7 +43,7 @@ class BookingConsumer(AsyncWebsocketConsumer):
                 self.room_group_name,
                 self.channel_name
             )
-        print(f"🔌 Booking WebSocket disconnected: {self.channel_name}")
+      #  print(f"🔌 Booking WebSocket disconnected: {self.channel_name}")
 
     async def booking_created(self, event):
         await self.send(text_data=json.dumps({

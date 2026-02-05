@@ -43,10 +43,17 @@ function RegisterForm({ userRole = 'cliente' }) {
                 <div className={`${isClientRegistration ? 'bg-white dark:bg-gray-800 rounded-2xl shadow-xl' : ''} p-8 mb-6`}>
                     <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-6">{isClientRegistration ? 'Registro de Usuario' : 'Registro de Administrador'}</h2>
 
-                    {(error || success) && (
-                        <div className={`flex items-start gap-3 p-4 rounded-lg mb-6 ${error ? 'bg-red-50 border border-red-200 dark:bg-red-900/20 dark:border-red-500/30' : 'bg-green-50 border border-green-200 dark:bg-green-900/20 dark:border-green-500/30'}`}>
-                            {error ? <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" /> : <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />}
-                            <p className={`text-sm ${error ? 'text-red-800 dark:text-red-300' : 'text-green-800 dark:text-green-300'}`}>{error || success}</p>
+                    {success && (
+                        <div className="flex items-start gap-3 p-4 rounded-lg mb-6 bg-green-50 border border-green-200 dark:bg-green-900/20 dark:border-green-500/30">
+                            <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                            <p className="text-sm text-green-800 dark:text-green-300">{success}</p>
+                        </div>
+                    )}
+
+                    {error && !usernameError && !emailError && !firstNameError && !lastNameError && !ageError && !passwordError && !confirmPasswordError && (
+                        <div className="flex items-start gap-3 p-4 rounded-lg mb-6 bg-red-50 border border-red-200 dark:bg-red-900/20 dark:border-red-500/30">
+                            <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+                            <p className="text-sm text-red-800 dark:text-red-300">{error}</p>
                         </div>
                     )}
 

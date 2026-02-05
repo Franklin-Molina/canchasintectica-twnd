@@ -10,7 +10,7 @@ export const useBookingsRealtime = (onUpdate) => {
     const token = localStorage.getItem('accessToken') || localStorage.getItem('token') || localStorage.getItem('access_token');
     
     if (!token) {
-      console.warn('No token found for Bookings WebSocket');
+    //  console.warn('No token found for Bookings WebSocket');
       return;
     }
 

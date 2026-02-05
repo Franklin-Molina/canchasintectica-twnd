@@ -35,7 +35,7 @@ export class CreateBookingUseCase {
             };
             return await this.bookingRepository.createBooking(bookingData);
         } catch (error) {
-            console.error("Error en CreateBookingUseCase:", error);
+           // console.error("Error en CreateBookingUseCase:", error);
             throw new Error("No se pudo crear la reserva.");
         }
     }

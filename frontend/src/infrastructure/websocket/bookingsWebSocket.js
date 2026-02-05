@@ -19,24 +19,25 @@ class BookingsWebSocket {
       this.ws = new WebSocket(wsUrl);
 
       this.ws.onopen = () => {
-        console.log('✅ Booking WebSocket connected');
+     //   console.log('✅ Booking WebSocket connected');
         this.reconnectAttempts = 0;
       };
 
       this.ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
-          console.log('📨 Booking WebSocket message:', data);
+        //  console.log('📨 Booking WebSocket message:', data);
           this.listeners.forEach(callback => callback(data));
         } catch (error) {
-          console.error('Error parsing Booking WebSocket message:', error);
+         // console.error('Error parsing Booking WebSocket message:', error);
         }
       };
 
-      this.ws.onerror = (error) => console.error('❌ Booking WebSocket error:', error);
+      this.ws.onerror = (error) => 
+        // console.error('❌ Booking WebSocket error:', error);
 
       this.ws.onclose = (event) => {
-        console.log('🔌 Booking WebSocket disconnected:', event.code);
+       // console.log('🔌 Booking WebSocket disconnected:', event.code);
         if (event.code !== 1000 && event.code !== 1001) {
           this.handleReconnect(token);
         }

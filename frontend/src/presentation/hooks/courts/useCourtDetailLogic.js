@@ -200,10 +200,10 @@ export const useCourtDetailLogic = () => {
       setBookingSuccess(true);
       fetchWeeklyAvailability();
     } catch (err) {
-      console.log("DEBUG: Error en confirmBooking:", err);
-      console.log("DEBUG: err.response:", err.response);
-      console.log("DEBUG: err.response.status:", err.response ? err.response.status : 'N/A');
-      console.log("DEBUG: err.message:", err.message);
+    //  console.log("DEBUG: Error en confirmBooking:", err);
+    //  console.log("DEBUG: err.response:", err.response);
+     // console.log("DEBUG: err.response.status:", err.response ? err.response.status : 'N/A');
+     // console.log("DEBUG: err.message:", err.message);
 
       if ((err.response && err.response.status === 401) || (err.message === "No se pudo crear la reserva.")) {
         setBookingError(null);
@@ -211,7 +211,7 @@ export const useCourtDetailLogic = () => {
       } else {
         setBookingError("Error al crear la reserva. Inténtalo de nuevo.");
       }
-      console.error('Error creating booking:', err.response ? err.response.data : err.message);
+     // console.error('Error creating booking:', err.response ? err.response.data : err.message);
     } finally {
       setIsBooking(false);
       setBookingDetailsToConfirm(null);

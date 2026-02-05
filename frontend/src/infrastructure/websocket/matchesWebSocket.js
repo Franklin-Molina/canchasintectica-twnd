@@ -45,7 +45,7 @@ class MatchesWebSocket {
       };
 
       this.ws.onclose = (event) => {
-        console.log('🔌 WebSocket disconnected:', event.code, event.reason);
+     //   console.log('🔌 WebSocket disconnected:', event.code, event.reason);
         // Evitar reconexión infinita si se cerró intencionalmente
         if (event.code !== 1000 && event.code !== 1001) {
           this.handleReconnect(token);

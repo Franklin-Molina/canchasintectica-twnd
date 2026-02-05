@@ -36,7 +36,7 @@ class UsersWebSocket {
       this.ws.onerror = (error) => console.error('❌ Users WebSocket error:', error);
 
       this.ws.onclose = (event) => {
-        console.log('🔌 Users WebSocket disconnected:', event.code);
+      //  console.log('🔌 Users WebSocket disconnected:', event.code);
         if (event.code !== 1000 && event.code !== 1001) {
           this.handleReconnect(token);
         }
