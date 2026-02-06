@@ -52,7 +52,7 @@ class MatchesWebSocket {
         }
       };
     } catch (error) {
-      console.error('Error creating WebSocket:', error);
+     // console.error('Error creating WebSocket:', error);
       this.handleReconnect(token);
     }
   }

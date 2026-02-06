@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useMatches } from "../../hooks/matches/useMatches";
 import CreateMatchForm from "../../components/Matches/CreateMatchForm";
@@ -11,11 +11,13 @@ const OpenMatchesPage = () => {
     matches: matchesByCategory,
     upcomingMatches,
     loading,
+    newMessages,
     fetchAllData,
     handleJoinMatch,
     handleLeaveMatch,
     handleCancelMatch,
     handleRemoveParticipant,
+    clearNewMessage,
   } = useMatches();
 
   const [activeTab, setActiveTab] = useState("available");
@@ -188,6 +190,8 @@ const OpenMatchesPage = () => {
               onRemove={handleRemoveParticipant}
               onEdit={handleEditMatch}
               currentUser={user}
+              hasNewMessage={!!newMessages[match.id]}
+              onOpenChat={() => clearNewMessage(match.id)}
             />
           ))}
         </div>

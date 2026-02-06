@@ -111,3 +111,14 @@ class MatchConsumer(AsyncWebsocketConsumer):
             'type': 'match_deleted',
             'match_id': event['match_id']
         }))
+
+    async def chat_notification(self, event):
+        """Enviar notificación de nuevo mensaje en el chat"""
+        # No enviar la notificación al usuario que envió el mensaje
+        if self.user.username != event['username']:
+            await self.send(text_data=json.dumps({
+                'type': 'chat_notification',
+                'match_id': event['match_id'],
+                'message': event['message'],
+                'username': event['username']
+            }))

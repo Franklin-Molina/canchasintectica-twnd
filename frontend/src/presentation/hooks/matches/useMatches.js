@@ -24,6 +24,7 @@ export const useMatches = () => {
   const [matches, setMatches] = useState({ Mixto: [], Hombres: [], Mujeres: [] });
   const [upcomingMatches, setUpcomingMatches] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [newMessages, setNewMessages] = useState({});
 
   const fetchAllData = useCallback(async () => {
     setLoading(true);
@@ -68,27 +69,43 @@ export const useMatches = () => {
   // ✅ WS ACTUALIZA CUANDO HAY EVENTO EN PARTIDOS
   useMatchesRealtime(
     useCallback((event) => {
-      //console.log("Real-time match event received:", event);
-      fetchAllData();
+      if (event.type === 'chat_notification') {
+        setNewMessages(prev => ({
+          ...prev,
+          [event.match_id]: true
+        }));
+      } else {
+        fetchAllData();
+      }
     }, [fetchAllData])
   );
 
   // ✅ WS ACTUALIZA CUANDO HAY CAMBIOS EN RESERVAS
   useBookingsRealtime(
     useCallback((event) => {
-     // console.log("Real-time booking event received:", event);
       fetchAllData();
     }, [fetchAllData])
   );
+
+  const clearNewMessage = useCallback((matchId) => {
+    setNewMessages(prev => {
+      if (!prev[matchId]) return prev;
+      const updated = { ...prev };
+      delete updated[matchId];
+      return updated;
+    });
+  }, []);
 
   return {
     matches,
     upcomingMatches,
     loading,
+    newMessages,
     fetchAllData,
     handleJoinMatch,
     handleLeaveMatch,
     handleCancelMatch,
     handleRemoveParticipant,
+    clearNewMessage,
   };
 };

@@ -1,10 +1,18 @@
 import React, { useState } from "react";
 import MatchChat from "./MatchChat";
 import { MessageCircle, LogOut } from "lucide-react";
+import { toast } from 'react-toastify';
 
-const MatchCard = ({ match, onJoin, onCancel, onRemove, onEdit, onLeave, currentUser }) => {
+const MatchCard = ({ match, onJoin, onCancel, onRemove, onEdit, onLeave, currentUser, hasNewMessage, onOpenChat }) => {
   const [showParticipants, setShowParticipants] = useState(false);
   const [showChat, setShowChat] = useState(false);
+
+  const handleToggleChat = () => {
+    if (!showChat && onOpenChat) {
+      onOpenChat();
+    }
+    setShowChat(!showChat);
+  };
   const isCreator = currentUser?.id === match.creator.id;
   // El creador también es un participante. isFull ya considera al creador.
   const isFull = match.participants.length >= match.players_needed + 1;
@@ -151,13 +159,19 @@ const MatchCard = ({ match, onJoin, onCancel, onRemove, onEdit, onLeave, current
             {/* Chat del partido - Solo visible si está lleno y el usuario es participante */}
             {isFull && isParticipant && (
               <button
-                onClick={() => setShowChat(!showChat)}
-                className={`px-4 py-2 rounded-lg text-white text-sm font-medium transition-all flex items-center gap-2 ${
+                onClick={handleToggleChat}
+                className={`px-4 py-2 rounded-lg text-white text-sm font-medium transition-all flex items-center gap-2 relative ${
                   showChat ? "bg-indigo-700" : "bg-indigo-600 hover:bg-indigo-700"
                 }`}
               >
                 <MessageCircle className="w-4 h-4" />
                 <span>Chat del Grupo</span>
+                {hasNewMessage && !showChat && (
+                  <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                  </span>
+                )}
               </button>
             )}
           </>

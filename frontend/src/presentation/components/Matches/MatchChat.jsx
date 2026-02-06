@@ -3,6 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useChatWebSocket } from '../../hooks/matches/useChatWebSocket';
 import { getChatMessages } from '../../../infrastructure/api/chatService';
 import { Send, X, MessageSquare } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const MatchChat = ({ matchId, onClose }) => {
   const { user } = useAuth();
@@ -41,6 +42,8 @@ const MatchChat = ({ matchId, onClose }) => {
   // Manejar mensajes entrantes por WebSocket
   const handleIncomingMessage = useCallback((data) => {
     if (data.type === 'chat_message') {
+      const isOwn = data.username === user?.username;
+      
       setMessages(prev => [...prev, {
         id: data.id,
         message: data.message,
@@ -48,6 +51,19 @@ const MatchChat = ({ matchId, onClose }) => {
         user_id: data.user_id,
         created_at: data.created_at
       }]);
+
+      // Mostrar notificación si el mensaje no es propio
+      if (!isOwn) {
+        toast.info(`Nuevo mensaje de ${data.username}: ${data.message.substring(0, 30)}${data.message.length > 30 ? '...' : ''}`, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+      }
+
       // Si recibimos un mensaje, dejamos de mostrar que está escribiendo
       setTypingUsers(prev => {
         const newTyping = { ...prev };
@@ -62,7 +78,7 @@ const MatchChat = ({ matchId, onClose }) => {
     } else if (data.type === 'error') {
       setError(data.message);
     }
-  }, []);
+  }, [user]); // Agregado user como dependencia para que isOwn sea correcto
 
   const { sendMessage, sendTyping } = useChatWebSocket(matchId, handleIncomingMessage);
 
@@ -73,6 +89,8 @@ const MatchChat = ({ matchId, onClose }) => {
 
   const handleSend = (e) => {
     e.preventDefault();
+    e.stopPropagation(); // Evitar propagación
+    
     if (!newMessage.trim() || error) return;
 
     sendMessage(newMessage);
@@ -99,7 +117,7 @@ const MatchChat = ({ matchId, onClose }) => {
     .map(([username]) => username);
 
   return (
-    <div className="fixed bottom-4 right-4 w-80 h-[450px] bg-white dark:bg-[#1a2332] rounded-2xl shadow-2xl border border-slate-200 dark:border-emerald-500/30 flex flex-col z-50 overflow-hidden backdrop-blur-sm transition-colors duration-300">
+    <div className="fixed bottom-4 right-4 w-80 h-[450px] bg-white dark:bg-[#1a2332] rounded-2xl shadow-2xl border border-slate-200 dark:border-emerald-500/30 flex flex-col z-[100] overflow-hidden backdrop-blur-sm transition-colors duration-300">
       {/* Header */}
       <div className="p-4 bg-emerald-600 dark:bg-gradient-to-r dark:from-emerald-900/80 dark:to-emerald-600/80 text-white flex justify-between items-center border-b border-emerald-500/10 dark:border-emerald-500/30">
         <div className="flex items-center gap-2">
@@ -107,7 +125,10 @@ const MatchChat = ({ matchId, onClose }) => {
           <h3 className="font-bold text-sm tracking-wide">Chat del Partido</h3>
         </div>
         <button 
-          onClick={onClose} 
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose();
+          }} 
           className="hover:bg-white/10 rounded-full p-1 transition-colors"
         >
           <X className="w-5 h-5" />
@@ -166,7 +187,11 @@ const MatchChat = ({ matchId, onClose }) => {
 
       {/* Input */}
       <div className="p-4 bg-white dark:bg-[#1a2332] border-t border-slate-100 dark:border-slate-800/50">
-        <form onSubmit={handleSend} className="flex gap-2 items-center bg-slate-50 dark:bg-[#252f3f] p-1.5 px-3 rounded-2xl border border-slate-200 dark:border-emerald-500/20 focus-within:border-emerald-500/50 transition-all">
+        <form 
+          onSubmit={handleSend} 
+          className="flex gap-2 items-center bg-slate-50 dark:bg-[#252f3f] p-1.5 px-3 rounded-2xl border border-slate-200 dark:border-emerald-500/20 focus-within:border-emerald-500/50 transition-all"
+          onClick={(e) => e.stopPropagation()}
+        >
           <input
             type="text"
             value={newMessage}

@@ -115,8 +115,25 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     'created_at': str(saved_msg.created_at)
                 }
             )
+
+            # Notificar al grupo general de matches para el badge de notificación
+            await self.channel_layer.group_send(
+                'matches',
+                {
+                    'type': 'chat_notification',
+                    'match_id': self.match_id,
+                    'message': saved_msg.message,
+                    'username': self.user.username,
+                }
+            )
         except Exception as e:
             print(f"❌ Error receiving message: {e}")
+
+    async def chat_notification(self, event):
+        # Este método no hace nada aquí, pero es necesario para que el group_send no falle
+        # si algún consumidor de este tipo está escuchando en este grupo.
+        # En realidad, el handler está en MatchConsumer.
+        pass
 
     async def chat_message(self, event):
         await self.send(text_data=json.dumps({
