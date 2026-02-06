@@ -104,7 +104,7 @@ const CreateMatchForm = ({ onClose, onMatchCreated, match }) => {
           });
           setWeeklyAvailability(response.data);
         } catch (error) {
-          console.error("Error fetching weekly availability:", error);
+       //   console.error("Error fetching weekly availability:", error);
           toast.error("No se pudo cargar la disponibilidad semanal de la cancha.");
           setWeeklyAvailabilityError("No se pudo cargar la disponibilidad semanal de la cancha.");
           setWeeklyAvailability({});

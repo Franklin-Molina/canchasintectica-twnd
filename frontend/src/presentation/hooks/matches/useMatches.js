@@ -36,7 +36,7 @@ export const useMatches = () => {
       setMatches(groupMatchesByCategory(openMatchesData));
       setUpcomingMatches(upcomingMatchesData);
     } catch (error) {
-      console.error("Error fetching match data:", error);
+    //  console.error("Error fetching match data:", error);
     } finally {
       setLoading(false);
     }

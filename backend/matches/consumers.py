@@ -11,33 +11,24 @@ User = get_user_model()
 
 class MatchConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        # Obtener el token de la query string
-        query_string = self.scope['query_string'].decode()
-        query_params = parse_qs(query_string)
-        token = query_params.get('token', [None])[0]
+        # El usuario ya viene autenticado por el JWTAuthMiddleware
+        user = self.scope.get('user')
 
-        if not token:
+        if not user or user.is_anonymous:
             await self.close()
             return
 
-        # Validar el token y obtener el usuario
-        try:
-            UntypedToken(token)
-            # Si llegamos aquí, el token es válido
-            self.room_group_name = 'matches'
-            
-            # Unirse al grupo de matches
-            await self.channel_layer.group_add(
-                self.room_group_name,
-                self.channel_name
-            )
+        self.room_group_name = 'matches'
+        
+        # Unirse al grupo de matches
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name
+        )
 
-            await self.accept()
-          #  print(f"✅ WebSocket connected: {self.channel_name}")
-            
-        except (InvalidToken, TokenError) as e:
-            print(f"❌ Invalid token: {e}")
-            await self.close()
+        # Si usamos el subprotocolo para el token, debemos aceptarlo
+        accepted_subprotocol = self.scope.get('accepted_subprotocol')
+        await self.accept(subprotocol=accepted_subprotocol)
 
     async def disconnect(self, close_code):
         # Salir del grupo
@@ -115,7 +106,8 @@ class MatchConsumer(AsyncWebsocketConsumer):
     async def chat_notification(self, event):
         """Enviar notificación de nuevo mensaje en el chat"""
         # No enviar la notificación al usuario que envió el mensaje
-        if self.user.username != event['username']:
+        user = self.scope.get('user')
+        if user and user.is_authenticated and user.username != event['username']:
             await self.send(text_data=json.dumps({
                 'type': 'chat_notification',
                 'match_id': event['match_id'],

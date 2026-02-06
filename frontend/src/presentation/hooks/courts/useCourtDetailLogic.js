@@ -103,7 +103,7 @@ export const useCourtDetailLogic = () => {
     } catch (err) {
       setWeeklyAvailabilityError("Error al cargar la disponibilidad semanal.");
       setLoadingWeeklyAvailability(false);
-      console.error('Error fetching weekly availability:', err);
+      // console.error('Error fetching weekly availability:', err);
     }
   }, [courtId, currentWeekStartDate, getWeeklyAvailabilityUseCase]);
 

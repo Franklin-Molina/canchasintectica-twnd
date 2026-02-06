@@ -9,29 +9,23 @@ User = get_user_model()
 
 class UserConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        query_string = self.scope['query_string'].decode()
-        query_params = parse_qs(query_string)
-        token = query_params.get('token', [None])[0]
+        # El usuario ya viene autenticado por el JWTAuthMiddleware
+        user = self.scope.get('user')
 
-        if not token:
+        if not user or user.is_anonymous:
             await self.close()
             return
 
-        try:
-            UntypedToken(token)
-            self.room_group_name = 'users_admin'
-            
-            await self.channel_layer.group_add(
-                self.room_group_name,
-                self.channel_name
-            )
+        self.room_group_name = 'users_admin'
+        
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name
+        )
 
-            await self.accept()
-         #   print(f"✅ Users WebSocket connected: {self.channel_name}")
-            
-        except (InvalidToken, TokenError) as e:
-            print(f"❌ Users WebSocket invalid token: {e}")
-            await self.close()
+        # Si usamos el subprotocolo para el token, debemos aceptarlo
+        accepted_subprotocol = self.scope.get('accepted_subprotocol')
+        await self.accept(subprotocol=accepted_subprotocol)
 
     async def disconnect(self, close_code):
         if hasattr(self, 'room_group_name'):

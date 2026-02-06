@@ -38,7 +38,7 @@ export class ApiBookingRepository extends BookingRepository {
             const response = await api.get(`/api/bookings/bookings/?page=${page}`);
             return response.data;
         } catch (error) {
-            console.error("Error en ApiBookingRepository al obtener reservas:", error);
+           // console.error("Error en ApiBookingRepository al obtener reservas:", error);
             throw error;
         }
     }

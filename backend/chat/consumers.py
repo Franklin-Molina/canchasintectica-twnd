@@ -16,22 +16,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.match_id = self.scope['url_route']['kwargs']['match_id']
         self.room_group_name = f'chat_{self.match_id}'
 
-        # Obtener Token
-        query_string = self.scope['query_string'].decode()
-        query_params = parse_qs(query_string)
-        token = query_params.get('token', [None])[0]
+        # El usuario ya viene autenticado por el JWTAuthMiddleware
+        user = self.scope.get('user')
 
-        if not token:
-            print(f"❌ No token provided for chat {self.match_id}")
+        if not user or user.is_anonymous:
+            print(f"❌ No valid user for chat {self.match_id}")
             await self.close(code=4001)
             return
 
+        self.user = user
+
         try:
-            # Validar Token y obtener usuario
-            decoded_token = UntypedToken(token)
-            user_id = decoded_token.get('user_id')
-            self.user = await self.get_user(user_id)
-            
             # Validar si el partido ya comenzó (REQUERIMIENTO: Chat cerrado al inicio)
             match_started = await self.has_match_started(self.match_id)
             if match_started:
@@ -53,7 +48,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 self.channel_name
             )
 
-            await self.accept()
+            # Si usamos el subprotocolo para el token, debemos aceptarlo
+            accepted_subprotocol = self.scope.get('accepted_subprotocol')
+            await self.accept(subprotocol=accepted_subprotocol)
            # print(f"✅ User {self.user.username} connected to chat {self.match_id}")
 
         except (InvalidToken, TokenError) as e:

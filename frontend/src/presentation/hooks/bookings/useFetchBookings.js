@@ -87,7 +87,7 @@ export const useFetchBookings = ({
       setAllBookings(newBookingsData);
     } catch (err) {
       setError(err);
-      console.error('Error al obtener reservas en useFetchBookings:', err);
+     // console.error('Error al obtener reservas en useFetchBookings:', err);
     } finally {
       setLoading(false);
     }

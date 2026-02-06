@@ -77,7 +77,7 @@ export class ApiAuthRepository extends IAuthRepository {
       const response = await api.get('/api/users/users/me/');
       return new AuthenticatedUser(response.data);
     } catch (error) {
-      console.error('Error fetching authenticated user:', error);
+   //   console.error('Error fetching authenticated user:', error);
       // Si hay un error (ej. 401), eliminar tokens locales
       if (error.response && error.response.status === 401) {
          await this.removeTokens();

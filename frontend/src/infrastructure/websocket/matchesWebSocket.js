@@ -18,10 +18,12 @@ class MatchesWebSocket {
     const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
     const host = apiUrl.replace(/^https?:\/\//, '');
     const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${wsProtocol}//${host}/ws/matches/?token=${token}`;
+    const wsUrl = `${wsProtocol}//${host}/ws/matches/`;
 
     try {
-      this.ws = new WebSocket(wsUrl);
+      // Pasamos el token como un "subprotocolo" (Sec-WebSocket-Protocol)
+      // para evitar exponerlo en la URL.
+      this.ws = new WebSocket(wsUrl, [token]);
 
       this.ws.onopen = () => {
        // console.log('✅ WebSocket connected to matches');
@@ -41,7 +43,7 @@ class MatchesWebSocket {
       };
 
       this.ws.onerror = (error) => {
-        console.error('❌ WebSocket error:', error);
+       // console.error('❌ WebSocket error:', error);
       };
 
       this.ws.onclose = (event) => {

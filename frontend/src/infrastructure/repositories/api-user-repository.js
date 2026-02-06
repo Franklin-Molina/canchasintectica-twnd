@@ -19,7 +19,7 @@ export class ApiUserRepository extends IUserRepository {
       // return response.data.map(userData => new User(userData)); // Si se usa entidad User
       return response.data;
     } catch (error) {
-      console.error('Error fetching users from API:', error);
+     // console.error('Error fetching users from API:', error);
       throw error;
     }
   }
@@ -30,7 +30,7 @@ export class ApiUserRepository extends IUserRepository {
       // return response.data.map(userData => new User(userData)); // Si se usa entidad User
       return response.data;
     } catch (error) {
-      console.error('Error fetching users from API:', error);
+     // console.error('Error fetching users from API:', error);
       throw error;
     }
   }

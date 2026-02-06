@@ -12,6 +12,7 @@ import os
 from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
+from users.middleware import JWTAuthMiddleware
 
 # Configurar Django ANTES de importar las rutas
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cancha.settings')
@@ -32,9 +33,11 @@ application = ProtocolTypeRouter({
     "http": django_asgi_app,
     
     # Solo WebSocket usa el routing especial
-    "websocket": AuthMiddlewareStack(
-        URLRouter(
-            combined_ws_urlpatterns
+    "websocket": JWTAuthMiddleware(
+        AuthMiddlewareStack(
+            URLRouter(
+                combined_ws_urlpatterns
+            )
         )
     ),
 })

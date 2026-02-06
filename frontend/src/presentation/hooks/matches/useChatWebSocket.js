@@ -41,10 +41,11 @@ class ChatWebSocket {
     const wsBaseUrl = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
     const wsHost = apiUrl.replace(/^https?:\/\//, '');
-    const wsUrl = `${wsBaseUrl}//${wsHost}/ws/chat/${matchId}/?token=${token}`;
+    const wsUrl = `${wsBaseUrl}//${wsHost}/ws/chat/${matchId}/`;
 
     //console.log(`Intentando conectar a WebSocket: ${wsUrl}`);
-    this.ws = new WebSocket(wsUrl);
+    // Pasamos el token como un subprotocolo para evitar exponerlo en la URL
+    this.ws = new WebSocket(wsUrl, [token]);
 
     this.ws.onopen = () => {
       this.connecting = false;
@@ -58,7 +59,7 @@ class ChatWebSocket {
 
   this.ws.onerror = (error) => {
       this.connecting = false;
-      console.error('❌ Error Chat WebSocket:', error);
+    //  console.error('❌ Error Chat WebSocket:', error);
     };
 
     this.ws.onclose = (event) => {

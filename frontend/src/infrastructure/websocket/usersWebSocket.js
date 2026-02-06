@@ -13,10 +13,10 @@ class UsersWebSocket {
     const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
     const host = apiUrl.replace(/^https?:\/\//, '');
     const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${wsProtocol}//${host}/ws/users/?token=${token}`;
+    const wsUrl = `${wsProtocol}//${host}/ws/users/`;
 
     try {
-      this.ws = new WebSocket(wsUrl);
+      this.ws = new WebSocket(wsUrl, [token]);
 
       this.ws.onopen = () => {
         console.log('✅ Users WebSocket connected');
