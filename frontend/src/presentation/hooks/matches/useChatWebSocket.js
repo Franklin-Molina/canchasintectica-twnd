@@ -35,8 +35,15 @@ class ChatWebSocket {
     
     // Intentamos refrescar siempre para asegurar token fresco al conectar WebSocket
     // o podrías decodificar el JWT para ver si expiró. Por simplicidad, refrescamos.
-    const newToken = await refreshToken();
-    if (newToken) token = newToken;
+    try {
+      const newToken = await refreshToken();
+      if (newToken) {
+        token = newToken;
+      }
+    } catch (error) {
+      // console.error("Error refreshing token for WebSocket:", error);
+      // Si falla el refresco, seguimos con el token actual o fallará la conexión
+    }
 
     const wsBaseUrl = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
@@ -66,6 +73,13 @@ class ChatWebSocket {
       this.connecting = false;
      // console.log(`🔌 Chat WebSocket desconectado del match ${matchId}. Código: ${event.code}`);
       
+      // Si el código es 4001 (No valid user) o similar, forzar refresco total antes de reintentar
+      if (event.code === 4001 || event.code === 4002) {
+        // console.log('🔑 Token inválido detectado. Intentando refrescar y reconectar...');
+        setTimeout(() => this.connect(matchId), 2000);
+        return;
+      }
+
       if (event.code !== 1000 && event.code < 4000) {
        // console.log('🔄 Intentando reconectar chat...');
         setTimeout(() => this.connect(matchId), 3000);

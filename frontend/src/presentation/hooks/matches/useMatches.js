@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useMatchesRealtime } from "./useMatchesRealtime";
 import { useBookingsRealtime } from "../bookings/useBookingsRealtime";
+import { toast } from 'react-toastify';
 import {
   getOpenMatches,
   getMyUpcomingMatches,
@@ -70,10 +71,23 @@ export const useMatches = () => {
   useMatchesRealtime(
     useCallback((event) => {
       if (event.type === 'chat_notification') {
+        // Marcar como nuevo mensaje en el estado local
         setNewMessages(prev => ({
           ...prev,
           [event.match_id]: true
         }));
+
+        // Mostrar notificación toast (solo si el mensaje no es del usuario actual)
+        // El backend ya hace este filtrado, por lo que podemos confiar en el evento
+        toast.info(`Nuevo mensaje de ${event.username}: ${event.message.substring(0, 30)}${event.message.length > 30 ? '...' : ''}`, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          toastId: `chat-${event.match_id}-${event.username}-${event.message.substring(0, 10)}` // ID determinista basado en el contenido para evitar duplicados
+        });
       } else {
         fetchAllData();
       }

@@ -52,18 +52,6 @@ const MatchChat = ({ matchId, onClose }) => {
         created_at: data.created_at
       }]);
 
-      // Mostrar notificación si el mensaje no es propio
-      if (!isOwn) {
-        toast.info(`Nuevo mensaje de ${data.username}: ${data.message.substring(0, 30)}${data.message.length > 30 ? '...' : ''}`, {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
-      }
-
       // Si recibimos un mensaje, dejamos de mostrar que está escribiendo
       setTypingUsers(prev => {
         const newTyping = { ...prev };
